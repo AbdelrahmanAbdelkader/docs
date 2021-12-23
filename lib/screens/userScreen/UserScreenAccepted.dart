@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/bottomnav.dart';
@@ -15,6 +16,7 @@ class UserScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final current = Provider.of<BottomNav>(context).current;
     final bottomnav = Provider.of<BottomNav>(context, listen: false);
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () => FirebaseAuth.instance.signOut(),

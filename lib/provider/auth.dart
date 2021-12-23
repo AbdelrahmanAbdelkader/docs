@@ -27,7 +27,8 @@ class Auth {
       'phone': userPhone,
       'id': DateTime.now().toString(),
       'email': _email,
-      'team': team
+      'team': team,
+      'accepted': false,
     });
   }
 

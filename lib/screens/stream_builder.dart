@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sample/screens/authscreen/authscreen.dart';
-import 'package:sample/screens/userScreen/UserScreen.dart';
+import 'package:sample/screens/userScreen/UserScreenAccepted.dart';
+import 'package:sample/screens/userScreen/checkAcceptions.dart';
 import 'guestscreen/guestscreen.dart';
 
 class MainStream extends StatelessWidget {
@@ -20,9 +21,9 @@ class MainStream extends StatelessWidget {
 
         if (snapshot.hasData) {
           if (snapshot.data!.isAnonymous) {
-            return const GuestScreen();
+            return const GuestScreen(false);
           }
-          return UserScreen();
+          return CheckAcception();
         }
         return const AuthScreen();
       },
