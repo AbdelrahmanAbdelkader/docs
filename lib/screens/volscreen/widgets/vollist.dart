@@ -16,7 +16,7 @@ class VolList extends StatelessWidget {
               name: e['userName'] as String,
               phone: e['phone'] as String,
               state: e['state'] as String,
-              id: DateTime.now(),
+              id: e['id'],
             ),
           )
           .toList(),

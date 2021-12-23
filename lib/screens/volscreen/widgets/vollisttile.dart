@@ -13,14 +13,12 @@ class VolListTile extends StatelessWidget {
   final String name;
   final String phone;
   final String state;
-  final DateTime id;
+  final String id;
   Map<String, Object>? patients;
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: (){
-
-      },
+      onTap: () {},
       tileColor: Colors.blue[300],
       leading: CircleAvatar(
         child: Text(
