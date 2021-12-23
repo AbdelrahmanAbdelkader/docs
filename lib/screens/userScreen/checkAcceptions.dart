@@ -9,34 +9,32 @@ class CheckAcception extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future<DataSnapshot> checkAccept() async {
-      final ref = await FirebaseDatabase.instance
-          .ref()
-          .child('vol')
-          .child(FirebaseAuth.instance.currentUser!.uid)
-          .get();
-      return ref;
-    }
-
-    return FutureBuilder(
-      future: checkAccept(),
-      builder: (ct, snap) {
-        if (snap.connectionState !=
-            ConnectionState.waiting) if ((snap.data as DataSnapshot).exists)
-          print((snap.data as DataSnapshot).value);
-        if (snap.connectionState == ConnectionState.waiting)
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        if (snap.data != null) {
-          if (((snap.data as DataSnapshot).value as Map)['accepted'] as bool) {
-            return UserScreen();
-          } else {
-            return GuestScreen(true);
+    return Container(
+      color: Colors.white,
+      child: StreamBuilder(
+        stream: FirebaseDatabase.instance
+            .ref()
+            .child('vol')
+            .child(FirebaseAuth.instance.currentUser!.uid)
+            .child("accepted")
+            .onValue,
+        builder: (ct, snap) {
+          if (snap.data != null)
+            print((snap.data as DatabaseEvent).snapshot.value);
+          if (snap.connectionState == ConnectionState.waiting)
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          if (snap.data != null) {
+            if ((snap.data as DatabaseEvent).snapshot.value as bool) {
+              return UserScreen();
+            } else {
+              return GuestScreen(true);
+            }
           }
-        }
-        return Container();
-      },
+          return Container();
+        },
+      ),
     );
   }
 }

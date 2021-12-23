@@ -47,7 +47,7 @@ class Vols extends ChangeNotifier {
     final ref = await database.ref().child("vol").get();
     if (ref.exists) {
       (ref.value as Map).values.forEach((element) {
-        addVol(element);
+        if (element['accepted']) addVol(element);
       });
     }
     print(_vols);
