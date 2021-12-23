@@ -6,4 +6,10 @@ class StateManagment extends ChangeNotifier {
     userDropDownBottonValue = v;
     notifyListeners();
   }
+
+  String? doctorSearchDropDownButtonValue;
+  void setDoctorSearchDropDownButtonValue(String v) {
+    doctorSearchDropDownButtonValue = v;
+    notifyListeners();
+  }
 }

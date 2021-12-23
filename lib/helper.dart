@@ -16,3 +16,7 @@ List<String> team = [
   'صيدلة',
   'طب',
 ];
+List<String> searchBy = [
+  'الاسم',
+  'التخصص',
+];

@@ -4,6 +4,8 @@ import 'package:sample/provider/docs.dart';
 import 'package:sample/screens/app_bar_button.dart';
 
 import 'package:sample/screens/docscreen/getAddDocProvited.dart';
+import 'package:sample/screens/docscreen/widgets/search.dart';
+import '../search_button.dart';
 import 'widgets/doc_sample.dart';
 
 class DocList extends StatefulWidget {
@@ -26,6 +28,12 @@ class _DocListState extends State<DocList> {
       appBar: AppBar(
         title: const Text('الدكاترة'),
         actions: [
+          IconButton(
+              onPressed: () {
+                showSearch(
+                    context: context, delegate: DocSearchDelegate(context));
+              },
+              icon: Icon(Icons.search)),
           AppBarButton(
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(

@@ -4,9 +4,8 @@ import 'package:sample/provider/doc.dart';
 import 'package:sample/screens/docscreen/add_doc.dart';
 
 class DocSample extends StatefulWidget {
-  const DocSample({
-    Key? key,
-  }) : super(key: key);
+  DocSample({Key? key});
+
   @override
   State<DocSample> createState() => _DocSampleState();
 }
@@ -32,7 +31,7 @@ class _DocSampleState extends State<DocSample> {
       id = prove.Id as String;
       docNum = prove.phone;
       docEmail = prove.email;
-      docType = prove.type;
+      docType = prove.type as String;
       agreed = prove.agreed;
       hint = prove.hint;
       patients = prove.patients;

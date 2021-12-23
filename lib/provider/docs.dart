@@ -5,6 +5,7 @@ import 'package:sample/provider/doc.dart';
 class Docs extends ChangeNotifier {
   Map _data = {};
   List<Doc> doctors = [];
+  List<Doc> searchedDoctors = [];
   Future<void> refresh() async {
     final database = FirebaseDatabase.instance;
     doctors = [];
@@ -20,5 +21,30 @@ class Docs extends ChangeNotifier {
         );
       });
     }
+  }
+
+  void search(String searchFor, String? byname) {
+    searchedDoctors = [];
+    doctors.forEach(
+      (element) {
+        print(element.name);
+        {
+          if ((byname == 'الاسم' || byname == null) && searchFor != '') {
+            print(byname);
+            if (element.name.contains(searchFor)) {
+              searchedDoctors.add(element);
+            }
+          } else if (byname == 'التخصص' && searchFor != '') {
+            print('ff');
+            if ((element.type as String).contains(searchFor)) {
+              searchedDoctors.add(element);
+            } else
+              searchedDoctors.remove(element);
+          }
+        }
+      },
+    );
+    searchedDoctors.forEach((e) => print(e.name));
+    notifyListeners();
   }
 }

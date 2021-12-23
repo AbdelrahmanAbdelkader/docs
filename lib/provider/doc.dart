@@ -13,7 +13,7 @@ class Doc extends ChangeNotifier {
   bool value = true;
   bool triedToValidate = false;
   String? val;
-  var type = null;
+  String? type ;
 
   void initData(Map data) {
     if (data['phone'] != null) phone = data['phone'];
