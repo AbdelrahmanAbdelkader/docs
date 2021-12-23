@@ -13,6 +13,7 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  final auth = Auth();
   final userNameController = TextEditingController();
 
   final emailController = TextEditingController();
@@ -54,7 +55,6 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<Auth>(context);
     final chosenTeam = Provider.of<StateManagment>(context);
     return Scaffold(
       body: SafeArea(

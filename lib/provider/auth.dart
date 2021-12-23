@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 
-class Auth extends ChangeNotifier {
+class Auth {
   late String id;
   late String _email;
   late String _password;
@@ -23,7 +22,12 @@ class Auth extends ChangeNotifier {
   void register(String userName, String userPhone, String team) async {
     await auth.createUserWithEmailAndPassword(
         email: _email, password: _password);
-    await database.ref().child('vol').child(team).child(auth.currentUser!.uid).set({
+    await database
+        .ref()
+        .child('vol')
+        .child(team)
+        .child(auth.currentUser!.uid)
+        .set({
       'userName': userName,
       'phone': userPhone,
       'id': DateTime.now().toString(),

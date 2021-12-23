@@ -8,12 +8,12 @@ class VolList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vol = Provider.of<Vol>(context);
+    final vol = Provider.of<Vols>(context);
     return ListView(
       children: vol.vols
           .map(
             (e) => VolListTile(
-              name: e['name'] as String,
+              name: e['userName'] as String,
               phone: e['phone'] as String,
               state: e['state'] as String,
               id: DateTime.now(),

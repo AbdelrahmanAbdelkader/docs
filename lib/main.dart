@@ -1,11 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/auth.dart';
 import 'package:sample/provider/bottomnav.dart';
-import 'package:sample/provider/pati.dart';
+import 'package:sample/provider/docs.dart';
+import 'package:sample/provider/patients.dart';
 import 'package:sample/provider/state.dart';
 import 'package:sample/provider/vol.dart';
 import 'package:sample/screens/stream_builder.dart';
@@ -27,7 +26,6 @@ class _MyAppState extends State<MyApp> {
   int current = 0;
   @override
   Widget build(BuildContext context) {
-    print(FirebaseDatabase.instance.ref());
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<StateManagment>(
@@ -36,15 +34,14 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<BottomNav>(
           create: (context) => BottomNav(),
         ),
-        ChangeNotifierProvider<Auth>(
-          create: (context) => Auth(),
+        ChangeNotifierProvider<Docs>(
+          create: (context) => Docs(),
         ),
-        ChangeNotifierProvider<PatientProv>(
-          create: (context) => PatientProv(),
+        ChangeNotifierProvider<PatientsProv>(
+            create: (context) => PatientsProv()),
+        ChangeNotifierProvider<Vols>(
+          create: (context) => Vols(),
         ),
-        ChangeNotifierProvider<Vol>(
-          create: (context) => Vol(),
-        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -55,15 +52,17 @@ class _MyAppState extends State<MyApp> {
         supportedLocales: const [Locale('ar', '')],
         title: 'Flutter Demo',
         theme: ThemeData(
-            primarySwatch: Colors.green,
-            scaffoldBackgroundColor: Colors.white,
-            bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-                backgroundColor: Colors.green,
-                selectedItemColor: Colors.white,
-                selectedLabelStyle: TextStyle(
-                  fontSize: 16,
-                ),),),
-        home: const MainStream(),
+          primarySwatch: Colors.green,
+          scaffoldBackgroundColor: Colors.white,
+          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+            backgroundColor: Colors.green,
+            selectedItemColor: Colors.white,
+            selectedLabelStyle: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        ),
+        home: MainStream(),
       ),
     );
   }

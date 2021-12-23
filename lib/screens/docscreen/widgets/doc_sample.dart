@@ -1,49 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sample/provider/doc.dart';
 import 'package:sample/screens/docscreen/add_doc.dart';
 
 class DocSample extends StatefulWidget {
   const DocSample({
     Key? key,
-    required this.docName,
-    required this.agreed,
-    required this.docType,
-    required this.id,
-    this.docNum,
-    this.docEmail,
-    this.hint,
-    this.patients,
   }) : super(key: key);
-  final String docName;
-  final String id;
-  final String? docNum;
-  final String? docEmail;
-  final String docType;
-  final bool agreed;
-  final String? hint;
-  final List? patients;
-
   @override
   State<DocSample> createState() => _DocSampleState();
 }
 
 class _DocSampleState extends State<DocSample> {
   bool toggled = false;
+  late final String docName;
+  late final String id;
+  late final String? docNum;
+  late final String? docEmail;
+  late final String docType;
+  late final bool agreed;
+  late final String? hint;
+  late final List<Map>? patients;
+  late final Doc prove;
+  bool _once = true;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_once) {
+      prove = Provider.of<Doc>(context);
+      docName = prove.name;
+      id = prove.Id as String;
+      docNum = prove.phone;
+      docEmail = prove.email;
+      docType = prove.type;
+      agreed = prove.agreed;
+      hint = prove.hint;
+      patients = prove.patients;
+      _once = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 300), curve: Curves.bounceOut,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.bounceOut,
       margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: (widget.agreed) ? Colors.blue[300] : Colors.red[300],
+        color: (agreed) ? Colors.blue[300] : Colors.red[300],
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal:5.0,vertical: 13),
+            padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 13),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -53,14 +65,14 @@ class _DocSampleState extends State<DocSample> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.docName,
+                      docName,
                       style: const TextStyle(
                           fontSize: 18,
                           color: Colors.white,
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      widget.docType,
+                      docType,
                       style: const TextStyle(
                         fontSize: 18,
                         color: Colors.white,
@@ -69,7 +81,7 @@ class _DocSampleState extends State<DocSample> {
                   ],
                 ),
                 Text(
-                  '${(widget.docEmail != null) ? widget.docEmail : widget.docNum}',
+                  '${(docEmail != null) ? docEmail : docNum}',
                   style: const TextStyle(
                     fontSize: 18,
                     color: Colors.white,
@@ -79,9 +91,7 @@ class _DocSampleState extends State<DocSample> {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (ctx) => AddDoctor(
-                          id: widget.id,
-                        ),
+                        builder: (ctx) => AddDoctor(),
                       ),
                     );
                   },
@@ -94,17 +104,17 @@ class _DocSampleState extends State<DocSample> {
               ],
             ),
           ),
-          if (widget.hint != '' && toggled)
+          if (hint != '' && toggled)
             Text(
-              widget.hint as String,
+              hint as String,
               style: const TextStyle(
                 fontSize: 18,
                 color: Colors.white,
               ),
             ),
-          if (widget.patients != null && toggled)
+          if (patients != null && toggled)
             Column(
-              children: widget.patients!
+              children: patients!
                   .map((e) => Container(
                         color: Colors.green[800],
                         child: Row(
@@ -129,7 +139,7 @@ class _DocSampleState extends State<DocSample> {
                       ))
                   .toList(),
             ),
-          if (widget.hint != '' || widget.patients!.isEmpty)
+          if (hint != '' || patients!.isEmpty)
             IconButton(
               onPressed: () {
                 setState(() {

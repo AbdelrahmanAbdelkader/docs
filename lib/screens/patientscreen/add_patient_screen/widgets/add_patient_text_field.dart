@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 
 class AddPatientTextField extends StatelessWidget {
   const AddPatientTextField({
-    Key? key,
     required this.label,
     required this.controller,
     required this.tKey,
     required this.save,
     required this.validate,
     required this.multiline,
-  }) : super(key: key);
+  });
   final String label;
   final TextEditingController controller;
   final Key tKey;
@@ -21,7 +20,7 @@ class AddPatientTextField extends StatelessWidget {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
-        side: const BorderSide(width: 1,color: Colors.greenAccent),
+        side: const BorderSide(width: 1, color: Colors.greenAccent),
       ),
       color: Colors.white,
       child: Padding(

@@ -1,20 +1,15 @@
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/add_patient_text_field.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/dropdown.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/illness.dart';
 
-class AddPatientPage extends StatefulWidget {
-  const AddPatientPage({Key? key}) : super(key: key);
+// ignore: must_be_immutable
+class AddPatientPage extends StatelessWidget {
+  AddPatientPage({Key? key}) : super(key: key);
 
-  @override
-  State<AddPatientPage> createState() => _AddPatientPageState();
-}
-
-class _AddPatientPageState extends State<AddPatientPage> {
   final fkey = GlobalKey<FormState>();
 
   final TextEditingController patientNameController = TextEditingController();
@@ -56,16 +51,24 @@ class _AddPatientPageState extends State<AddPatientPage> {
     Map<String, Object> newPatient = {};
     void save() async {
       if (fkey.currentState!.validate()) {
-        if (value != null) newPatient['Doctor'] = value as String;
-        if (volValue != null) newPatient['volName'] = volValue as String;
-        newPatient['date'] = DateTime.now();
-
+        if (value != null)
+          newPatient['Doctor'] = value as String;
+        else
+          newPatient['Doctor'] = "";
+        if (volValue != null)
+          newPatient['volName'] = volValue as String;
+        else
+          newPatient['volName'] = "";
+        newPatient['date'] = DateTime.now().toIso8601String();
+        final database = FirebaseDatabase.instance.ref();
         fkey.currentState!.save();
+        final ref = await database.child('patients').push();
+        database.child(ref.path).update(newPatient);
         // await FirebaseFirestore.instance
         //     .collection('doctors')
         //     .doc()
         //     .update(newPatient);
-        await FirebaseFirestore.instance.collection('patients').add(newPatient);
+        // await FirebaseFirestore.instance.collection('patients').add(newPatient);
         Navigator.pop(context);
       }
     }
@@ -150,7 +153,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                 multiline: true,
               ),
               ElevatedButton(onPressed: save, child: const Text('save')),
-              Text(Random(15).nextInt(1<<32).toString())
+              Text(Random(15).nextInt(1 << 32).toString())
             ],
           ),
         ),

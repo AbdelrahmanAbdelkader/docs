@@ -7,7 +7,6 @@ class AppBarButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double? f = Scaffold.of(context).appBarMaxHeight;
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ElevatedButton(

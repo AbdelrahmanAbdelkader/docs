@@ -1,25 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sample/helper.dart';
+import 'package:sample/provider/doc.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/add_patient_text_field.dart';
 
 // ignore: must_be_immutable
-class AddDoctor extends StatefulWidget {
-  AddDoctor({Key? key, this.id}) : super(key: key);
-  String? id;
-  @override
-  State<AddDoctor> createState() => _AddDoctorState();
-}
-
-class _AddDoctorState extends State<AddDoctor> {
-  Map<String, Object> toAdd = {};
-  bool value = true;
-  bool agreed = false;
-  bool triedToValidate = false;
+class AddDoctor extends StatelessWidget {
+  AddDoctor({Key? ky}) : super(key: ky);
   bool once = true;
-  final key = GlobalKey<FormState>();
-  String? val;
-
+  final GlobalKey<FormState> keys = GlobalKey<FormState>();
   final TextEditingController docNameController = TextEditingController();
   final TextEditingController docPhoneController = TextEditingController();
   final TextEditingController docEmailController = TextEditingController();
@@ -28,48 +18,78 @@ class _AddDoctorState extends State<AddDoctor> {
   final Key docPhoneKey = const Key('docPhone');
   final Key docEmailKey = const Key('docEmail');
   final Key hintKey = const Key('doctorHint');
-  @override
-  void didChangeDependencies() {
-    if (once) {
-      if (widget.id != null) {
-        final database = FirebaseFirestore.instance;
-        database.collection('doctors').doc(widget.id).get().then((value) {
-          agreed = value['agreed'];
-          docNameController.text = value['name'];
-          if (value['phone'] != null) {
-            docPhoneController.text = value['phone'];
-          } else {
-            docEmailController.text = value['email'];
-          }
-          hintController.text = value['hint'];
-          val = value['type'];
-        });
-      }
-    }
-    super.didChangeDependencies();
+  void fitchLastData(Doc doc) {
+    doc.getTextFields(docNameController, docPhoneController, docEmailController,
+        hintController);
   }
+
+  // @override
+  // void didChangeDependencies() {
+  //   if (once) {
+  //     if (widget.id != null) {
+  //       doc.initData(widget.id as String);
+  //       //   final database = FirebaseFirestore.instance;
+  //       //   database.collection('doctors').doc(widget.id).get().then((value) {
+  //       //     agreed = value['agreed'];
+  //       //     docNameController.text = value['name'];
+  //       //     if (value['phone'] != null) {
+  //       //       docPhoneController.text = value['phone'];
+  //       //     } else {
+  //       //       docEmailController.text = value['email'];
+  //       //     }
+  //       //     hintController.text = value['hint'];
+  //       //     val = value['type'];
+  //       //   });
+  //     }
+  //   }
+  //   super.didChangeDependencies();
+  // }
+  final database = FirebaseDatabase.instance;
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    void save() {
-      setState(() {
-        triedToValidate = true;
-      });
-      bool validate = key.currentState!.validate();
-      if (val != null && validate) {
-        toAdd['type'] = val as String;
-        toAdd['agreed'] = agreed;
-        FirebaseFirestore.instance.collection('doctors').add(toAdd);
-        key.currentState!.save();
+    void save(Doc prove) {
+      prove.triedToValidate = true;
+      bool validate = keys.currentState!.validate();
+      if (prove.val != null && validate) {
+        print("sss");
+        prove.type = prove.val as String;
+        keys.currentState!.save();
+        DatabaseReference ref;
+        if (prove.Id == null) {
+          ref = database.ref().child('doctors').push();
+        } else
+          ref = database.ref().child('doctors').child(prove.Id as String);
+        database.ref(ref.path).set({
+          "phone": prove.phone,
+          "agreed": prove.agreed,
+          "email": prove.email,
+          "hint": prove.hint,
+          "name": prove.name,
+          "petients": prove.patients.asMap(),
+          "type": prove.type,
+        });
+        // database.ref()
+        // .set(toAdd);
         Navigator.of(context).pop();
+        prove.ref();
       }
     }
 
+    Size size = MediaQuery.of(context).size;
+    final prove = Provider.of<Doc>(context);
+    final staticProve = Provider.of<Doc>(context, listen: false);
+    if (once) {
+      fitchLastData(staticProve);
+      once = false;
+    }
+    // staticProve.getTextFields(docNameController, docPhoneController,
+    //     docEmailController, hintController);
+    print(prove.name);
     return Scaffold(
       appBar: AppBar(),
       body: Form(
-        key: key,
+        key: keys,
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -77,7 +97,7 @@ class _AddDoctorState extends State<AddDoctor> {
                   label: 'اسم الدكتور',
                   controller: docNameController,
                   tKey: docNameKey,
-                  save: (v) => {toAdd['name'] = v as String},
+                  save: (v) => {prove.name = v as String},
                   validate: (v) {
                     if (v!.length < 4) return 'ادخل اسم صحيح';
                   },
@@ -90,7 +110,7 @@ class _AddDoctorState extends State<AddDoctor> {
                           label: 'رقم التليفون',
                           controller: docPhoneController,
                           tKey: docPhoneKey,
-                          save: (v) => toAdd['phone'] = v as String,
+                          save: (v) => prove.phone = v as String,
                           validate: (v) {
                             if (v!.length != 10 && v.length != 11) {
                               return ' ادخل رقم هاتف صحيح';
@@ -98,22 +118,18 @@ class _AddDoctorState extends State<AddDoctor> {
                           },
                           multiline: false)),
                   Switch(
-                    value: value,
-                    onChanged: (v) => setState(
-                      () {
-                        value = v;
-                      },
-                    ),
+                    value: prove.value,
+                    onChanged: (v) => prove.value = v,
                   ),
                 ],
               ),
-              (value)
+              (prove.value)
                   ? Container()
                   : AddPatientTextField(
                       label: 'طريقة التواصل',
                       controller: docEmailController,
                       tKey: docEmailKey,
-                      save: (v) => toAdd['email'] = v as String,
+                      save: (v) => prove.email = v as String,
                       validate: (v) {
                         if (!v!.contains('@') || !v.contains('.com')) {
                           return 'ادخل بريد الكتروني صحيح';
@@ -141,12 +157,10 @@ class _AddDoctorState extends State<AddDoctor> {
                             elevation: 0,
                             // focusColor: Colors.white,
                             underline: Container(),
-                            value: val,
+                            value: prove.val,
                             isExpanded: true,
                             hint: const Text('اختر التخصص'),
-                            onChanged: (va) => setState(() {
-                              val = va as String;
-                            }),
+                            onChanged: (va) => prove.val = va as String,
                             items: List.generate(
                               speciality.length,
                               (index) => DropdownMenuItem(
@@ -160,7 +174,7 @@ class _AddDoctorState extends State<AddDoctor> {
                         ),
                       ),
                     ),
-                    if (triedToValidate && val == null)
+                    if (prove.triedToValidate && prove.val == null)
                       const Text(
                         'اختر التخصص',
                         style: TextStyle(color: Colors.red, fontSize: 12),
@@ -172,7 +186,7 @@ class _AddDoctorState extends State<AddDoctor> {
                   label: 'ملاحظة',
                   controller: hintController,
                   tKey: hintKey,
-                  save: (v) => toAdd['hint'] = v as String,
+                  save: (v) => prove.hint = v as String,
                   validate: (v) {},
                   multiline: true),
               Padding(
@@ -183,7 +197,7 @@ class _AddDoctorState extends State<AddDoctor> {
                     children: [
                       const Text('موافق يشتغل معانا؟'),
                       const Spacer(),
-                      (!agreed)
+                      (!prove.agreed)
                           ? const Icon(
                               Icons.check_box_outlined,
                               color: Colors.red,
@@ -195,14 +209,14 @@ class _AddDoctorState extends State<AddDoctor> {
                     ],
                   ),
                   onTap: () {
-                    setState(() {
-                      agreed = !agreed;
-                    });
+                    prove.toggle();
                   },
                 ),
               ),
               ElevatedButton(
-                onPressed: save,
+                onPressed: () {
+                  save(prove);
+                },
                 child: const Text('save'),
                 style: ButtonStyle(
                   fixedSize: MaterialStateProperty.all(

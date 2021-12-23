@@ -1,16 +1,27 @@
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sample/provider/docs.dart';
 import 'package:sample/screens/app_bar_button.dart';
-import 'package:sample/screens/docscreen/add_doc.dart';
+
+import 'package:sample/screens/docscreen/getAddDocProvited.dart';
 import 'widgets/doc_sample.dart';
 
-class DocList extends StatelessWidget {
+class DocList extends StatefulWidget {
   const DocList({Key? key}) : super(key: key);
 
   @override
+  State<DocList> createState() => _DocListState();
+}
+
+class _DocListState extends State<DocList> {
+  void settingState() {
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
-    //contactType _contactType;
+    final prove = Provider.of<Docs>(context, listen: false);
+    final proveTrue = Provider.of<Docs>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('الدكاترة'),
@@ -18,76 +29,42 @@ class DocList extends StatelessWidget {
           AppBarButton(
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => AddDoctor(),
+                builder: (context) => GetAddDocProve(settingState),
               ),
             ),
           )
         ],
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    children: [
-                      Container(
-                        height: 30,
-                        width: 30,
-                        color: Colors.red[300],
-                      ),
-                      const Text('phone'),
-                    ],
+      body: LayoutBuilder(builder: (context, cons) {
+        return FutureBuilder(
+            future: prove.refresh(),
+            builder: (cont, snap) {
+              if (snap.connectionState == ConnectionState.waiting)
+                return Container(
+                    height: cons.maxHeight,
+                    child: Center(child: const CircularProgressIndicator()));
+              if (proveTrue.doctors.isNotEmpty)
+                return SingleChildScrollView(
+                  child: Column(
+                    children: List.generate(
+                      proveTrue.doctors.length,
+                      (index) {
+                        return ChangeNotifierProvider.value(
+                          value: proveTrue.doctors[index],
+                          builder: (context, snapshot) {
+                            return DocSample();
+                          },
+                        );
+                      },
+                    ).toList(),
                   ),
-                  Column(
-                    children: [
-                      Container(
-                        height: 30,
-                        width: 30,
-                        color: Colors.blue[300],
-                      ),
-                      const Text('email address'),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('doctors')
-                    .get()
-                    .asStream(),
-                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  // Map<String,Object> data=snapshot.data!.docs.forEach((element) { });
-                  if (snapshot.hasData) {
-                    return Column(
-                        children: snapshot.data!.docs
-                            .map((DocumentSnapshot document) {
-                      final Map<String, dynamic> data =
-                          document.data() as Map<String, dynamic>;
-                      return DocSample(
-                        docName: data['name'],
-                        agreed: data['agreed'],
-                        docType: data['type'],
-                        id: document.id,
-                        docNum: document['phone'],
-                        hint: document['hint'],
-                        patients: document['patients'],
-                      );
-                    }).toList());
-                  }
-                  return const Text('لا توجد دكاتره');
-                })
-          ],
-        ),
-      ),
+                );
+              return Container(
+                height: cons.maxHeight,
+                child: Center(child: Text('لا توجد دكاتره')),
+              );
+            });
+      }),
     );
   }
 }

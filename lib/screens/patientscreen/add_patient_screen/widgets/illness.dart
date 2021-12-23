@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/illnesstextfield.dart';
 
@@ -25,12 +23,15 @@ class Ilness extends StatelessWidget {
         SizedBox(
           width: size.width * .5,
           child: IllnessTextField(
-              label: 'المرض', save: () {}, validate: () {}, multiline: false),
+              label: 'المرض', save: (v) {}, validate: (v) {}, multiline: false),
         ),
         SizedBox(
           width: size.width * .3,
           child: IllnessTextField(
-              label: 'القيمة', save: () {}, validate: () {}, multiline: false),
+              label: 'القيمة',
+              save: (v) {},
+              validate: (v) {},
+              multiline: false),
         ),
       ],
     );
