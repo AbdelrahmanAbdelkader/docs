@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class DropDown extends StatefulWidget {
-  DropDown({
+class PatientDropDown extends StatefulWidget {
+  PatientDropDown({
     Key? key,
     required this.text,
     required this.path,
@@ -13,10 +13,10 @@ class DropDown extends StatefulWidget {
   final String path;
   String? value;
   @override
-  _DropDownState createState() => _DropDownState();
+  _PatientDropDownState createState() => _PatientDropDownState();
 }
 
-class _DropDownState extends State<DropDown> {
+class _PatientDropDownState extends State<PatientDropDown> {
   String? value;
 
   @override
@@ -28,7 +28,7 @@ class _DropDownState extends State<DropDown> {
           if (snapshot.hasData) {
             return Card(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(10),
                   side: const BorderSide(width: 1, color: Colors.greenAccent)),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),

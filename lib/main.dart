@@ -7,7 +7,8 @@ import 'package:sample/provider/docs.dart';
 import 'package:sample/provider/patients.dart';
 import 'package:sample/provider/state.dart';
 import 'package:sample/provider/vol.dart';
-import 'package:sample/screens/stream_builder.dart';
+import 'package:sample/screens/splashscreen/splashscreen.dart';
+import 'package:sample/screens/widgets/stream_builder.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +53,11 @@ class _MyAppState extends State<MyApp> {
         supportedLocales: const [Locale('ar', '')],
         title: 'Flutter Demo',
         theme: ThemeData(
+          textButtonTheme: TextButtonThemeData(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.green[50]),
+            ),
+          ),
           primarySwatch: Colors.green,
           scaffoldBackgroundColor: Colors.white,
           bottomNavigationBarTheme: const BottomNavigationBarThemeData(
@@ -62,7 +68,7 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
         ),
-        home: MainStream(),
+        home: Splash(),
       ),
     );
   }

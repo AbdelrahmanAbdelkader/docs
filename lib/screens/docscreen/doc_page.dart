@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/docs.dart';
-import 'package:sample/screens/app_bar_button.dart';
+import 'package:sample/screens/widgets/app_bar_button.dart';
 
 import 'package:sample/screens/docscreen/getAddDocProvited.dart';
 import 'package:sample/screens/docscreen/widgets/search.dart';
-import '../search_button.dart';
+import '../widgets/search_button.dart';
 import 'widgets/doc_sample.dart';
 
 class DocList extends StatefulWidget {

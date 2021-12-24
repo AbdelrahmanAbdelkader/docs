@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:sample/screens/patientscreen/add_patient_screen/widgets/add_patient_text_field.dart';
-import 'package:sample/screens/patientscreen/add_patient_screen/widgets/dropdown.dart';
+import 'package:sample/screens/widgets/custom_text_field.dart';
+import 'package:sample/screens/patientscreen/add_patient_screen/widgets/patientdropdown.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/illness.dart';
 
 // ignore: must_be_immutable
@@ -128,12 +128,12 @@ class AddPatientPage extends StatelessWidget {
               ),
               Row(
                 children: [
-                  DropDown(
+                  PatientDropDown(
                     path: 'doctors',
                     text: 'اختر الطبيب المتابع',
                     value: value,
                   ),
-                  DropDown(
+                  PatientDropDown(
                     text: 'اختر المتطوع المتابع',
                     path: 'volanteers',
                     value: volValue,

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sample/screens/authscreen/authscreen.dart';
 import 'package:sample/screens/userScreen/UserScreenAccepted.dart';
 import 'package:sample/screens/userScreen/checkAcceptions.dart';
-import 'guestscreen/guestscreen.dart';
+import '../guestscreen/guestscreen.dart';
 
 class MainStream extends StatelessWidget {
   MainStream({Key? key}) : super(key: key);

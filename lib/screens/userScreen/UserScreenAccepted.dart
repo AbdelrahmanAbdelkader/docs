@@ -7,7 +7,7 @@ import 'package:sample/screens/docscreen/doc_page.dart';
 import 'package:sample/screens/patientscreen/patientScreen.dart';
 import 'package:sample/screens/volscreen/volscreen.dart';
 
-import '../../docicon.dart';
+import '../../helpers/docicon.dart';
 
 class UserScreen extends StatelessWidget {
   UserScreen({Key? key}) : super(key: key);

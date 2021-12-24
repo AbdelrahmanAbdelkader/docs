@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/helper.dart';
+import 'package:sample/helpers/data_lists.dart';
 import 'package:sample/provider/auth.dart';
 import 'package:sample/provider/state.dart';
-import 'package:sample/screens/patientscreen/add_patient_screen/widgets/add_patient_text_field.dart';
+import 'package:sample/screens/widgets/custom_text_field.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({Key? key}) : super(key: key);
@@ -56,144 +56,178 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     final chosenTeam = Provider.of<StateManagment>(context);
+    final size = MediaQuery.of(context).size;
     return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: Form(
-            key: authFormKey,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (!signIn)
-                    AddPatientTextField(
-                        label: 'اسم المستخدم',
-                        controller: userNameController,
-                        tKey: userNameKey,
-                        save: (v) {},
-                        validate: (v) {
-                          if (v.length < 2) {
-                            return 'ادخل اسم مستخدم صحيح';
-                          }
-                        },
-                        multiline: false),
-                  AddPatientTextField(
-                    label: 'الايميل',
-                    controller: emailController,
-                    tKey: emailKey,
-                    multiline: false,
-                    save: (v) {
-                      auth.setEmail(v);
-                    },
-                    validate: (String v) {
-                      if (!v.endsWith('.com') && !v.contains('@')) {
-                        return 'ادخل ايميل صحيح';
-                      }
-                    },
-                  ),
-                  AddPatientTextField(
-                    label: 'كلمة السر',
-                    controller: passwordController,
-                    tKey: passwordKey,
-                    multiline: false,
-                    save: (v) {
-                      auth.setPassword(v);
-                    },
-                    validate: (v) {
-                      if (v.length < 8) {
-                        return 'ادخل علي الاقل 8 حروف او ارقام';
-                      }
-                    },
-                  ),
-                  if (!signIn)
-                    AddPatientTextField(
-                      label: 'تأكيد كلمة السر',
-                      controller: passwordConfirmController,
-                      tKey: passwordConfirmKey,
-                      multiline: false,
-                      save: (v) {},
-                      validate: (v) {
-                        if (passwordConfirmController.text !=
-                            passwordController.text) {
-                          return 'كلمة السر غير متشابهة';
-                        }
-                      },
-                    ),
-                  AddPatientTextField(
-                      label: 'رقم التليفون',
-                      controller: userPhoneController,
-                      tKey: userPhoneKey,
-                      save: (v) {},
-                      validate: (String v) {
-                        if ((!(v.startsWith('01')) &&
-                            !(v.length == 10 || v.length == 11))) {
-                          return 'ادخل رقم هاتف صحيح';
-                        }
-                      },
-                      multiline: false),
-                  Consumer<StateManagment>(
-                    builder: (context, stateManagment, _) => Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          side: const BorderSide(
-                              width: 1, color: Colors.greenAccent),
-                        ),
-                        elevation: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(16.0),
-                          child: DropdownButton(
-                            isDense: true,
-                            elevation: 0,
-                            // focusColor: Colors.white,
-                            underline: Container(),
-                            value: stateManagment.userDropDownBottonValue,
-                            isExpanded: true,
-                            hint: const Text('اختر التخصص'),
-                            onChanged: (v) => stateManagment
-                                .setUserDropDownBottonValue(v as String),
-                            items: List.generate(
-                              team.length,
-                              (index) => DropdownMenuItem(
-                                child: Text(
-                                  team[index],
+      body: Stack(
+        children: [
+          SafeArea(
+            child: SizedBox(
+              height: size.height,
+              child: Form(
+                key: authFormKey,
+                child: SingleChildScrollView(
+                  child: Stack(
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: size.height * .1,
+                          ),
+                          SizedBox(
+                            child: Image.asset('assets/logo.jpg'),
+                            height: size.height * .2,
+                          ),
+                          SizedBox(
+                            height: size.height * .075,
+                          ),
+                          if (!signIn)
+                            AddPatientTextField(
+                                label: 'اسم المستخدم',
+                                controller: userNameController,
+                                tKey: userNameKey,
+                                save: (v) {},
+                                validate: (v) {
+                                  if (v.length < 2) {
+                                    return 'ادخل اسم مستخدم صحيح';
+                                  }
+                                },
+                                multiline: false),
+                          AddPatientTextField(
+                            label: 'الايميل',
+                            controller: emailController,
+                            tKey: emailKey,
+                            multiline: false,
+                            save: (v) {
+                              auth.setEmail(v);
+                            },
+                            validate: (String v) {
+                              if (!v.endsWith('.com') && !v.contains('@')) {
+                                return 'ادخل ايميل صحيح';
+                              }
+                            },
+                          ),
+                          AddPatientTextField(
+                            invisible: true,
+                            label: 'كلمة السر',
+                            controller: passwordController,
+                            tKey: passwordKey,
+                            multiline: false,
+                            save: (v) {
+                              auth.setPassword(v);
+                            },
+                            validate: (v) {
+                              if (v.length < 8) {
+                                return 'ادخل علي الاقل 8 حروف او ارقام';
+                              }
+                            },
+                          ),
+                          if (!signIn)
+                            AddPatientTextField(
+                              invisible: true,
+                              label: 'تأكيد كلمة السر',
+                              controller: passwordConfirmController,
+                              tKey: passwordConfirmKey,
+                              multiline: false,
+                              save: (v) {},
+                              validate: (v) {
+                                if (passwordConfirmController.text !=
+                                    passwordController.text) {
+                                  return 'كلمة السر غير متشابهة';
+                                }
+                              },
+                            ),
+                          if (!signIn)
+                            AddPatientTextField(
+                                label: 'رقم التليفون',
+                                controller: userPhoneController,
+                                tKey: userPhoneKey,
+                                save: (v) {},
+                                validate: (String v) {
+                                  if ((!(v.startsWith('01')) &&
+                                      !(v.length == 10 || v.length == 11))) {
+                                    return 'ادخل رقم هاتف صحيح';
+                                  }
+                                },
+                                multiline: false),
+                          if (!signIn)
+                            Consumer<StateManagment>(
+                              builder: (context, stateManagment, _) => Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    side: const BorderSide(
+                                        width: 1, color: Colors.greenAccent),
+                                  ),
+                                  elevation: 0,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: DropdownButton(
+                                      isDense: true,
+                                      elevation: 50,
+                                      // focusColor: Colors.white,
+                                      underline: Container(),
+                                      value: stateManagment
+                                          .userDropDownBottonValue,
+                                      isExpanded: true,
+                                      hint: const Text('اختر التخصص'),
+                                      onChanged: (v) => stateManagment
+                                          .setUserDropDownBottonValue(
+                                              v as String),
+                                      items: List.generate(
+                                        team.length,
+                                        (index) => DropdownMenuItem(
+                                          child: Text(
+                                            team[index],
+                                          ),
+                                          value: team[index],
+                                        ),
+                                      ).toList(),
+                                    ),
+                                  ),
                                 ),
-                                value: team[index],
                               ),
-                            ).toList(),
+                            ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: ElevatedButton(
+                                onPressed: () => save(
+                                      auth,
+                                      chosenTeam,
+                                    ),
+                                child: (signIn)
+                                    ? const Text('تسجيل الدخول')
+                                    : const Text('التسجيل')),
                           ),
-                        ),
+                          TextButton(
+                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white)),
+                            onPressed: () {
+                              setState(() {
+                                signIn = !signIn;
+                              });
+                            },
+                            child: (signIn)
+                                ? Text('التسجيل')
+                                : Text('تسجيل الدخول'),
+                          ),
+                        ],
                       ),
-                    ),
+                    ],
                   ),
-                  ElevatedButton(
-                      onPressed: () => save(
-                            auth,
-                            chosenTeam,
-                          ),
-                      child: (signIn)
-                          ? const Text('تسجيل الدخول')
-                          : const Text('التسجيل')),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        signIn = !signIn;
-                      });
-                    },
-                    child: (signIn)
-                        ? const Text('التسجيل')
-                        : const Text('تسجيل الدخول'),
-                  ),
-                  TextButton(
-                    onPressed: () => auth.guest(),
-                    child: const Text('اكمل كزائر'),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: TextButton(
+              onPressed: () => auth.guest(),
+              child: Text('اكمل كزائر'),
+            ),
+          )
+        ],
       ),
     );
   }

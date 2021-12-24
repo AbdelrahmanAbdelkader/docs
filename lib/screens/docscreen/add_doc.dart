@@ -1,9 +1,9 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/helper.dart';
+import 'package:sample/helpers/data_lists.dart';
 import 'package:sample/provider/doc.dart';
-import 'package:sample/screens/patientscreen/add_patient_screen/widgets/add_patient_text_field.dart';
+import 'package:sample/screens/widgets/custom_text_field.dart';
 
 // ignore: must_be_immutable
 class AddDoctor extends StatelessWidget {
