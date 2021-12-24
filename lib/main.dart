@@ -58,6 +58,18 @@ class _MyAppState extends State<MyApp> {
               backgroundColor: MaterialStateProperty.all(Colors.green[50]),
             ),
           ),
+          textTheme: TextTheme(
+            headline1: TextStyle(
+              color: Colors.green,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+            subtitle1: TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           primarySwatch: Colors.green,
           scaffoldBackgroundColor: Colors.white,
           bottomNavigationBarTheme: const BottomNavigationBarThemeData(

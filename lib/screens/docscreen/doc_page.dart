@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/docs.dart';
@@ -29,6 +30,10 @@ class _DocListState extends State<DocList> {
         title: const Text('الدكاترة'),
         actions: [
           IconButton(
+            onPressed: () => FirebaseAuth.instance.signOut(),
+            icon: Icon(Icons.logout),
+          ),
+          IconButton(
               onPressed: () {
                 showSearch(
                     context: context, delegate: DocSearchDelegate(context));
@@ -40,7 +45,7 @@ class _DocListState extends State<DocList> {
                 builder: (context) => GetAddDocProve(settingState),
               ),
             ),
-          )
+          ),
         ],
       ),
       body: LayoutBuilder(builder: (context, cons) {

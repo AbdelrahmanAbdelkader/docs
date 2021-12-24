@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sample/screens/volscreen/widgets/volprofile/widgets/information_tile.dart';
 
 class VolanteerProfileScreen extends StatelessWidget {
   VolanteerProfileScreen({
@@ -19,27 +20,31 @@ class VolanteerProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Column(
-        children: [
-          Row(
-            children: [const Text(':الاسم'), Text(name)],
-          ),
-          Row(
-            children: [const Text(':رقم التلفون'), Text(phone)],
-          ),
-          Row(
-            children: [const Text(':الايميل'), Text(email)],
-          ),
-          Row(
-            children: [const Text('التخصص'), Text(type)],
-          ),
-          SizedBox(
-            height: size.height * .3,
-          ),
-          (patients == null)
-              ? const Text('لم يتم رفع حالات')
-              : const Text('تم رفع حالات'),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {},
+          )
         ],
+      ),
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            InformationTile(information: name, label: 'الاسم:'),
+            InformationTile(information: phone, label: 'رقم المحمول:'),
+            InformationTile(information: email, label: 'الايميل'),
+            InformationTile(information: type, label: 'التخصص'),
+            SizedBox(
+              height: size.height * .3,
+            ),
+            (patients == null)
+                ? const Text('لم يتم رفع حالات')
+                : const Text('تم رفع حالات'),
+          ],
+        ),
       ),
     );
   }

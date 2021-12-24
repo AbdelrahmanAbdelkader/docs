@@ -22,40 +22,67 @@ class VolListTile extends StatelessWidget {
   Map<String, Object>? patients;
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => VolanteerProfileScreen(
-              name: name,
-              phone: phone,
-              email: email,
-              type: type,
-              patients:patients,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListTile(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VolanteerProfileScreen(
+                name: name,
+                phone: phone,
+                email: email,
+                type: type,
+                patients: patients,
+              ),
+            ),
+          );
+        },
+        tileColor: (accepted) ? Colors.blue[300] : Colors.red[300],
+        leading: IconButton(
+          onPressed: () {},
+          icon: (accepted)
+              ? Icon(
+                  Icons.check_box,
+                  color: Colors.green,
+                )
+              : Icon(
+                  Icons.check_box_outline_blank,
+                  color: Colors.white,
+                ),
+        ),
+        title: Column(
+          children: [
+            Text(
+              name,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            Text(
+              type,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            )
+          ],
+        ),
+        trailing: FittedBox(
+          child: Text(
+            phone,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 20,
             ),
           ),
-        );
-      },
-      tileColor: (accepted) ? Colors.blue[300] : Colors.red[300],
-      leading: IconButton(
-        onPressed: () {},
-        icon: (accepted)
-            ? Icon(Icons.check_box)
-            : Icon(Icons.check_box_outline_blank),
-      ),
-      title: Text(
-        name,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      subtitle: Text(
-        phone,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 16,
         ),
       ),
     );
