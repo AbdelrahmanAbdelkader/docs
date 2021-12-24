@@ -38,7 +38,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   bool signIn = true;
 
-  void save(Auth auth, StateManagment team) {
+  void save(Auth auth, StateManagment dropDownValues) {
     if (authFormKey.currentState!.validate()) {
       authFormKey.currentState!.save();
       if (signIn) {
@@ -47,7 +47,8 @@ class _AuthScreenState extends State<AuthScreen> {
         auth.register(
           userNameController.text,
           userPhoneController.text,
-          team.userDropDownBottonValue as String,
+          dropDownValues.userTeamDropDownBottonValue.toString(),
+          dropDownValues.userSpecialityDropDownBottonValue.toString(),
         );
       }
     }
@@ -151,42 +152,92 @@ class _AuthScreenState extends State<AuthScreen> {
                                 },
                                 multiline: false),
                           if (!signIn)
-                            Consumer<StateManagment>(
-                              builder: (context, stateManagment, _) => Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    side: const BorderSide(
-                                        width: 1, color: Colors.greenAccent),
-                                  ),
-                                  elevation: 0,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: DropdownButton(
-                                      isDense: true,
-                                      elevation: 50,
-                                      // focusColor: Colors.white,
-                                      underline: Container(),
-                                      value: stateManagment
-                                          .userDropDownBottonValue,
-                                      isExpanded: true,
-                                      hint: const Text('اختر التخصص'),
-                                      onChanged: (v) => stateManagment
-                                          .setUserDropDownBottonValue(
-                                              v as String),
-                                      items: List.generate(
-                                        team.length,
-                                        (index) => DropdownMenuItem(
-                                          child: Text(
-                                            team[index],
-                                          ),
-                                          value: team[index],
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal:10.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: Consumer<StateManagment>(
+                                      builder: (context, stateManagment, _) =>
+                                          Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                          side: const BorderSide(
+                                              width: 1,
+                                              color: Colors.greenAccent),
                                         ),
-                                      ).toList(),
+                                        elevation: 0,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: DropdownButton(
+                                            isDense: true,
+                                            elevation: 50,
+                                            // focusColor: Colors.white,
+                                            underline: Container(),
+                                            value: stateManagment
+                                                .userTeamDropDownBottonValue,
+                                            hint: const Text('اختر الفريق'),
+                                            onChanged: (v) => stateManagment
+                                                .setUserTeamDropDownBottonValue(
+                                                    v as String),
+                                            items: List.generate(
+                                              team.length,
+                                              (index) => DropdownMenuItem(
+                                                child: Text(
+                                                  team[index],
+                                                ),
+                                                value: team[index],
+                                              ),
+                                            ).toList(),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                  if (!signIn)
+                                    Expanded(
+                                      flex: 1,
+                                      child: Consumer<StateManagment>(
+                                        builder: (context, stateManagment, _) =>
+                                            Card(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            side: const BorderSide(
+                                                width: 1,
+                                                color: Colors.greenAccent),
+                                          ),
+                                          elevation: 0,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(16.0),
+                                            child: DropdownButton(
+                                              isDense: true,
+                                              elevation: 50,
+                                              // focusColor: Colors.white,
+                                              underline: Container(),
+                                              value: stateManagment
+                                                  .userSpecialityDropDownBottonValue,
+                                              hint: const Text('اختر التخصص'),
+                                              onChanged: (v) => stateManagment
+                                                  .setUserSpecialityDropDownButtonValue(
+                                                v as String,
+                                              ),
+                                              items: List.generate(
+                                                speciality.length,
+                                                (index) => DropdownMenuItem(
+                                                  child: Text(
+                                                    speciality[index],
+                                                  ),
+                                                  value: speciality[index],
+                                                ),
+                                              ).toList(),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
                             ),
                           Padding(
@@ -201,7 +252,9 @@ class _AuthScreenState extends State<AuthScreen> {
                                     : const Text('التسجيل')),
                           ),
                           TextButton(
-                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white)),
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.white)),
                             onPressed: () {
                               setState(() {
                                 signIn = !signIn;

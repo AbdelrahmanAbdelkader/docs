@@ -19,7 +19,7 @@ class Auth {
     await auth.signInWithEmailAndPassword(email: _email, password: _password);
   }
 
-  void register(String userName, String userPhone, String team) async {
+  void register(String userName, String userPhone, String team,String state) async {
     await auth.createUserWithEmailAndPassword(
         email: _email, password: _password);
     await database.ref().child('vol').child(auth.currentUser!.uid).set({
@@ -29,6 +29,7 @@ class Auth {
       'email': _email,
       'team': team,
       'accepted': false,
+      'state': state,
     });
   }
 

@@ -47,7 +47,8 @@ class _DocSampleState extends State<DocSample> {
       margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: (agreed) ? Colors.blue[300] : Colors.red[300],
+        color: (agreed) ? Colors.blue[300] 
+        : Colors.red[300],
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
