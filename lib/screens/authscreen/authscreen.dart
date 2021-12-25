@@ -252,7 +252,8 @@ class AuthScreen extends StatelessWidget {
                           if (!chosenTeam.signIn)
                             Consumer<StateManagment>(
                               builder: (context, stateManagment, _) => Padding(
-                                padding: const EdgeInsets.all(20.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
                                 child: Card(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
