@@ -14,26 +14,31 @@ class Ilness extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Row(
-      children: [
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.add),
-        ),
-        SizedBox(
-          width: size.width * .5,
-          child: IllnessTextField(
-              label: 'المرض', save: (v) {}, validate: (v) {}, multiline: false),
-        ),
-        SizedBox(
-          width: size.width * .3,
-          child: IllnessTextField(
-              label: 'القيمة',
-              save: (v) {},
-              validate: (v) {},
-              multiline: false),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal:10.0),
+      child: Row(
+        children: [
+          Expanded(flex: 2,
+            child: IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.add),
+            ),
+          ),
+          Expanded(
+            flex: 5,
+            child: IllnessTextField(
+                label: 'المرض', save: (v) {}, validate: (v) {}, multiline: false),
+          ),
+          Expanded(
+            flex: 2,
+            child: IllnessTextField(
+                label: 'القيمة',
+                save: (v) {},
+                validate: (v) {},
+                multiline: false),
+          ),
+        ],
+      ),
     );
   }
 }

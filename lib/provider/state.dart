@@ -2,31 +2,43 @@ import 'package:flutter/material.dart';
 
 class StateManagment extends ChangeNotifier {
   String? userTeamDropDownBottonValue;
-  void setUserTeamDropDownBottonValue(String v) {
+  setUserTeamDropDownBottonValue(String v) {
     userTeamDropDownBottonValue = v;
     notifyListeners();
   }
 
   String? userSpecialityDropDownBottonValue;
-  void setUserSpecialityDropDownButtonValue(String v) {
+  setUserSpecialityDropDownButtonValue(String v) {
     userSpecialityDropDownBottonValue = v;
     notifyListeners();
   }
 
   String? roleDropDownBottonValue;
-  void setRoleDropDownBottonValue(String v) {
+  setRoleDropDownBottonValue(String v) {
     roleDropDownBottonValue = v;
     notifyListeners();
   }
 
   String? doctorSearchDropDownButtonValue;
-  void setDoctorSearchDropDownButtonValue(String v) {
+  setDoctorSearchDropDownButtonValue(String v) {
     doctorSearchDropDownButtonValue = v;
     notifyListeners();
   }
 
+  String? patientVillageDropDownButtonValue;
+  setPatientVillageDropDownButtonValue(String v) {
+    patientVillageDropDownButtonValue = v;
+    notifyListeners();
+  }
+
+  String? patientIllnessTypeDropDownButtonValue;
+  setPatientIllnessTypeDropDownButtonValue(String v) {
+    patientIllnessTypeDropDownButtonValue=v;
+    notifyListeners();
+  }
+
   bool signIn = true;
-  void changeSigning() {
+  changeSigning() {
     signIn = !signIn;
     notifyListeners();
   }

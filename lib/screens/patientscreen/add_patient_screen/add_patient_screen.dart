@@ -2,6 +2,9 @@ import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sample/helpers/data_lists.dart';
+import 'package:sample/provider/state.dart';
 import 'package:sample/screens/widgets/custom_text_field.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/patientdropdown.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/illness.dart';
@@ -28,6 +31,8 @@ class AddPatientPage extends StatelessWidget {
 
   final TextEditingController illnessValueController = TextEditingController();
 
+  final TextEditingController village = TextEditingController();
+
   final Key patientNameKey = const Key('patientName');
 
   final Key patientNumKey = const Key('patientNum');
@@ -42,12 +47,18 @@ class AddPatientPage extends StatelessWidget {
 
   final Key latestKey = const Key('latestKey');
 
+  final Key villageKey = const Key('villageKey');
+
   String? value;
 
   String? volValue;
 
   @override
   Widget build(BuildContext context) {
+    final stateManagmentTrue = Provider.of<StateManagment>(context);
+    final stateManagmentFalse =
+        Provider.of<StateManagment>(context, listen: false);
+
     Map<String, Object> newPatient = {};
     void save() async {
       if (fkey.currentState!.validate()) {
@@ -60,9 +71,11 @@ class AddPatientPage extends StatelessWidget {
         else
           newPatient['volName'] = "";
         newPatient['date'] = DateTime.now().toIso8601String();
+        newPatient['state'] =
+            stateManagmentTrue.patientVillageDropDownButtonValue.toString();
         final database = FirebaseDatabase.instance.ref();
         fkey.currentState!.save();
-        final ref = await database.child('patients').push();
+        final ref = database.child('patients').push();
         database.child(ref.path).update(newPatient);
         // await FirebaseFirestore.instance
         //     .collection('doctors')
@@ -104,6 +117,39 @@ class AddPatientPage extends StatelessWidget {
                 },
                 multiline: false,
               ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    side: BorderSide(
+                      width: 1,
+                      color: Colors.greenAccent,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 6),
+                    child: DropdownButton(
+                        underline: Container(),
+                        isExpanded: true,
+                        hint: Text('اختر المركز'),
+                        value: stateManagmentTrue
+                            .patientVillageDropDownButtonValue,
+                        items: states
+                            .map(
+                              (e) => DropdownMenuItem(
+                                child: Text(e),
+                                value: e,
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (v) => stateManagmentFalse
+                            .setPatientVillageDropDownButtonValue(
+                                v.toString())),
+                  ),
+                ),
+              ),
               AddPatientTextField(
                 label: 'العنوان',
                 controller: patientAdressController,
@@ -126,21 +172,62 @@ class AddPatientPage extends StatelessWidget {
                   if (v.length < 4) return 'ادخل اسم صحيح';
                 },
               ),
-              Row(
-                children: [
-                  PatientDropDown(
-                    path: 'doctors',
-                    text: 'اختر الطبيب المتابع',
-                    value: value,
-                  ),
-                  PatientDropDown(
-                    text: 'اختر المتطوع المتابع',
-                    path: 'volanteers',
-                    value: volValue,
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: PatientDropDown(
+                        path: 'doctors',
+                        text: 'اختر الطبيب المتابع',
+                        value: value,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: PatientDropDown(
+                        text: 'اختر المتطوع المتابع',
+                        path: 'volanteers',
+                        value: volValue,
+                      ),
+                    )
+                  ],
+                ),
               ),
-              const Text('التشخيص'),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    side: BorderSide(
+                      width: 1,
+                      color: Colors.greenAccent,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 6),
+                    child: DropdownButton(
+                        underline: Container(),
+                        isExpanded: true,
+                        hint: Text('تخصص المرض'),
+                        value: stateManagmentTrue
+                            .patientIllnessTypeDropDownButtonValue,
+                        items: speciality
+                            .map(
+                              (e) => DropdownMenuItem(
+                                child: Text(e),
+                                value: e,
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (v) => stateManagmentFalse
+                            .setPatientIllnessTypeDropDownButtonValue(
+                                v.toString())),
+                  ),
+                ),
+              ),
               Ilness(
                   illnessController: illnessController,
                   illnessValueController: illnessValueController),
@@ -153,7 +240,6 @@ class AddPatientPage extends StatelessWidget {
                 multiline: true,
               ),
               ElevatedButton(onPressed: save, child: const Text('save')),
-              Text(Random(15).nextInt(1 << 32).toString())
             ],
           ),
         ),

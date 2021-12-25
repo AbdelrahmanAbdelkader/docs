@@ -17,7 +17,7 @@ class IllnessTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(10),
         side: const BorderSide(width: 1, color: Colors.greenAccent),
       ),
       color: Colors.white,
@@ -26,6 +26,7 @@ class IllnessTextField extends StatelessWidget {
         child: TextFormField(
           maxLines: (multiline) ? 3 : 1,
           decoration: InputDecoration(
+          
             label: Text(label),
             border: InputBorder.none,
             errorBorder: InputBorder.none,
