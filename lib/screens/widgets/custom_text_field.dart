@@ -22,10 +22,10 @@ class AddPatientTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          side: const BorderSide(width: 1, color: Colors.greenAccent),
-        ),
+        // shape: RoundedRectangleBorder(
+        //   borderRadius: BorderRadius.all(Radius.circular(10)),
+        //   side: const BorderSide(width: 1, color: Colors.greenAccent),
+        // ),
         color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -33,10 +33,14 @@ class AddPatientTextField extends StatelessWidget {
             maxLines: (multiline) ? 3 : 1,
             controller: controller,
             key: tKey,
-            obscureText:(invisible!=null)?true: false,
+            obscureText: (invisible != null) ? true : false,
             obscuringCharacter: '*',
             decoration: InputDecoration(
-              label: Text(label),
+              label: Text(label
+                  // ,style: TextStyle(
+                  // color: Colors.green
+                  // ),),
+                  ),
               border: InputBorder.none,
               errorBorder: InputBorder.none,
               enabledBorder: InputBorder.none,
