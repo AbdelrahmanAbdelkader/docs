@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/vol.dart';
@@ -12,14 +13,18 @@ class VolScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('المتطوعين'),
+        actions: [
+          IconButton(
+            onPressed: () => FirebaseAuth.instance.signOut(),
+            icon: Icon(Icons.logout),
+          )
+        ],
       ),
-      body: 
-      // FutureBuilder(
-      //     future: prove.refresh(),
-      //     builder: (context, snap) {
-      //       return const VolList();
-      //     }),
-      Container()
+      body: FutureBuilder(
+          future: prove.refresh(),
+          builder: (context, snap) {
+            return const VolList();
+          }),
     );
   }
 }

@@ -18,9 +18,6 @@ class UserScreen extends StatelessWidget {
     final bottomnav = Provider.of<BottomNav>(context, listen: false);
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => FirebaseAuth.instance.signOut(),
-      ),
       body: (current == 0)
           ? DocList()
           : (current == 1)

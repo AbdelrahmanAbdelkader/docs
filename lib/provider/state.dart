@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
 class StateManagment extends ChangeNotifier {
-  String? userDropDownBottonValue;
+  String? userTeamDropDownBottonValue;
+  void setUserTeamDropDownBottonValue(String v) {
+    userTeamDropDownBottonValue = v;
+    notifyListeners();
+  }
 
-  void setUserDropDownBottonValue(String v) {
-    userDropDownBottonValue = v;
+  String? userSpecialityDropDownBottonValue;
+  void setUserSpecialityDropDownButtonValue(String v) {
+    userSpecialityDropDownBottonValue = v;
     notifyListeners();
   }
 

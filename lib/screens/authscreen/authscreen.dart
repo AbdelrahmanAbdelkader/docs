@@ -41,7 +41,8 @@ class AuthScreen extends StatelessWidget {
         auth.register(
           userNameController.text,
           userPhoneController.text,
-          team.userDropDownBottonValue as String,
+          team.userTeamDropDownBottonValue.toString(),
+          team.userSpecialityDropDownBottonValue.toString(),
         );
       }
     }
@@ -158,6 +159,97 @@ class AuthScreen extends StatelessWidget {
                                 },
                                 multiline: false),
                           if (!chosenTeam.signIn)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: Consumer<StateManagment>(
+                                      builder: (context, stateManagment, _) =>
+                                          Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          side: const BorderSide(
+                                              width: 1,
+                                              color: Colors.greenAccent),
+                                        ),
+                                        elevation: 0,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: DropdownButton(
+                                            isDense: true,
+                                            elevation: 50,
+                                            // focusColor: Colors.white,
+                                            underline: Container(),
+                                            value: stateManagment
+                                                .userTeamDropDownBottonValue,
+                                            hint: const Text('اختر الفريق'),
+                                            onChanged: (v) => stateManagment
+                                                .setUserTeamDropDownBottonValue(
+                                                    v as String),
+                                            items: List.generate(
+                                              team.length,
+                                              (index) => DropdownMenuItem(
+                                                child: Text(
+                                                  team[index],
+                                                ),
+                                                value: team[index],
+                                              ),
+                                            ).toList(),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  if (!chosenTeam.signIn)
+                                    Expanded(
+                                      flex: 1,
+                                      child: Consumer<StateManagment>(
+                                        builder: (context, stateManagment, _) =>
+                                            Card(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            side: const BorderSide(
+                                                width: 1,
+                                                color: Colors.greenAccent),
+                                          ),
+                                          elevation: 0,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(16.0),
+                                            child: DropdownButton(
+                                              isDense: true,
+                                              elevation: 50,
+                                              // focusColor: Colors.white,
+                                              underline: Container(),
+                                              value: stateManagment
+                                                  .userSpecialityDropDownBottonValue,
+                                              hint: const Text('اختر التخصص'),
+                                              onChanged: (v) => stateManagment
+                                                  .setUserSpecialityDropDownButtonValue(
+                                                v as String,
+                                              ),
+                                              items: List.generate(
+                                                speciality.length,
+                                                (index) => DropdownMenuItem(
+                                                  child: Text(
+                                                    speciality[index],
+                                                  ),
+                                                  value: speciality[index],
+                                                ),
+                                              ).toList(),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          if (!chosenTeam.signIn)
                             Consumer<StateManagment>(
                               builder: (context, stateManagment, _) => Padding(
                                 padding: const EdgeInsets.all(20.0),
@@ -189,45 +281,6 @@ class AuthScreen extends StatelessWidget {
                                             role[index],
                                           ),
                                           value: role[index],
-                                        ),
-                                      ).toList(),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          if (!chosenTeam.signIn)
-                            Consumer<StateManagment>(
-                              builder: (context, stateManagment, _) => Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    side: const BorderSide(
-                                        width: 1, color: Colors.greenAccent),
-                                  ),
-                                  elevation: 0,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: DropdownButton(
-                                      isDense: true,
-                                      elevation: 50,
-                                      // focusColor: Colors.white,
-                                      underline: Container(),
-                                      value: stateManagment
-                                          .userDropDownBottonValue,
-                                      isExpanded: true,
-                                      hint: const Text('اختر التخصص'),
-                                      onChanged: (v) => stateManagment
-                                          .setUserDropDownBottonValue(
-                                              v as String),
-                                      items: List.generate(
-                                        team.length,
-                                        (index) => DropdownMenuItem(
-                                          child: Text(
-                                            team[index],
-                                          ),
-                                          value: team[index],
                                         ),
                                       ).toList(),
                                     ),
@@ -282,3 +335,43 @@ class AuthScreen extends StatelessWidget {
     );
   }
 }
+
+// if (!chosenTeam.signIn)
+//                             Consumer<StateManagment>(
+//                               builder: (context, stateManagment, _) => Padding(
+//                                 padding: const EdgeInsets.all(20.0),
+//                                 child: Card(
+//                                   shape: RoundedRectangleBorder(
+//                                     borderRadius: BorderRadius.circular(10),
+//                                     side: const BorderSide(
+//                                         width: 1, color: Colors.greenAccent),
+//                                   ),
+//                                   elevation: 0,
+//                                   child: Container(
+//                                     padding: const EdgeInsets.all(16.0),
+//                                     child: DropdownButton(
+//                                       isDense: true,
+//                                       elevation: 50,
+//                                       // focusColor: Colors.white,
+//                                       underline: Container(),
+//                                       value: stateManagment
+//                                           .roleDropDownBottonValue,
+//                                       isExpanded: true,
+
+//                                       onChanged: (v) => stateManagment
+//                                           .setRoleDropDownBottonValue(
+//                                               v as String),
+//                                       items: List.generate(
+//                                         role.length,
+//                                         (index) => DropdownMenuItem(
+//                                           child: Text(
+//                                             role[index],
+//                                           ),
+//                                           value: role[index],
+//                                         ),
+//                                       ).toList(),
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ),
+//                             ),

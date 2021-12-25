@@ -19,7 +19,8 @@ class Auth {
     await auth.signInWithEmailAndPassword(email: _email, password: _password);
   }
 
-  void register(String userName, String userPhone, String team) async {
+  void register(
+      String userName, String userPhone, String team, String state) async {
     await auth.createUserWithEmailAndPassword(
         email: _email, password: _password);
     await database.ref().child('$team:data').child(auth.currentUser!.uid).set({
@@ -28,6 +29,7 @@ class Auth {
       'id': DateTime.now().toString(),
       'email': _email,
       'team': team,
+      'state': state,
     });
     await database.ref().child('activation').child(auth.currentUser!.uid).set({
       'accepted': false,
