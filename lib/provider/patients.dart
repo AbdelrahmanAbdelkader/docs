@@ -10,24 +10,27 @@ class PatientsProv extends ChangeNotifier {
   }
 
   void addPatient(Map newPatient) {
-    print(newPatient['illnesses']);
-    _patients.add(Patient()
-      ..address = newPatient['adress']
-      ..doctor = newPatient['Doctor']
-      ..ill = newPatient['illnesses']
-      ..latest = newPatient['latest']
-      ..name = newPatient['name']
-      ..phone = newPatient['phoneNum']
-      ..source = newPatient['source']
-      ..vol = newPatient['volName']
-      ..date = newPatient['date']);
+    print("ss");
+    print(newPatient);
+    _patients.add(
+      Patient()
+        ..address = newPatient['adress']
+        ..doctor = newPatient['Doctor']
+        ..ill = newPatient['illnessType']
+        ..latest = newPatient['latest']
+        ..name = newPatient['name']
+        ..phone = newPatient['phoneNum']
+        ..source = newPatient['source']
+        // ..vol = newPatient['volName']
+        ..date = newPatient['date']
+        ..state = newPatient['state'],
+    );
     print("kk");
     print(_patients);
   }
 
   Future<void> refresh() async {
-    _patients = [];
-    print('z');
+    _patients=[];
     final database = FirebaseDatabase.instance;
     final ref = await database.ref().child("patients").get();
     if (ref.exists) {
@@ -35,5 +38,6 @@ class PatientsProv extends ChangeNotifier {
         addPatient(element);
       });
     }
+    print(_patients);
   }
 }

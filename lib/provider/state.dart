@@ -28,13 +28,16 @@ class StateManagment extends ChangeNotifier {
   String? patientVillageDropDownButtonValue;
   setPatientVillageDropDownButtonValue(String v) {
     patientVillageDropDownButtonValue = v;
-    notifyListeners();
   }
 
   String? patientIllnessTypeDropDownButtonValue;
   setPatientIllnessTypeDropDownButtonValue(String v) {
-    patientIllnessTypeDropDownButtonValue=v;
-    notifyListeners();
+    patientIllnessTypeDropDownButtonValue = v;
+  }
+
+  String? patientSelectedDoctorDropDownButtonValue;
+  setpatientSelectedDoctorDropDownButtonValue(String v) {
+    patientVillageDropDownButtonValue = v;
   }
 
   bool signIn = true;

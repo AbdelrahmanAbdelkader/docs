@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
-class Patient extends ChangeNotifier {
-  Map ill = {};
+class Patient {
+  String ill = '';
   String doctor = '';
   String vol = '';
   String name = '';
@@ -10,4 +10,5 @@ class Patient extends ChangeNotifier {
   String source = '';
   String latest = '';
   String date = '';
+  String state = '';
 }
