@@ -55,8 +55,8 @@ class AuthScreen extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     if (once) {
       chosenTeam.roleDropDownBottonValue =
-          (thereAreUsers) ? 'master' : 'normal';
-      role = (thereAreUsers)
+          (!thereAreUsers) ? 'master' : 'normal';
+      role = (!thereAreUsers)
           ? ['master']
           : [
               'normal',
