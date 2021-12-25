@@ -9,8 +9,8 @@ class VolList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vol = Provider.of<Vols>(context);
-    return ListView(
-      children: vol.vols
+    return ListView(children: [
+      ...vol.volsPharm
           .map(
             (e) => VolListTile(
               name: e['userName'] as String,
@@ -19,9 +19,23 @@ class VolList extends StatelessWidget {
               accepted: e['accepted'],
               email: e['email'],
               id: e['id'],
+              uid: e['uid'],
             ),
           )
           .toList(),
-    );
+      ...vol.volsChem
+          .map(
+            (e) => VolListTile(
+              name: e['userName'] as String,
+              phone: e['phone'] as String,
+              type: e['state'] as String,
+              accepted: e['accepted'],
+              email: e['email'],
+              id: e['id'],
+              uid: e['uid'],
+            ),
+          )
+          .toList(),
+    ]);
   }
 }

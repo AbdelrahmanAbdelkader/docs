@@ -1,8 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:sample/screens/volscreen/widgets/volprofile/volprofilescreen.dart';
 
 // ignore: must_be_immutable
-class VolListTile extends StatelessWidget {
+class VolListTile extends StatefulWidget {
   VolListTile({
     Key? key,
     required this.name,
@@ -12,14 +14,22 @@ class VolListTile extends StatelessWidget {
     required this.accepted,
     required this.email,
     this.patients,
+    required this.uid,
   }) : super(key: key);
   final String name;
   final String phone;
   final String type;
   final String id;
-  final bool accepted;
+  bool accepted;
   final String email;
+  final String uid;
   Map<String, Object>? patients;
+
+  @override
+  State<VolListTile> createState() => _VolListTileState();
+}
+
+class _VolListTileState extends State<VolListTile> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -33,19 +43,28 @@ class VolListTile extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => VolanteerProfileScreen(
-                name: name,
-                phone: phone,
-                email: email,
-                type: type,
-                patients: patients,
+                name: widget.name,
+                phone: widget.phone,
+                email: widget.email,
+                type: widget.type,
+                patients: widget.patients,
               ),
             ),
           );
         },
-        tileColor: (accepted) ? Colors.blue[300] : Colors.red[300],
+        tileColor: (widget.accepted) ? Colors.blue[300] : Colors.red[300],
         leading: IconButton(
-          onPressed: () {},
-          icon: (accepted)
+          onPressed: () {
+            FirebaseDatabase.instance
+                .ref()
+                .child("activation")
+                .child(widget.uid)
+                .set({"accepted": !widget.accepted});
+            setState(() {
+              widget.accepted = !widget.accepted;
+            });
+          },
+          icon: (widget.accepted)
               ? Icon(
                   Icons.check_box,
                   color: Colors.green,
@@ -58,7 +77,7 @@ class VolListTile extends StatelessWidget {
         title: Column(
           children: [
             Text(
-              name,
+              widget.name,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -66,7 +85,7 @@ class VolListTile extends StatelessWidget {
               ),
             ),
             Text(
-              type,
+              widget.type,
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -77,7 +96,7 @@ class VolListTile extends StatelessWidget {
         ),
         trailing: FittedBox(
           child: Text(
-            phone,
+            widget.phone,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 20,

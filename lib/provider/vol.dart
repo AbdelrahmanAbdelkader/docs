@@ -1,8 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class Vols extends ChangeNotifier {
-  List<Map> _vols = [
+  List<Map> _volsPharm = [
     // {
     //   'name': 'mahmoud',
     //   'phone': '01027900425',
@@ -28,33 +29,64 @@ class Vols extends ChangeNotifier {
     //   'id': '4',
     // }
   ];
-  List<Map> get vols {
-    return _vols;
+  List<Map> _volsChem = [];
+  List<Map> get volsPharm {
+    return _volsPharm;
   }
 
-  void takeData(Map data) {
-    data.keys.forEach((key) {
-      (data[key] as Map).forEach((id, value) {
-        addVol(value);
-      });
-      return;
-    });
+  List<Map> get volsChem {
+    return _volsChem;
   }
+
+  // void takeData(Map data,bool pharm) {
+  //   data.keys.forEach((key) {
+  //     (data[key] as Map).forEach((id, value) {
+
+  //       addVol(value);
+  //     });
+  //     return;
+  //   });
+  // }
 
   Future<void> refresh() async {
     final database = FirebaseDatabase.instance;
-    _vols = [];
-    final ref = await database.ref().child("vol").get();
-    if (ref.exists) {
-      (ref.value as Map).values.forEach((element) {
-        addVol(element);
+    _volsPharm = [];
+    _volsChem = [];
+    final ref1 = await database.ref().child("طب:data").get();
+    final ref2 = await database.ref().child("صيدلة:data").get();
+    final ref3 = await database.ref().child('activation').get();
+    print(ref1.value);
+    print(ref2.value);
+    print(ref3.value);
+    if (ref1.exists) {
+      (ref1.value as Map).keys.forEach((element) {
+        addVolPharm({
+          ...(ref1.value as Map)[element],
+          "accepted": (ref3.value as Map)[element]['accepted'],
+          "uid": element,
+        });
       });
     }
-    print(_vols);
+    if (ref2.exists) {
+      (ref2.value as Map).keys.forEach((element) {
+        addVolChem({
+          ...(ref2.value as Map)[element],
+          "accepted": (ref3.value as Map)[element]['accepted'],
+          "uid": element,
+        });
+      });
+    }
+    print(_volsChem);
+    print(_volsPharm);
   }
 
-  void addVol(Map vol) {
-    _vols.add(vol);
+  void addVolPharm(Map vol) {
+    _volsPharm.add(vol);
+    notifyListeners();
+  }
+
+  void addVolChem(Map vol) {
+    _volsChem.add(vol);
     notifyListeners();
   }
 }

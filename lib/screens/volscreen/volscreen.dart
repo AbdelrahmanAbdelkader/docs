@@ -23,6 +23,10 @@ class VolScreen extends StatelessWidget {
       body: FutureBuilder(
           future: prove.refresh(),
           builder: (context, snap) {
+            if (snap.connectionState == ConnectionState.waiting)
+              return Center(
+                child: CircularProgressIndicator(),
+              );
             return const VolList();
           }),
     );
