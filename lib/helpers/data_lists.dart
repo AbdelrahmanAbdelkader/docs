@@ -20,3 +20,9 @@ List<String> searchBy = [
   'الاسم',
   'التخصص',
 ];
+List<String> role = [
+  'master',
+  'caseResponsible',
+  'doctorsResposible',
+  'normal'
+];

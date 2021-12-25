@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 
 class Doc extends ChangeNotifier {
   late Function ref;
-  BuildContext? ctx;
   String? Id;
   String phone = "";
   String hint = "";
@@ -13,7 +12,7 @@ class Doc extends ChangeNotifier {
   bool value = true;
   bool triedToValidate = false;
   String? val;
-  String? type ;
+  String? type;
 
   void initData(Map data) {
     if (data['phone'] != null) phone = data['phone'];
@@ -46,9 +45,5 @@ class Doc extends ChangeNotifier {
   void toggle() {
     agreed = !agreed;
     notifyListeners();
-  }
-
-  void setContext(BuildContext context) {
-    ctx = context;
   }
 }

@@ -5,14 +5,10 @@ import 'package:sample/provider/auth.dart';
 import 'package:sample/provider/state.dart';
 import 'package:sample/screens/widgets/custom_text_field.dart';
 
-class AuthScreen extends StatefulWidget {
-  const AuthScreen({Key? key}) : super(key: key);
+class AuthScreen extends StatelessWidget {
+  AuthScreen(this.thereAreUsers, {Key? key}) : super(key: key);
+  final bool thereAreUsers;
 
-  @override
-  State<AuthScreen> createState() => _AuthScreenState();
-}
-
-class _AuthScreenState extends State<AuthScreen> {
   final auth = Auth();
   final userNameController = TextEditingController();
 
@@ -36,12 +32,10 @@ class _AuthScreenState extends State<AuthScreen> {
 
   final authFormKey = GlobalKey<FormState>();
 
-  bool signIn = true;
-
   void save(Auth auth, StateManagment team) {
     if (authFormKey.currentState!.validate()) {
       authFormKey.currentState!.save();
-      if (signIn) {
+      if (team.signIn) {
         auth.signIn();
       } else {
         auth.register(
@@ -53,10 +47,23 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
+  bool once = true;
   @override
   Widget build(BuildContext context) {
     final chosenTeam = Provider.of<StateManagment>(context);
     final size = MediaQuery.of(context).size;
+    if (once) {
+      chosenTeam.roleDropDownBottonValue =
+          (thereAreUsers) ? 'master' : 'normal';
+      role = (thereAreUsers)
+          ? ['master']
+          : [
+              'normal',
+              'caseResponsible',
+              'doctorsResposible',
+            ];
+      once = false;
+    }
     return Scaffold(
       body: Stack(
         children: [
@@ -81,7 +88,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           SizedBox(
                             height: size.height * .075,
                           ),
-                          if (!signIn)
+                          if (!chosenTeam.signIn)
                             AddPatientTextField(
                                 label: 'اسم المستخدم',
                                 controller: userNameController,
@@ -122,7 +129,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               }
                             },
                           ),
-                          if (!signIn)
+                          if (!chosenTeam.signIn)
                             AddPatientTextField(
                               invisible: true,
                               label: 'تأكيد كلمة السر',
@@ -137,7 +144,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                 }
                               },
                             ),
-                          if (!signIn)
+                          if (!chosenTeam.signIn)
                             AddPatientTextField(
                                 label: 'رقم التليفون',
                                 controller: userPhoneController,
@@ -150,7 +157,46 @@ class _AuthScreenState extends State<AuthScreen> {
                                   }
                                 },
                                 multiline: false),
-                          if (!signIn)
+                          if (!chosenTeam.signIn)
+                            Consumer<StateManagment>(
+                              builder: (context, stateManagment, _) => Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    side: const BorderSide(
+                                        width: 1, color: Colors.greenAccent),
+                                  ),
+                                  elevation: 0,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: DropdownButton(
+                                      isDense: true,
+                                      elevation: 50,
+                                      // focusColor: Colors.white,
+                                      underline: Container(),
+                                      value: stateManagment
+                                          .roleDropDownBottonValue,
+                                      isExpanded: true,
+
+                                      onChanged: (v) => stateManagment
+                                          .setRoleDropDownBottonValue(
+                                              v as String),
+                                      items: List.generate(
+                                        role.length,
+                                        (index) => DropdownMenuItem(
+                                          child: Text(
+                                            role[index],
+                                          ),
+                                          value: role[index],
+                                        ),
+                                      ).toList(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          if (!chosenTeam.signIn)
                             Consumer<StateManagment>(
                               builder: (context, stateManagment, _) => Padding(
                                 padding: const EdgeInsets.all(20.0),
@@ -191,23 +237,27 @@ class _AuthScreenState extends State<AuthScreen> {
                             ),
                           Padding(
                             padding: const EdgeInsets.only(top: 8.0),
-                            child: ElevatedButton(
-                                onPressed: () => save(
-                                      auth,
-                                      chosenTeam,
-                                    ),
-                                child: (signIn)
-                                    ? const Text('تسجيل الدخول')
-                                    : const Text('التسجيل')),
+                            child: Consumer<StateManagment>(
+                              builder: (context, state, _) {
+                                return ElevatedButton(
+                                    onPressed: () => save(
+                                          auth,
+                                          chosenTeam,
+                                        ),
+                                    child: (state.signIn)
+                                        ? const Text('تسجيل الدخول')
+                                        : const Text('التسجيل'));
+                              },
+                            ),
                           ),
                           TextButton(
-                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white)),
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.white)),
                             onPressed: () {
-                              setState(() {
-                                signIn = !signIn;
-                              });
+                              chosenTeam.changeSigning();
                             },
-                            child: (signIn)
+                            child: (chosenTeam.signIn)
                                 ? Text('التسجيل')
                                 : Text('تسجيل الدخول'),
                           ),

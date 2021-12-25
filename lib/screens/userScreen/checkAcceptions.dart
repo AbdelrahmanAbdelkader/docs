@@ -14,7 +14,7 @@ class CheckAcception extends StatelessWidget {
       child: StreamBuilder(
         stream: FirebaseDatabase.instance
             .ref()
-            .child('vol')
+            .child('activation')
             .child(FirebaseAuth.instance.currentUser!.uid)
             .child("accepted")
             .onValue,

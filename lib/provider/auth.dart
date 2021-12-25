@@ -22,12 +22,14 @@ class Auth {
   void register(String userName, String userPhone, String team) async {
     await auth.createUserWithEmailAndPassword(
         email: _email, password: _password);
-    await database.ref().child('vol').child(auth.currentUser!.uid).set({
+    await database.ref().child('$team:data').child(auth.currentUser!.uid).set({
       'userName': userName,
       'phone': userPhone,
       'id': DateTime.now().toString(),
       'email': _email,
       'team': team,
+    });
+    await database.ref().child('activation').child(auth.currentUser!.uid).set({
       'accepted': false,
     });
   }

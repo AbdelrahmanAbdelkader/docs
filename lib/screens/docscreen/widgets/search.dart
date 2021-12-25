@@ -4,6 +4,7 @@ import 'package:sample/provider/doc.dart';
 import 'package:sample/provider/docs.dart';
 
 import 'doc_sample.dart';
+
 class DocSearchDelegate extends SearchDelegate {
   DocSearchDelegate(BuildContext context);
   @override

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sample/screens/authscreen/authscreen.dart';
+import 'package:sample/screens/authscreen/checkFirstEmailBeforeAuth.dart';
 import 'package:sample/screens/userScreen/UserScreenAccepted.dart';
 import 'package:sample/screens/userScreen/checkAcceptions.dart';
 import '../guestscreen/guestscreen.dart';
@@ -25,7 +26,7 @@ class MainStream extends StatelessWidget {
           }
           return CheckAcception();
         }
-        return const AuthScreen();
+        return const CheckFirstEmailBeforeAuth();
       },
     );
   }
