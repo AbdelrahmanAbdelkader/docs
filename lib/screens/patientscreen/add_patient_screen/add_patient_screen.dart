@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
 import 'package:sample/provider/docs.dart';
 import 'package:sample/provider/state.dart';
+import 'package:sample/screens/patientscreen/add_patient_screen/widgets/illnesslist.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/state_dropdownbutton.dart';
 import 'package:sample/screens/widgets/custom_text_field.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/patient_screen_doctors_dropdownbutton.dart';
@@ -161,8 +162,7 @@ class AddPatientPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    StateDropDownButton(label: 'تخصص المرض', items: speciality),
-                    Ilness(
+                    IllnessList(
                         illnessController: illnessController,
                         illnessValueController: illnessValueController),
                     AddPatientTextField(
