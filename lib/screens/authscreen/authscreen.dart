@@ -43,6 +43,8 @@ class AuthScreen extends StatelessWidget {
           userPhoneController.text,
           team.userTeamDropDownBottonValue.toString(),
           team.userSpecialityDropDownBottonValue.toString(),
+          team.roleDropDownBottonValue.toString(),
+          thereAreUsers,
         );
       }
     }
@@ -55,16 +57,17 @@ class AuthScreen extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     if (once) {
       chosenTeam.roleDropDownBottonValue =
-          (!thereAreUsers) ? 'master' : 'normal';
+          (!thereAreUsers) ? 'متطوع غني' : 'متطوع فقير';
       role = (!thereAreUsers)
-          ? ['master']
+          ? ['متطوع غني']
           : [
-              'normal',
-              'caseResponsible',
-              'doctorsResposible',
+              'متطوع فقير',
+              'مسؤول أبحاث',
+              'مسؤول دكاترة',
             ];
       once = false;
     }
+
     return Scaffold(
       body: Stack(
         children: [

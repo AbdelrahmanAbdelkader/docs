@@ -27,7 +27,26 @@ class CheckAcception extends StatelessWidget {
             );
           if (snap.data != null) {
             if ((snap.data as DatabaseEvent).snapshot.value as bool) {
-              return UserScreen();
+              return StreamBuilder<Object>(
+                  stream: FirebaseDatabase.instance
+                      .ref()
+                      .child('acrivation')
+                      .child(FirebaseAuth.instance.currentUser!.uid)
+                      .child('role')
+                      .onValue,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting)
+                      return Center(child: CircularProgressIndicator());
+                    if ((snapshot.data as DatabaseEvent).snapshot.value ==
+                        'متطوع غني')
+                      return UserScreen('متطوع غني');
+                    else if ((snapshot.data as DatabaseEvent).snapshot.value ==
+                        'مسؤول أبحاث')
+                      return UserScreen('مسؤول أبحاث');
+                    else if ((snapshot.data as DatabaseEvent).snapshot.value ==
+                        'مسؤول دكاترة') return UserScreen('مسؤول أبحاث');
+                    return UserScreen('متطوع فقير');
+                  });
             } else {
               return GuestScreen(true);
             }

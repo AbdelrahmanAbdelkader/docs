@@ -10,8 +10,8 @@ import 'package:sample/screens/volscreen/volscreen.dart';
 import '../../helpers/docicon.dart';
 
 class UserScreen extends StatelessWidget {
-  UserScreen({Key? key}) : super(key: key);
-
+  UserScreen(this.role, {Key? key}) : super(key: key);
+  final String role;
   @override
   Widget build(BuildContext context) {
     final current = Provider.of<BottomNav>(context).current;
