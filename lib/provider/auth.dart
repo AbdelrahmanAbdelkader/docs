@@ -19,21 +19,33 @@ class Auth {
     await auth.signInWithEmailAndPassword(email: _email, password: _password);
   }
 
-  void register(String userName, String userPhone, String team, String state,
-      String role, bool firstTime) async {
-    print("ss");
-    print(role);
+  void register(String userName, String userPhone, String? team, String state,
+      String role, bool thereAreUsers) async {
     await auth.createUserWithEmailAndPassword(
         email: _email, password: _password);
-    await database.ref().child('$team:data').child(auth.currentUser!.uid).set({
-      'userName': userName,
-      'phone': userPhone,
-      'id': DateTime.now().toString(),
-      'email': _email,
-      'state': state,
-    });
+    if (team == null) {
+      await database.ref().child("مسؤولين").child(auth.currentUser!.uid).set({
+        'userName': userName,
+        'phone': userPhone,
+        'id': DateTime.now().toString(),
+        'email': _email,
+        'state': state,
+      });
+    } else {
+      await database
+          .ref()
+          .child('$team:data')
+          .child(auth.currentUser!.uid)
+          .set({
+        'userName': userName,
+        'phone': userPhone,
+        'id': DateTime.now().toString(),
+        'email': _email,
+        'state': state,
+      });
+    }
     await database.ref().child('activation').child(auth.currentUser!.uid).set({
-      'accepted': firstTime,
+      'accepted': !thereAreUsers,
       'role': role,
       'team': team,
     });

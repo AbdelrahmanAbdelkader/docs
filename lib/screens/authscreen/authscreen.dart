@@ -41,7 +41,7 @@ class AuthScreen extends StatelessWidget {
         auth.register(
           userNameController.text,
           userPhoneController.text,
-          team.userTeamDropDownBottonValue.toString(),
+          team.userTeamDropDownBottonValue,
           team.userSpecialityDropDownBottonValue.toString(),
           team.roleDropDownBottonValue.toString(),
           thereAreUsers,
@@ -67,7 +67,6 @@ class AuthScreen extends StatelessWidget {
             ];
       once = false;
     }
-
     return Scaffold(
       body: Stack(
         children: [
@@ -162,51 +161,95 @@ class AuthScreen extends StatelessWidget {
                                 },
                                 multiline: false),
                           if (!chosenTeam.signIn)
+                            Consumer<StateManagment>(
+                              builder: (context, stateManagment, _) => Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    side: const BorderSide(
+                                        width: 1, color: Colors.greenAccent),
+                                  ),
+                                  elevation: 0,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: DropdownButton(
+                                      isDense: true,
+                                      elevation: 50,
+                                      // focusColor: Colors.white,
+                                      underline: Container(),
+                                      value: stateManagment
+                                          .roleDropDownBottonValue,
+                                      isExpanded: true,
+
+                                      onChanged: (v) => stateManagment
+                                          .setRoleDropDownBottonValue(
+                                              v as String),
+                                      items: List.generate(
+                                        role.length,
+                                        (index) => DropdownMenuItem(
+                                          child: Text(
+                                            role[index],
+                                          ),
+                                          value: role[index],
+                                        ),
+                                      ).toList(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          if (!chosenTeam.signIn)
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10.0),
                               child: Row(
                                 children: [
-                                  Expanded(
-                                    flex: 1,
-                                    child: Consumer<StateManagment>(
-                                      builder: (context, stateManagment, _) =>
-                                          Card(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          side: const BorderSide(
-                                              width: 1,
-                                              color: Colors.greenAccent),
-                                        ),
-                                        elevation: 0,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: DropdownButton(
-                                            isDense: true,
-                                            elevation: 50,
-                                            // focusColor: Colors.white,
-                                            underline: Container(),
-                                            value: stateManagment
-                                                .userTeamDropDownBottonValue,
-                                            hint: const Text('اختر الفريق'),
-                                            onChanged: (v) => stateManagment
-                                                .setUserTeamDropDownBottonValue(
-                                                    v as String),
-                                            items: List.generate(
-                                              team.length,
-                                              (index) => DropdownMenuItem(
-                                                child: Text(
-                                                  team[index],
+                                  if (chosenTeam.roleDropDownBottonValue !=
+                                          'مسؤول دكاترة' &&
+                                      chosenTeam.roleDropDownBottonValue !=
+                                          'متطوع غني')
+                                    Expanded(
+                                      flex: 1,
+                                      child: Consumer<StateManagment>(
+                                        builder: (context, stateManagment, _) =>
+                                            Card(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            side: const BorderSide(
+                                                width: 1,
+                                                color: Colors.greenAccent),
+                                          ),
+                                          elevation: 0,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(16.0),
+                                            child: DropdownButton(
+                                              isDense: true,
+                                              elevation: 50,
+                                              // focusColor: Colors.white,
+                                              underline: Container(),
+                                              value: stateManagment
+                                                  .userTeamDropDownBottonValue,
+                                              hint: const Text('اختر الفريق'),
+                                              onChanged: (v) => stateManagment
+                                                  .setUserTeamDropDownBottonValue(
+                                                      v as String),
+                                              items: List.generate(
+                                                team.length,
+                                                (index) => DropdownMenuItem(
+                                                  child: Text(
+                                                    team[index],
+                                                  ),
+                                                  value: team[index],
                                                 ),
-                                                value: team[index],
-                                              ),
-                                            ).toList(),
+                                              ).toList(),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
                                   if (!chosenTeam.signIn)
                                     Expanded(
                                       flex: 1,
@@ -250,46 +293,6 @@ class AuthScreen extends StatelessWidget {
                                       ),
                                     ),
                                 ],
-                              ),
-                            ),
-                          if (!chosenTeam.signIn)
-                            Consumer<StateManagment>(
-                              builder: (context, stateManagment, _) => Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    side: const BorderSide(
-                                        width: 1, color: Colors.greenAccent),
-                                  ),
-                                  elevation: 0,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: DropdownButton(
-                                      isDense: true,
-                                      elevation: 50,
-                                      // focusColor: Colors.white,
-                                      underline: Container(),
-                                      value: stateManagment
-                                          .roleDropDownBottonValue,
-                                      isExpanded: true,
-
-                                      onChanged: (v) => stateManagment
-                                          .setRoleDropDownBottonValue(
-                                              v as String),
-                                      items: List.generate(
-                                        role.length,
-                                        (index) => DropdownMenuItem(
-                                          child: Text(
-                                            role[index],
-                                          ),
-                                          value: role[index],
-                                        ),
-                                      ).toList(),
-                                    ),
-                                  ),
-                                ),
                               ),
                             ),
                           Padding(

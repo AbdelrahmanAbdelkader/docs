@@ -21,9 +21,8 @@ class CheckAcception extends StatelessWidget {
             .child("accepted")
             .onValue,
         builder: (ct, snap) {
-          if (snap.data != null)
-            print((snap.data as DatabaseEvent).snapshot.value);
-          if (snap.connectionState == ConnectionState.waiting)
+          if (snap.data != null) if (snap.connectionState ==
+              ConnectionState.waiting)
             return Center(
               child: CircularProgressIndicator(),
             );
