@@ -30,8 +30,8 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<StateManagment>(
           create: (context) => StateManagment(),
         ),
-        ChangeNotifierProvider<BottomNav>(
-          create: (context) => BottomNav(),
+        ChangeNotifierProvider<Account>(
+          create: (context) => Account(),
         ),
         ChangeNotifierProvider<Docs>(
           create: (context) => Docs(),

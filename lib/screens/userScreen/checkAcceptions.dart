@@ -1,24 +1,25 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sample/provider/bottomnav.dart';
 import 'package:sample/screens/guestscreen/guestscreen.dart';
 import 'package:sample/screens/userScreen/UserScreenAccepted.dart';
-
-import 'checkRole.dart';
 
 class CheckAcception extends StatelessWidget {
   const CheckAcception({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final account = Provider.of<Account>(context, listen: false);
+    account.setId(FirebaseAuth.instance.currentUser!.uid);
     return Container(
       color: Colors.white,
       child: StreamBuilder(
         stream: FirebaseDatabase.instance
             .ref()
             .child('activation')
-            .child(FirebaseAuth.instance.currentUser!.uid)
-            .child("accepted")
+            .child(account.id as String)
             .onValue,
         builder: (ct, snap) {
           if (snap.data != null) if (snap.connectionState ==
@@ -27,13 +28,28 @@ class CheckAcception extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           if (snap.data != null) {
-            if ((snap.data as DatabaseEvent).snapshot.value as bool) {
-              return CheckRole();
-            } else {
-              return GuestScreen(true);
+            if ((snap.data as DatabaseEvent).snapshot.exists) {
+              Map data = (snap.data as DatabaseEvent).snapshot.value as Map;
+              account.setRole(data['role']);
+              account.setTeam(data['team']);
+              account.setAccepted(data['accepted']);
+              if ((snap.data as DatabaseEvent).snapshot.value as bool) {
+                return UserScreen();
+              } else {
+                return GuestScreen(true);
+              }
             }
           }
-          return Container();
+          return Container(
+            child: Center(
+              child: TextButton(
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                },
+                child: Text("خروج"),
+              ),
+            ),
+          );
         },
       ),
     );

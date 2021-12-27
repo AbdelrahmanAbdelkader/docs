@@ -17,13 +17,15 @@ class Auth {
 
   void signIn() async {
     await auth.signInWithEmailAndPassword(email: _email, password: _password);
+    id = auth.currentUser!.uid;
   }
 
   void register(String userName, String userPhone, String? team, String state,
       String role, bool thereAreUsers) async {
     await auth.createUserWithEmailAndPassword(
         email: _email, password: _password);
-    await database.ref().child("users").child(auth.currentUser!.uid).set({
+    id = auth.currentUser!.uid;
+    await database.ref().child("users").child(id).set({
       'userName': userName,
       'phone': userPhone,
       'id': DateTime.now().toString(),

@@ -5,19 +5,42 @@ import 'package:sample/screens/patientscreen/patientScreen.dart';
 import 'package:sample/screens/volscreen/volscreen.dart';
 import 'package:sample/screens/volscreen/widgets/volprofile/volprofilescreen.dart';
 
-class BottomNav extends ChangeNotifier {
+class Account extends ChangeNotifier {
+  String? _id;
+  String _role = '';
+  bool? _accepted;
+  String? _team;
   Map<String, Map> types = {};
   int current = 0;
   List<Map> bottomNavBarItems = [{}];
-  String role = '';
-  void set(int ne) {
+
+  String? get id => _id;
+  String get role => _role;
+  bool? get accepted => _accepted;
+  String? get team => _team;
+  void setCurrent(int ne) {
     current = ne;
+    notifyListeners();
+  }
+
+  void setTeam(String team) {
+    _team = team;
+    notifyListeners();
+  }
+
+  void setId(String id) {
+    _id = id;
+    notifyListeners();
+  }
+
+  void setAccepted(bool accepted) {
+    _accepted = accepted;
     notifyListeners();
   }
 
   void setRole(String r) {
     // print(r);
-    role = r;
+    _role = r;
     if (r == 'متطوع غني') {
       bottomNavBarItems = [
         {
@@ -91,7 +114,5 @@ class BottomNav extends ChangeNotifier {
         },
       ];
     }
-    print(role);
-    print(bottomNavBarItems);
   }
 }

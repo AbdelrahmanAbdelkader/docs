@@ -21,7 +21,7 @@ class CheckFirstEmailBeforeAuth extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           bool checked = false;
-          if ((snap.data as DataSnapshot).value != null) {
+          if ((snap.data as DataSnapshot).exists) {
             checked = true;
           }
           return AuthScreen(checked);
