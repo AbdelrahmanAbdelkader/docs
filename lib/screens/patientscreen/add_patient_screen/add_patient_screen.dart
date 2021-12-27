@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +8,6 @@ import 'package:sample/screens/patientscreen/add_patient_screen/widgets/illnessl
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/state_dropdownbutton.dart';
 import 'package:sample/screens/widgets/custom_text_field.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/patient_screen_doctors_dropdownbutton.dart';
-import 'package:sample/screens/patientscreen/add_patient_screen/widgets/illness.dart';
 
 // ignore: must_be_immutable
 class AddPatientPage extends StatelessWidget {
@@ -70,7 +67,6 @@ class AddPatientPage extends StatelessWidget {
           newPatient['Doctor'] = value as String;
         else
           newPatient['Doctor'] = "";
-
         newPatient['date'] = DateTime.now().toIso8601String();
         newPatient['state'] =
             stateManagmentTrue.patientVillageDropDownButtonValue.toString();
@@ -86,99 +82,100 @@ class AddPatientPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: FutureBuilder(
-          future: doctorProvider.refresh(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting)
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            return Form(
-              key: fkey,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    AddPatientTextField(
-                      label: 'الاسم',
-                      controller: patientNameController,
-                      tKey: patientNameKey,
-                      save: (v) {
-                        newPatient['name'] = v;
-                      },
-                      validate: (String v) {
-                        if (v.length < 4) return 'ادخل اسم صحيح';
-                      },
-                      multiline: false,
-                    ),
-                    AddPatientTextField(
-                      label: 'رقم التلفون',
-                      controller: patientPhoneController,
-                      tKey: patientNumKey,
-                      save: (v) {
-                        newPatient['phoneNum'] = v;
-                      },
-                      validate: (String v) {
-                        if (v.length != 10 && v.length != 11)
-                          return 'ادخل رقم صحيح';
-                      },
-                      multiline: false,
-                    ),
-                    StateDropDownButton(
-                      label: 'اختر المركز',
-                      items: states,
-                    ),
-                    AddPatientTextField(
-                      label: 'العنوان',
-                      controller: patientAdressController,
-                      tKey: patientAdressKey,
-                      multiline: false,
-                      save: (v) {
-                        newPatient['adress'] = v;
-                      },
-                      validate: (String v) {
-                        if (v.length < 4) return 'ادخل عنوان مناسب';
-                      },
-                    ),
-                    AddPatientTextField(
-                      label: 'اسم السورس',
-                      controller: sourceController,
-                      tKey: sourceKey,
-                      multiline: false,
-                      save: (v) => newPatient['source'] = v,
-                      validate: (v) {
-                        if (v.length < 4) return 'ادخل اسم صحيح';
-                      },
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: PatientDropDown(
-                              text: 'اختر الطبيب المتابع',
-                              value: value,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    IllnessList(
-                        illnessController: illnessController,
-                        illnessValueController: illnessValueController),
-                    AddPatientTextField(
-                      label: 'اخر ما وصلناله',
-                      controller: latestController,
-                      tKey: latestKey,
-                      validate: (v) {},
-                      save: (v) => newPatient['latest'] = v,
-                      multiline: true,
-                    ),
-                    ElevatedButton(onPressed: save, child: const Text('save')),
-                  ],
-                ),
-              ),
+        future: doctorProvider.refresh(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return Center(
+              child: CircularProgressIndicator(),
             );
-          }),
+          return Form(
+            key: fkey,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  AddPatientTextField(
+                    label: 'الاسم',
+                    controller: patientNameController,
+                    tKey: patientNameKey,
+                    save: (v) {
+                      newPatient['name'] = v;
+                    },
+                    validate: (String v) {
+                      if (v.length < 4) return 'ادخل اسم صحيح';
+                    },
+                    multiline: false,
+                  ),
+                  AddPatientTextField(
+                    label: 'رقم التلفون',
+                    controller: patientPhoneController,
+                    tKey: patientNumKey,
+                    save: (v) {
+                      newPatient['phoneNum'] = v;
+                    },
+                    validate: (String v) {
+                      if (v.length != 10 && v.length != 11)
+                        return 'ادخل رقم صحيح';
+                    },
+                    multiline: false,
+                  ),
+                  StateDropDownButton(
+                    label: 'اختر المركز',
+                    items: states,
+                  ),
+                  AddPatientTextField(
+                    label: 'العنوان',
+                    controller: patientAdressController,
+                    tKey: patientAdressKey,
+                    multiline: false,
+                    save: (v) {
+                      newPatient['adress'] = v;
+                    },
+                    validate: (String v) {
+                      if (v.length < 4) return 'ادخل عنوان مناسب';
+                    },
+                  ),
+                  AddPatientTextField(
+                    label: 'اسم السورس',
+                    controller: sourceController,
+                    tKey: sourceKey,
+                    multiline: false,
+                    save: (v) => newPatient['source'] = v,
+                    validate: (v) {
+                      if (v.length < 4) return 'ادخل اسم صحيح';
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: PatientDropDown(
+                            text: 'اختر الطبيب المتابع',
+                            value: value,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  IllnessList(
+                      illnessController: illnessController,
+                      illnessValueController: illnessValueController),
+                  AddPatientTextField(
+                    label: 'اخر ما وصلناله',
+                    controller: latestController,
+                    tKey: latestKey,
+                    validate: (v) {},
+                    save: (v) => newPatient['latest'] = v,
+                    multiline: true,
+                  ),
+                  ElevatedButton(onPressed: save, child: const Text('save')),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

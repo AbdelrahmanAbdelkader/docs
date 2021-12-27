@@ -25,9 +25,9 @@ class _PatientDropDownState extends State<PatientDropDown> {
     final doctors = Provider.of<Docs>(context).doctors;
 
     return Card(
-      // shape: RoundedRectangleBorder(
-      //     borderRadius: BorderRadius.circular(10),
-      //     side: const BorderSide(width: 1, color: Colors.greenAccent)),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: const BorderSide(width: 1, color: Colors.greenAccent)),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
         child: DropdownButton(
@@ -38,11 +38,7 @@ class _PatientDropDownState extends State<PatientDropDown> {
           isExpanded: true,
           hint: Text(
             widget.text,
-            // style: TextStyle(
-            //   color: Colors.green,
-            //   fontSize: 16,
-            //   fontWeight: FontWeight.bold,
-            // ),
+           
           ),
           value: widget.value,
           underline: Container(),

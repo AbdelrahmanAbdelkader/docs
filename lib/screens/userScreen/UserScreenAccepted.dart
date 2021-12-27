@@ -6,6 +6,7 @@ class UserScreen extends StatelessWidget {
   UserScreen(this.role, {Key? key}) : super(key: key);
   final String role;
   bool once = true;
+  int i =0;
   @override
   Widget build(BuildContext context) {
     final bottomNavProvider = Provider.of<BottomNav>(context);
@@ -14,19 +15,22 @@ class UserScreen extends StatelessWidget {
       return Scaffold(
         body: bottomNavProvider.bottomNavBarItems[bottomNavProvider.current]
             ['screen'],
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: bottomNavProvider.current,
-          onTap: (v) => bottomNavProvider.set(v),
+        bottomNavigationBar
+        :BottomNavigationBar(
+          type:BottomNavigationBarType.fixed,
+          fixedColor: Colors.white,
+          backgroundColor: Colors.green,
           items: List.generate(
             bottomNavProvider.bottomNavBarItems.length,
             (index) => BottomNavigationBarItem(
-              icon: Icon(
-                bottomNavProvider.bottomNavBarItems[index]['icon'],
-              ),
+              icon: Icon(bottomNavProvider.bottomNavBarItems[index]['icon']),
               label: bottomNavProvider.bottomNavBarItems[index]['label'],
             ),
           ),
-        ),
+          currentIndex: bottomNavProvider.current,
+          onTap: (v)=>bottomNavProvider.set(v),
+
+        )
       );
     });
   }

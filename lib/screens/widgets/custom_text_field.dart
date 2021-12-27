@@ -9,6 +9,8 @@ class AddPatientTextField extends StatelessWidget {
     required this.validate,
     required this.multiline,
     this.invisible,
+    this.textInputAction,
+    this.textInputType,
   });
   final String label;
   final TextEditingController controller;
@@ -17,15 +19,17 @@ class AddPatientTextField extends StatelessWidget {
   final Function validate;
   final bool multiline;
   final bool? invisible;
+  final TextInputAction? textInputAction;
+  final TextInputType? textInputType;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Card(
-        // shape: RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.all(Radius.circular(10)),
-        //   side: const BorderSide(width: 1, color: Colors.greenAccent),
-        // ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          side: const BorderSide(width: 1, color: Colors.greenAccent),
+        ),
         color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -35,12 +39,10 @@ class AddPatientTextField extends StatelessWidget {
             key: tKey,
             obscureText: (invisible != null) ? true : false,
             obscuringCharacter: '*',
+            keyboardType: textInputType,
+            textInputAction: textInputAction,
             decoration: InputDecoration(
-              label: Text(label
-                  // ,style: TextStyle(
-                  // color: Colors.green
-                  // ),),
-                  ),
+              label: Text(label),
               border: InputBorder.none,
               errorBorder: InputBorder.none,
               enabledBorder: InputBorder.none,

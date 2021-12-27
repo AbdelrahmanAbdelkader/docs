@@ -45,4 +45,9 @@ class StateManagment extends ChangeNotifier {
     signIn = !signIn;
     notifyListeners();
   }
+  bool triedToValidate=false;
+  toggleTriedToValidate(){
+    triedToValidate=true;
+    notifyListeners();
+  }
 }

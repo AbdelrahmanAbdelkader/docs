@@ -18,10 +18,10 @@ class IllnessTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      // shape: RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.circular(10),
-      //   side: const BorderSide(width: 1, color: Colors.greenAccent),
-      // ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: const BorderSide(width: 1, color: Colors.greenAccent),
+      ),
       color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -36,11 +36,7 @@ class IllnessTextField extends StatelessWidget {
           decoration: InputDecoration(
             label: Text(
               label,
-              // style: TextStyle(
-              //   color: Colors.green,
-              //   fontSize: 16,
-              //   fontWeight: FontWeight.bold,
-              // ),
+              
             ),
             border: InputBorder.none,
             errorBorder: InputBorder.none,

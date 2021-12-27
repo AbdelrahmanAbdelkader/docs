@@ -23,20 +23,16 @@ class _StateDropDownButtonState extends State<StateDropDownButton> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: Card(
-        // shape: RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.circular(10),
-        //   side: BorderSide(
-        //     width: 1,
-        //     color: Colors.greenAccent,
-        //   ),
-        // ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(
+            width: 1,
+            color: Colors.greenAccent,
+          ),
+        ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
           child: DropdownButton(
-            // icon: Icon(
-            //   Icons.arrow_drop_down_sharp,
-            //   color: Colors.green,
-            // ),
             underline: Container(),
             isExpanded: true,
             style: TextStyle(
@@ -46,12 +42,7 @@ class _StateDropDownButtonState extends State<StateDropDownButton> {
             ),
             hint: Text(
               widget.label,
-              // style:
-              // TextStyle(
-              //   color: Colors.green,
-              //   fontSize: 16,
-              //   fontWeight: FontWeight.bold,
-              // ),
+              
             ),
             value: value,
             items: widget.items
