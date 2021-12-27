@@ -35,11 +35,6 @@ class BottomNav extends ChangeNotifier {
           'label': 'المتطوعين',
           'screen': VolScreen(),
         },
-        {
-          'icon': Icons.person,
-          'label': 'المتطوعين',
-          'screen': VolScreen(),
-        }
         // {
         //   'icon': Icons.account_circle_outlined,
         //   'label': 'الأكونت',

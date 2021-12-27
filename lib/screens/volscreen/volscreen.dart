@@ -10,6 +10,7 @@ class VolScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final prove = Provider.of<Vols>(context, listen: false);
+    final size= MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text('المتطوعين'),
@@ -20,15 +21,27 @@ class VolScreen extends StatelessWidget {
           )
         ],
       ),
-      body: FutureBuilder(
-          future: prove.refresh(),
-          builder: (context, snap) {
-            if (snap.connectionState == ConnectionState.waiting)
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            return const VolList();
-          }),
+      body: Stack(
+        children: [
+           Positioned(
+              bottom: 0,
+              child: Container(
+                  width: size.width,
+                  child: Image.asset(
+                    'assets/background.png',
+                    fit: BoxFit.fill,
+                  ))),
+          FutureBuilder(
+              future: prove.refresh(),
+              builder: (context, snap) {
+                if (snap.connectionState == ConnectionState.waiting)
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                return const VolList();
+              }),
+        ],
+      ),
     );
   }
 }
