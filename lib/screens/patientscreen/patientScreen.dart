@@ -19,6 +19,7 @@ class _PatientScreenState extends State<PatientScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text('الحالات'),
@@ -36,7 +37,19 @@ class _PatientScreenState extends State<PatientScreen> {
           ),
         ],
       ),
-      body: PatientList(),
+      body: Stack(
+        children: [
+          Positioned(
+            bottom: 0,
+            child: Image.asset(
+              'assets/background.png',
+              fit: BoxFit.fill,
+              width: size.width,
+            ),
+          ),
+          PatientList(),
+        ],
+      ),
     );
   }
 }

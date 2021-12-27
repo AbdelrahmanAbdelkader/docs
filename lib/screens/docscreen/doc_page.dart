@@ -25,6 +25,7 @@ class _DocListState extends State<DocList> {
   Widget build(BuildContext context) {
     final prove = Provider.of<Docs>(context, listen: false);
     final proveTrue = Provider.of<Docs>(context);
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text('الدكاترة'),
@@ -48,36 +49,52 @@ class _DocListState extends State<DocList> {
           ),
         ],
       ),
-      body: LayoutBuilder(builder: (context, cons) {
-        return FutureBuilder(
-            future: prove.refresh(),
-            builder: (cont, snap) {
-              if (snap.connectionState == ConnectionState.waiting)
-                return Container(
-                    height: cons.maxHeight,
-                    child: Center(child: const CircularProgressIndicator()));
-              if (proveTrue.doctors.isNotEmpty)
-                return SingleChildScrollView(
-                  child: Column(
-                    children: List.generate(
-                      proveTrue.doctors.length,
-                      (index) {
-                        return ChangeNotifierProvider.value(
-                          value: proveTrue.doctors[index],
-                          builder: (context, snapshot) {
-                            return DocSample();
-                          },
-                        );
-                      },
-                    ).toList(),
-                  ),
-                );
-              return Container(
-                height: cons.maxHeight,
-                child: Center(child: Text('لا توجد دكاتره')),
-              );
-            });
-      }),
+      body: Container(
+        height: size.height,
+        child: Stack(
+          children: [
+            Positioned(
+              bottom: 0,
+              child: Image.asset(
+                'assets/background.png',
+                fit: BoxFit.fill,
+                width: size.width,
+              ),
+            ),
+            LayoutBuilder(builder: (context, cons) {
+              return FutureBuilder(
+                  future: prove.refresh(),
+                  builder: (cont, snap) {
+                    if (snap.connectionState == ConnectionState.waiting)
+                      return Container(
+                          height: cons.maxHeight,
+                          child:
+                              Center(child: const CircularProgressIndicator()));
+                    if (proveTrue.doctors.isNotEmpty)
+                      return SingleChildScrollView(
+                        child: Column(
+                          children: List.generate(
+                            proveTrue.doctors.length,
+                            (index) {
+                              return ChangeNotifierProvider.value(
+                                value: proveTrue.doctors[index],
+                                builder: (context, snapshot) {
+                                  return DocSample();
+                                },
+                              );
+                            },
+                          ).toList(),
+                        ),
+                      );
+                    return Container(
+                      height: cons.maxHeight,
+                      child: Center(child: Text('لا توجد دكاتره')),
+                    );
+                  });
+            }),
+          ],
+        ),
+      ),
     );
   }
 }
