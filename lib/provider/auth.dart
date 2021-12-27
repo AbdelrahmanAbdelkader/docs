@@ -23,27 +23,13 @@ class Auth {
       String role, bool thereAreUsers) async {
     await auth.createUserWithEmailAndPassword(
         email: _email, password: _password);
-    if (team == null) {
-      await database.ref().child("مسؤولين").child(auth.currentUser!.uid).set({
-        'userName': userName,
-        'phone': userPhone,
-        'id': DateTime.now().toString(),
-        'email': _email,
-        'state': state,
-      });
-    } else {
-      await database
-          .ref()
-          .child('$team:data')
-          .child(auth.currentUser!.uid)
-          .set({
-        'userName': userName,
-        'phone': userPhone,
-        'id': DateTime.now().toString(),
-        'email': _email,
-        'state': state,
-      });
-    }
+    await database.ref().child("users").child(auth.currentUser!.uid).set({
+      'userName': userName,
+      'phone': userPhone,
+      'id': DateTime.now().toString(),
+      'email': _email,
+      'state': state,
+    });
     await database.ref().child('activation').child(auth.currentUser!.uid).set({
       'accepted': !thereAreUsers,
       'role': role,

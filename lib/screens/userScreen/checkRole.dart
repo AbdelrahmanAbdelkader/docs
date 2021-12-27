@@ -22,8 +22,22 @@ class CheckRole extends StatelessWidget {
           // print(FirebaseAuth.instance.currentUser!.uid);
           if (snapshot.connectionState == ConnectionState.waiting)
             return Center(child: CircularProgressIndicator());
-          return UserScreen(
-              (snapshot.data as DatabaseEvent).snapshot.value as String);
+          String role =
+              (snapshot.data as DatabaseEvent).snapshot.value as String;
+          if (role == 'متطوع فقير' || role == 'مسؤول أبحاث')
+            return StreamBuilder<DatabaseEvent>(
+                stream: FirebaseDatabase.instance
+                    .ref()
+                    .child('activation')
+                    .child(FirebaseAuth.instance.currentUser!.uid)
+                    .child('role')
+                    .onValue,
+                builder: (ctx, team) {
+                  return UserScreen(role);
+                });
+          else {
+            return UserScreen(role);
+          }
         });
   }
 }

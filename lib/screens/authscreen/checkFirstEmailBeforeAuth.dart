@@ -8,11 +8,8 @@ class CheckFirstEmailBeforeAuth extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future<DataSnapshot> checkIfUsersExist() async {
-      DataSnapshot checked = await FirebaseDatabase.instance
-          .ref()
-          .child('activation')
-          .child('number')
-          .get();
+      DataSnapshot checked =
+          await FirebaseDatabase.instance.ref().child('activation').get();
       return checked;
     }
 
@@ -25,7 +22,7 @@ class CheckFirstEmailBeforeAuth extends StatelessWidget {
             );
           bool checked = false;
           if ((snap.data as DataSnapshot).value != null) {
-            if ((snap.data as DataSnapshot).value != 0) checked = true;
+            checked = true;
           }
           return AuthScreen(checked);
         });

@@ -55,6 +55,7 @@ class AuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final chosenTeam = Provider.of<StateManagment>(context);
     final size = MediaQuery.of(context).size;
+    print(thereAreUsers);
     if (once) {
       chosenTeam.roleDropDownBottonValue =
           (!thereAreUsers) ? 'متطوع غني' : 'متطوع فقير';
