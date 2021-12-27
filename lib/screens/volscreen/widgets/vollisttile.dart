@@ -43,12 +43,12 @@ class _VolListTileState extends State<VolListTile> {
             context,
             MaterialPageRoute(
               builder: (context) => VolanteerProfileScreen(
-                name: widget.name,
-                phone: widget.phone,
-                email: widget.email,
-                type: widget.type,
-                patients: widget.patients,
-              ),
+                  // name: widget.name,
+                  // phone: widget.phone,
+                  // email: widget.email,
+                  // type: widget.type,
+                  // patients: widget.patients,
+                  ),
             ),
           );
         },

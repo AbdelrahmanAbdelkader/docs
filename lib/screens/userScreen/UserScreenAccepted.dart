@@ -1,50 +1,33 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/bottomnav.dart';
-import 'package:sample/screens/docscreen/doc_page.dart';
-import 'package:sample/screens/patientscreen/patientScreen.dart';
-import 'package:sample/screens/volscreen/volscreen.dart';
-
-import '../../helpers/docicon.dart';
 
 class UserScreen extends StatelessWidget {
   UserScreen(this.role, {Key? key}) : super(key: key);
   final String role;
+  bool once = true;
   @override
   Widget build(BuildContext context) {
-    final current = Provider.of<BottomNav>(context).current;
-    final bottomnav = Provider.of<BottomNav>(context, listen: false);
-
-    return Scaffold(
-      body: (current == 0)
-          ? DocList()
-          : (current == 1)
-              ? PatientScreen()
-              : VolScreen(),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: current,
-        onTap: (v) => bottomnav.set(v),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(
-              DocIcons.doctor,
+    final bottomNavProvider = Provider.of<BottomNav>(context);
+    Provider.of<BottomNav>(context).setRole(role);
+    return Builder(builder: (context) {
+      return Scaffold(
+        body: bottomNavProvider.bottomNavBarItems[bottomNavProvider.current]
+            ['screen'],
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: bottomNavProvider.current,
+          onTap: (v) => bottomNavProvider.set(v),
+          items: List.generate(
+            bottomNavProvider.bottomNavBarItems.length,
+            (index) => BottomNavigationBarItem(
+              icon: Icon(
+                bottomNavProvider.bottomNavBarItems[index]['icon'],
+              ),
+              label: bottomNavProvider.bottomNavBarItems[index]['label'],
             ),
-            label: 'الدكاترة',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.notes,
-            ),
-            label: 'الابحاث',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'المتطوعين',
-          ),
-        ],
-      ),
-    );
+        ),
+      );
+    });
   }
 }

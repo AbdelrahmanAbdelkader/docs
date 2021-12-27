@@ -8,7 +8,6 @@ import 'package:sample/provider/patients.dart';
 import 'package:sample/provider/state.dart';
 import 'package:sample/provider/vol.dart';
 import 'package:sample/screens/splashscreen/splashscreen.dart';
-import 'package:sample/screens/ScreensSlector/stream_builder.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +23,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  int current = 0;
   @override
   Widget build(BuildContext context) {
     return MultiProvider(

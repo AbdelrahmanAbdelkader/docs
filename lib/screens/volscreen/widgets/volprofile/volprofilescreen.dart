@@ -4,17 +4,17 @@ import 'package:sample/screens/volscreen/widgets/volprofile/widgets/information_
 class VolanteerProfileScreen extends StatelessWidget {
   VolanteerProfileScreen({
     Key? key,
-    required this.name,
-    required this.phone,
-    required this.email,
-    required this.type,
-    this.patients,
+    // required this.name,
+    // required this.phone,
+    // required this.email,
+    // required this.type,
+    // this.patients,
   }) : super(key: key);
 
-  final String name;
-  final String phone;
-  final String email;
-  final String type;
+  // final String name;
+  // final String phone;
+  // final String email;
+  // final String type;
   Map? patients;
   @override
   Widget build(BuildContext context) {
@@ -33,10 +33,10 @@ class VolanteerProfileScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            InformationTile(information: name, label: 'الاسم:'),
-            InformationTile(information: phone, label: 'رقم المحمول:'),
-            InformationTile(information: email, label: 'الايميل'),
-            InformationTile(information: type, label: 'التخصص'),
+            // InformationTile(information: name, label: 'الاسم:'),
+            // InformationTile(information: phone, label: 'رقم المحمول:'),
+            // InformationTile(information: email, label: 'الايميل'),
+            // InformationTile(information: type, label: 'التخصص'),
             SizedBox(
               height: size.height * .3,
             ),
