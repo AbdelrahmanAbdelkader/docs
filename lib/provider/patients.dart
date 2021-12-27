@@ -25,19 +25,30 @@ class PatientsProv extends ChangeNotifier {
         ..date = newPatient['date']
         ..state = newPatient['state'],
     );
-    print("kk");
-    print(_patients);
   }
 
-  Future<void> refresh() async {
-    _patients=[];
+  Future<void> refresh(String team, String role) async {
+    _patients = [];
     final database = FirebaseDatabase.instance;
-    final ref = await database.ref().child("patients").get();
+    final ref = await database.ref().child("patients").child(team).get();
+    final DataSnapshot? ref2;
+    if (role == 'متطوع غني')
+      ref2 = await database
+          .ref()
+          .child("patients")
+          .child((team == 'طب') ? 'صيدلة' : 'طب')
+          .get();
+    else
+      ref2 = null;
     if (ref.exists) {
       (ref.value as Map).values.forEach((element) {
         addPatient(element);
       });
     }
-    print(_patients);
+    if (ref2!.exists) {
+      (ref2.value as Map).values.forEach((element) {
+        addPatient(element);
+      });
+    }
   }
 }

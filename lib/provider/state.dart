@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 
 class StateManagment extends ChangeNotifier {
+  String? patientDocDropDownBottonValue;
+  setpatientDocDropDownBottonValue(String v) {
+    patientDocDropDownBottonValue = v;
+    notifyListeners();
+  }
+
   String? userTeamDropDownBottonValue;
   setUserTeamDropDownBottonValue(String v) {
     userTeamDropDownBottonValue = v;
@@ -43,6 +49,12 @@ class StateManagment extends ChangeNotifier {
   bool signIn = true;
   changeSigning() {
     signIn = !signIn;
+    notifyListeners();
+  }
+
+  bool triedToValidate = false;
+  toggleTriedToValidate() {
+    triedToValidate = true;
     notifyListeners();
   }
 }

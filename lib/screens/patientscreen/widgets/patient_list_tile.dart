@@ -21,7 +21,7 @@ class PatientListTile extends StatelessWidget {
         color: Colors.blue[300],
         child: ListTile(
           leading: Text(
-            patient.name,
+            patient.name as String,
             style: TextStyle(
               fontSize: 16,
               color: Colors.white,
@@ -29,7 +29,7 @@ class PatientListTile extends StatelessWidget {
             ),
           ),
           title: Text(
-            patient.state,
+            patient.state as String,
             style: TextStyle(
               fontSize: 16,
               color: Colors.white,

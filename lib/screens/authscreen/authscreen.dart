@@ -32,18 +32,25 @@ class AuthScreen extends StatelessWidget {
 
   final authFormKey = GlobalKey<FormState>();
 
-  void save(Auth auth, StateManagment team) {
-    if (authFormKey.currentState!.validate()) {
+  bool triedToValidate = false;
+  void save(
+    Auth auth,
+    StateManagment teamTrue,
+    StateManagment teamFalse,
+  ) {
+    teamFalse.toggleTriedToValidate();
+    if (authFormKey.currentState!.validate()) 
+    {
       authFormKey.currentState!.save();
-      if (team.signIn) {
+      if (teamFalse.signIn) {
         auth.signIn();
-      } else {
+      }else if(!teamFalse.signIn&& teamTrue.userTeamDropDownBottonValue!=null&&teamTrue.roleDropDownBottonValue!=null){
         auth.register(
           userNameController.text,
           userPhoneController.text,
-          team.userTeamDropDownBottonValue,
-          team.userSpecialityDropDownBottonValue.toString(),
-          team.roleDropDownBottonValue.toString(),
+          teamTrue.userTeamDropDownBottonValue,
+          (teamTrue.userTeamDropDownBottonValue.toString() !='طب')?null:teamTrue.userSpecialityDropDownBottonValue,
+          teamTrue.roleDropDownBottonValue.toString(),
           thereAreUsers,
         );
       }
@@ -53,12 +60,11 @@ class AuthScreen extends StatelessWidget {
   bool once = true;
   @override
   Widget build(BuildContext context) {
+    final chosenTeamFalse = Provider.of<StateManagment>(context, listen: false);
     final chosenTeam = Provider.of<StateManagment>(context);
     final size = MediaQuery.of(context).size;
     print(thereAreUsers);
     if (once) {
-      chosenTeam.roleDropDownBottonValue =
-          (!thereAreUsers) ? 'متطوع غني' : 'متطوع فقير';
       role = (!thereAreUsers)
           ? ['متطوع غني']
           : [
@@ -97,6 +103,7 @@ class AuthScreen extends StatelessWidget {
                                 label: 'اسم المستخدم',
                                 controller: userNameController,
                                 tKey: userNameKey,
+                                textInputAction: TextInputAction.next,
                                 save: (v) {},
                                 validate: (v) {
                                   if (v.length < 2) {
@@ -106,6 +113,8 @@ class AuthScreen extends StatelessWidget {
                                 multiline: false),
                           AddPatientTextField(
                             label: 'الايميل',
+                            textInputAction: TextInputAction.next,
+                            textInputType: TextInputType.emailAddress,
                             controller: emailController,
                             tKey: emailKey,
                             multiline: false,
@@ -119,6 +128,7 @@ class AuthScreen extends StatelessWidget {
                             },
                           ),
                           AddPatientTextField(
+                            textInputAction: TextInputAction.next,
                             invisible: true,
                             label: 'كلمة السر',
                             controller: passwordController,
@@ -135,6 +145,7 @@ class AuthScreen extends StatelessWidget {
                           ),
                           if (!chosenTeam.signIn)
                             AddPatientTextField(
+                              textInputAction: TextInputAction.next,
                               invisible: true,
                               label: 'تأكيد كلمة السر',
                               controller: passwordConfirmController,
@@ -150,6 +161,8 @@ class AuthScreen extends StatelessWidget {
                             ),
                           if (!chosenTeam.signIn)
                             AddPatientTextField(
+                                textInputAction: TextInputAction.next,
+                                textInputType: TextInputType.number,
                                 label: 'رقم التليفون',
                                 controller: userPhoneController,
                                 tKey: userPhoneKey,
@@ -162,137 +175,207 @@ class AuthScreen extends StatelessWidget {
                                 },
                                 multiline: false),
                           if (!chosenTeam.signIn)
-                            Consumer<StateManagment>(
-                              builder: (context, stateManagment, _) => Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    side: const BorderSide(
-                                        width: 1, color: Colors.greenAccent),
-                                  ),
-                                  elevation: 0,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: DropdownButton(
-                                      isDense: true,
-                                      elevation: 50,
-                                      // focusColor: Colors.white,
-                                      underline: Container(),
-                                      value: stateManagment
-                                          .roleDropDownBottonValue,
-                                      isExpanded: true,
+                            Column(
+                              children: [
+                                Consumer<StateManagment>(
+                                  builder: (context, stateManagment, _) =>
+                                      Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0),
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        side: const BorderSide(
+                                            width: 1,
+                                            color: Colors.greenAccent),
+                                      ),
+                                      elevation: 0,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: DropdownButton(
+                                          elevation: 50,
+                                          // focusColor: Colors.white,
+                                          underline: Container(),
+                                          value: stateManagment
+                                              .roleDropDownBottonValue,
+                                          isExpanded: true,
 
-                                      onChanged: (v) => stateManagment
-                                          .setRoleDropDownBottonValue(
-                                              v as String),
-                                      items: List.generate(
-                                        role.length,
-                                        (index) => DropdownMenuItem(
-                                          child: Text(
-                                            role[index],
-                                          ),
-                                          value: role[index],
+                                          onChanged: (v) => stateManagment
+                                              .setRoleDropDownBottonValue(
+                                                  v as String),
+                                          hint: Text('مهمتك في الفريق'),
+                                          items: List.generate(
+                                            role.length,
+                                            (index) => DropdownMenuItem(
+                                              child: Text(
+                                                role[index],
+                                              ),
+                                              value: role[index],
+                                            ),
+                                          ).toList(),
                                         ),
-                                      ).toList(),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
+                                if (chosenTeam.triedToValidate &&
+                                    Provider.of<StateManagment>(context)
+                                            .roleDropDownBottonValue ==
+                                        null)
+                                  Text(
+                                    'اختر مهمتك في الفريق',
+                                    style: TextStyle(color: Colors.red),
+                                  )
+                              ],
                             ),
                           if (!chosenTeam.signIn)
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: Row(
+                              child: Column(
                                 children: [
-                                  if (chosenTeam.roleDropDownBottonValue !=
-                                          'مسؤول دكاترة' &&
-                                      chosenTeam.roleDropDownBottonValue !=
-                                          'متطوع غني')
-                                    Expanded(
-                                      flex: 1,
-                                      child: Consumer<StateManagment>(
-                                        builder: (context, stateManagment, _) =>
-                                            Card(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            side: const BorderSide(
-                                                width: 1,
-                                                color: Colors.greenAccent),
-                                          ),
-                                          elevation: 0,
-                                          child: Container(
-                                            padding: const EdgeInsets.all(16.0),
-                                            child: DropdownButton(
-                                              isDense: true,
-                                              elevation: 50,
-                                              // focusColor: Colors.white,
-                                              underline: Container(),
-                                              value: stateManagment
-                                                  .userTeamDropDownBottonValue,
-                                              hint: const Text('اختر الفريق'),
-                                              onChanged: (v) => stateManagment
-                                                  .setUserTeamDropDownBottonValue(
-                                                      v as String),
-                                              items: List.generate(
-                                                team.length,
-                                                (index) => DropdownMenuItem(
-                                                  child: Text(
-                                                    team[index],
-                                                  ),
-                                                  value: team[index],
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: Column(
+                                          children: [
+                                            Consumer<StateManagment>(
+                                              builder: (context, stateManagment,
+                                                      _) =>
+                                                  Card(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  side: const BorderSide(
+                                                      width: 1,
+                                                      color:
+                                                          Colors.greenAccent),
                                                 ),
-                                              ).toList(),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  if (!chosenTeam.signIn)
-                                    Expanded(
-                                      flex: 1,
-                                      child: Consumer<StateManagment>(
-                                        builder: (context, stateManagment, _) =>
-                                            Card(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            side: const BorderSide(
-                                                width: 1,
-                                                color: Colors.greenAccent),
-                                          ),
-                                          elevation: 0,
-                                          child: Container(
-                                            padding: const EdgeInsets.all(16.0),
-                                            child: DropdownButton(
-                                              isDense: true,
-                                              elevation: 50,
-                                              // focusColor: Colors.white,
-                                              underline: Container(),
-                                              value: stateManagment
-                                                  .userSpecialityDropDownBottonValue,
-                                              hint: const Text('اختر التخصص'),
-                                              onChanged: (v) => stateManagment
-                                                  .setUserSpecialityDropDownButtonValue(
-                                                v as String,
+                                                elevation: 0,
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: DropdownButton(
+                                                    isExpanded: true,
+                                                    elevation: 50,
+                                                    // focusColor: Colors.white,
+                                                    underline: Container(),
+                                                    value: stateManagment
+                                                        .userTeamDropDownBottonValue,
+                                                    hint: const Text(
+                                                        'اختر الفريق'),
+                                                    onChanged: (v) => stateManagment
+                                                        .setUserTeamDropDownBottonValue(
+                                                            v as String),
+                                                    items: List.generate(
+                                                      team.length,
+                                                      (index) =>
+                                                          DropdownMenuItem(
+                                                        child: Text(
+                                                          team[index],
+                                                        ),
+                                                        value: team[index],
+                                                      ),
+                                                    ).toList(),
+                                                  ),
+                                                ),
                                               ),
-                                              items: List.generate(
-                                                speciality.length,
-                                                (index) => DropdownMenuItem(
-                                                  child: Text(
-                                                    speciality[index],
-                                                  ),
-                                                  value: speciality[index],
-                                                ),
-                                              ).toList(),
                                             ),
-                                          ),
+                                          ],
                                         ),
                                       ),
+                                      if (!chosenTeam.signIn)
+                                        if (chosenTeam
+                                                .userTeamDropDownBottonValue ==
+                                            'طب')
+                                          Expanded(
+                                            flex: 1,
+                                            child: Consumer<StateManagment>(
+                                              builder: (context, stateManagment,
+                                                      _) =>
+                                                  Card(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  side: const BorderSide(
+                                                      width: 1,
+                                                      color:
+                                                          Colors.greenAccent),
+                                                ),
+                                                elevation: 0,
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: DropdownButton(
+                                                    isExpanded: true,
+                                                    elevation: 50,
+                                                    // focusColor: Colors.white,
+                                                    underline: Container(),
+                                                    value: stateManagment
+                                                        .userSpecialityDropDownBottonValue,
+                                                    hint: const Text(
+                                                        'اختر التخصص'),
+                                                    onChanged: (v) => stateManagment
+                                                        .setUserSpecialityDropDownButtonValue(
+                                                      v as String,
+                                                    ),
+                                                    items: List.generate(
+                                                      speciality.length,
+                                                      (index) =>
+                                                          DropdownMenuItem(
+                                                        child: Text(
+                                                          speciality[index],
+                                                        ),
+                                                        value:
+                                                            speciality[index],
+                                                      ),
+                                                    ).toList(),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20.0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: (chosenTeam.triedToValidate &&
+                                                  Provider.of<StateManagment>(
+                                                              context)
+                                                          .userTeamDropDownBottonValue ==
+                                                      null)
+                                              ? Text(
+                                                  'اختر الفريق',
+                                                  style: TextStyle(
+                                                      color: Colors.red),
+                                                )
+                                              : Container(),
+                                        ),
+                                        Expanded(
+                                          child: (chosenTeam.triedToValidate &&
+                                                  Provider.of<StateManagment>(
+                                                              context)
+                                                          .userSpecialityDropDownBottonValue ==
+                                                      null &&
+                                                  Provider.of<StateManagment>(
+                                                              context)
+                                                          .userTeamDropDownBottonValue ==
+                                                      'طب')
+                                              ? Text(
+                                                  'اختر تخصصك',
+                                                  style: TextStyle(
+                                                      color: Colors.red),
+                                                )
+                                              : Container(),
+                                        ),
+                                      ],
                                     ),
+                                  )
                                 ],
                               ),
                             ),
@@ -304,6 +387,7 @@ class AuthScreen extends StatelessWidget {
                                     onPressed: () => save(
                                           auth,
                                           chosenTeam,
+                                          chosenTeamFalse,
                                         ),
                                     child: (state.signIn)
                                         ? const Text('تسجيل الدخول')

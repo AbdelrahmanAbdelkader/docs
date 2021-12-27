@@ -40,6 +40,7 @@ dependencies:
   intl: ^0.17.0
   firebase_database: ^9.0.3
   splash_screen_view: ^3.0.0
+  ff_navigation_bar: ^0.1.5
   
 dev_dependencies:
   flutter_test:

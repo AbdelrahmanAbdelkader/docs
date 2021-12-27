@@ -25,17 +25,14 @@ class Account extends ChangeNotifier {
 
   void setTeam(String team) {
     _team = team;
-    notifyListeners();
   }
 
   void setId(String id) {
     _id = id;
-    notifyListeners();
   }
 
   void setAccepted(bool accepted) {
     _accepted = accepted;
-    notifyListeners();
   }
 
   void setRole(String r) {
@@ -61,7 +58,7 @@ class Account extends ChangeNotifier {
         {
           'icon': Icons.person,
           'label': 'المتطوعين',
-          'screen': VolScreen(),
+          'screen': VolanteerProfileScreen(),
         }
         // {
         //   'icon': Icons.account_circle_outlined,

@@ -20,7 +20,7 @@ class Auth {
     id = auth.currentUser!.uid;
   }
 
-  void register(String userName, String userPhone, String? team, String state,
+  void register(String userName, String userPhone, String? team, String? state,
       String role, bool thereAreUsers) async {
     await auth.createUserWithEmailAndPassword(
         email: _email, password: _password);

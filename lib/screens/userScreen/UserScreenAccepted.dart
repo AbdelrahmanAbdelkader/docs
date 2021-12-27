@@ -7,27 +7,31 @@ class UserScreen extends StatelessWidget {
     Key? key,
   }) : super(key: key);
   bool once = true;
+  int i = 0;
   @override
   Widget build(BuildContext context) {
-    final bottomNavProvider = Provider.of<Account>(context);
+    final account = Provider.of<Account>(context);
+    print(account.accepted);
+    print(account.id);
+    print(account.role);
+    print(account.team);
     return Builder(builder: (context) {
       return Scaffold(
-        body: bottomNavProvider.bottomNavBarItems[bottomNavProvider.current]
-            ['screen'],
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: bottomNavProvider.current,
-          onTap: (v) => bottomNavProvider.setCurrent(v),
-          items: List.generate(
-            bottomNavProvider.bottomNavBarItems.length,
-            (index) => BottomNavigationBarItem(
-              icon: Icon(
-                bottomNavProvider.bottomNavBarItems[index]['icon'],
+          body: account.bottomNavBarItems[account.current]['screen'],
+          bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            fixedColor: Colors.white,
+            backgroundColor: Colors.green,
+            items: List.generate(
+              account.bottomNavBarItems.length,
+              (index) => BottomNavigationBarItem(
+                icon: Icon(account.bottomNavBarItems[index]['icon']),
+                label: account.bottomNavBarItems[index]['label'],
               ),
-              label: bottomNavProvider.bottomNavBarItems[index]['label'],
             ),
-          ),
-        ),
-      );
+            currentIndex: account.current,
+            onTap: (v) => account.setCurrent(v),
+          ));
     });
   }
 }

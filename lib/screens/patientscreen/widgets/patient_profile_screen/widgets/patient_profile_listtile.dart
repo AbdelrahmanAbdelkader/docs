@@ -4,8 +4,8 @@ class PatientProfieListTile extends StatelessWidget {
   const PatientProfieListTile(
       {Key? key, required this.title, required this.trailing})
       : super(key: key);
-  final String title;
-  final String trailing;
+  final String? title;
+  final String? trailing;
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -17,11 +17,11 @@ class PatientProfieListTile extends StatelessWidget {
         ),
       ),
       title: Text(
-        title,
+        (title != null) ? title as String : '',
         style: Theme.of(context).textTheme.headline2,
       ),
       trailing: Text(
-        trailing,
+        (trailing != null) ? trailing as String : '',
         style: Theme.of(context).textTheme.headline2,
       ),
     );

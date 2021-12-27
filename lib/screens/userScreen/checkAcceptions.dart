@@ -22,6 +22,7 @@ class CheckAcception extends StatelessWidget {
             .child(account.id as String)
             .onValue,
         builder: (ct, snap) {
+          print("ss");
           if (snap.data != null) if (snap.connectionState ==
               ConnectionState.waiting)
             return Center(
@@ -33,7 +34,7 @@ class CheckAcception extends StatelessWidget {
               account.setRole(data['role']);
               account.setTeam(data['team']);
               account.setAccepted(data['accepted']);
-              if ((snap.data as DatabaseEvent).snapshot.value as bool) {
+              if (account.accepted as bool) {
                 return UserScreen();
               } else {
                 return GuestScreen(true);

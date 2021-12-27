@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sample/provider/bottomnav.dart';
 import 'package:sample/provider/patient.dart';
 import 'package:sample/provider/patients.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_list_tile.dart';
@@ -11,8 +12,9 @@ class PatientList extends StatelessWidget {
   Widget build(BuildContext context) {
     final proveFalse = Provider.of<PatientsProv>(context, listen: false);
     final proveTrue = Provider.of<PatientsProv>(context);
+    final account = Provider.of<Account>(context);
     return FutureBuilder(
-      future: proveFalse.refresh(),
+      future: proveFalse.refresh(account.team as String, account.role),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
