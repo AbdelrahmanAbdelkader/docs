@@ -181,7 +181,7 @@ class AddDoctor extends StatelessWidget {
                             ),
                           ),
                         ),
-                        if (doc.triedToValidate && doc.val == null)
+                        if (doc.triedToValidate && doc.type == null)
                           const Text(
                             'اختر التخصص',
                             style: TextStyle(color: Colors.red, fontSize: 12),
