@@ -7,8 +7,9 @@ import 'package:sample/screens/widgets/custom_text_field.dart';
 
 // ignore: must_be_immutable
 class AddDoctor extends StatelessWidget {
-  AddDoctor({Key? ky}) : super(key: ky);
+  AddDoctor(this.prove, {Key? ky}) : super(key: ky);
   bool once = true;
+  final Doc prove;
   final GlobalKey<FormState> keys = GlobalKey<FormState>();
   final TextEditingController docNameController = TextEditingController();
   final TextEditingController docPhoneController = TextEditingController();
@@ -52,10 +53,10 @@ class AddDoctor extends StatelessWidget {
       prove.triedToValidate = true;
       bool validate = keys.currentState!.validate();
       if (prove.val != null && validate) {
-        print("sss");
         prove.type = prove.val as String;
         keys.currentState!.save();
         DatabaseReference ref;
+        print(prove.Id);
         if (prove.Id == null) {
           ref = database.ref().child('doctors').push();
         } else
@@ -77,10 +78,9 @@ class AddDoctor extends StatelessWidget {
     }
 
     Size size = MediaQuery.of(context).size;
-    final prove = Provider.of<Doc>(context);
-    final staticProve = Provider.of<Doc>(context, listen: false);
+    //final staticProve = Provider.of<Doc>(context, listen: false);
     if (once) {
-      fitchLastData(staticProve);
+      fitchLastData(prove);
       once = false;
     }
     // staticProve.getTextFields(docNameController, docPhoneController,

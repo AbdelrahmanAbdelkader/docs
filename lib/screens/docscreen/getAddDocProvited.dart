@@ -10,6 +10,6 @@ class GetAddDocProve extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     doc = Doc()..ref = fun;
-    return ChangeNotifierProvider.value(value: doc, child: AddDoctor());
+    return ChangeNotifierProvider.value(value: doc, child: AddDoctor(doc));
   }
 }
