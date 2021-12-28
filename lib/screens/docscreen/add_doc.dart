@@ -90,7 +90,6 @@ class AddDoctor extends StatelessWidget {
       value: prove,
       child: Builder(builder: (context) {
         final doc = Provider.of<Doc>(context);
-        print(doc.val);
         return Scaffold(
           appBar: AppBar(),
           body: Form(
@@ -124,7 +123,9 @@ class AddDoctor extends StatelessWidget {
                               multiline: false)),
                       Switch(
                         value: doc.value,
-                        onChanged: (v) => doc.value = v,
+                        onChanged: (v) {
+                          doc.setCommuicate(v);
+                        },
                       ),
                     ],
                   ),

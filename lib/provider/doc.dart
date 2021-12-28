@@ -18,6 +18,11 @@ class Doc extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setCommuicate(bool s) {
+    value = s;
+    notifyListeners();
+  }
+
   void initData(Map data) {
     if (data['phone'] != null) phone = data['phone'];
     if (data['hint'] != null) hint = data['hint'];
