@@ -2,7 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
-import 'package:sample/provider/bottomnav.dart';
+import 'package:sample/provider/account.dart';
 import 'package:sample/provider/docs.dart';
 import 'package:sample/provider/state.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/illnesslist.dart';
@@ -62,7 +62,6 @@ class AddPatientPage extends StatelessWidget {
         Provider.of<StateManagment>(context, listen: false);
     final doctorProvider = Provider.of<Docs>(context, listen: false);
     final account = Provider.of<Account>(context);
-    print(account.team);
     Map<String, Object> newPatient = {};
     void save() async {
       if (fkey.currentState!.validate()) {

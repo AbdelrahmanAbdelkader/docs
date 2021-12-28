@@ -55,14 +55,11 @@ class Account extends ChangeNotifier {
           'label': 'المتطوعين',
           'screen': VolScreen(),
         },
-<<<<<<< HEAD
         {
           'icon': Icons.person,
           'label': 'المتطوعين',
           'screen': VolanteerProfileScreen(),
         }
-=======
->>>>>>> 1c91dfc467da31e6bad84aa693a6b4e71edbd9af
         // {
         //   'icon': Icons.account_circle_outlined,
         //   'label': 'الأكونت',
