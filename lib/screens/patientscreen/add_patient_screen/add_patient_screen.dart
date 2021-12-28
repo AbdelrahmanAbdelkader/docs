@@ -86,7 +86,7 @@ class AddPatientPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: FutureBuilder(
-        future: doctorProvider.refresh(),
+        future: doctorProvider.refresh(refrech),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting)
             return Center(

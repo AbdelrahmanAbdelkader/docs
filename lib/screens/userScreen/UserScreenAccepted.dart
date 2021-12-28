@@ -11,10 +11,6 @@ class UserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final account = Provider.of<Account>(context);
-    print(account.accepted);
-    print(account.id);
-    print(account.role);
-    print(account.team);
     return Builder(builder: (context) {
       return Scaffold(
           body: account.bottomNavBarItems[account.current]['screen'],

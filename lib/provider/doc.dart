@@ -13,6 +13,15 @@ class Doc extends ChangeNotifier {
   bool triedToValidate = false;
   String? val;
   String? type;
+  void setType(String val) {
+    type = val;
+    notifyListeners();
+  }
+
+  void setCommuicate(bool s) {
+    value = s;
+    notifyListeners();
+  }
 
   void initData(Map data) {
     if (data['phone'] != null) phone = data['phone'];

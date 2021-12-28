@@ -113,7 +113,7 @@ class _DocSampleState extends State<DocSample> {
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (ctx) => AddDoctor(),
+                              builder: (ctx) => AddDoctor(prove),
                             ),
                           );
                         },
