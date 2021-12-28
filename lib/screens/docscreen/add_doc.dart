@@ -51,9 +51,10 @@ class AddDoctor extends StatelessWidget {
   Widget build(BuildContext context) {
     void save(Doc prove) {
       prove.triedToValidate = true;
+      print(prove.Id);
       bool validate = keys.currentState!.validate();
-      if (prove.val != null && validate) {
-        prove.type = prove.val as String;
+      if (prove.type != null && validate) {
+        // prove.type = prove.val as String;
         keys.currentState!.save();
         DatabaseReference ref;
         print(prove.Id);
@@ -85,149 +86,157 @@ class AddDoctor extends StatelessWidget {
     }
     // staticProve.getTextFields(docNameController, docPhoneController,
     //     docEmailController, hintController);
-    print(prove.name);
-    return Scaffold(
-      appBar: AppBar(),
-      body: Form(
-        key: keys,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              AddPatientTextField(
-                  label: 'اسم الدكتور',
-                  controller: docNameController,
-                  tKey: docNameKey,
-                  save: (v) => {prove.name = v as String},
-                  validate: (v) {
-                    if (v!.length < 4) return 'ادخل اسم صحيح';
-                  },
-                  multiline: false),
-              Row(
+    return ChangeNotifierProvider.value(
+      value: prove,
+      child: Builder(builder: (context) {
+        final doc = Provider.of<Doc>(context);
+        print(doc.val);
+        return Scaffold(
+          appBar: AppBar(),
+          body: Form(
+            key: keys,
+            child: SingleChildScrollView(
+              child: Column(
                 children: [
-                  SizedBox(
-                      width: size.width * .8,
-                      child: AddPatientTextField(
-                          label: 'رقم التليفون',
-                          controller: docPhoneController,
-                          tKey: docPhoneKey,
-                          save: (v) => prove.phone = v as String,
+                  AddPatientTextField(
+                      label: 'اسم الدكتور',
+                      controller: docNameController,
+                      tKey: docNameKey,
+                      save: (v) => {doc.name = v as String},
+                      validate: (v) {
+                        if (v!.length < 4) return 'ادخل اسم صحيح';
+                      },
+                      multiline: false),
+                  Row(
+                    children: [
+                      SizedBox(
+                          width: size.width * .8,
+                          child: AddPatientTextField(
+                              label: 'رقم التليفون',
+                              controller: docPhoneController,
+                              tKey: docPhoneKey,
+                              save: (v) => doc.phone = v as String,
+                              validate: (v) {
+                                if (v!.length != 10 && v.length != 11) {
+                                  return ' ادخل رقم هاتف صحيح';
+                                }
+                              },
+                              multiline: false)),
+                      Switch(
+                        value: doc.value,
+                        onChanged: (v) => doc.value = v,
+                      ),
+                    ],
+                  ),
+                  (doc.value)
+                      ? Container()
+                      : AddPatientTextField(
+                          label: 'طريقة التواصل',
+                          controller: docEmailController,
+                          tKey: docEmailKey,
+                          save: (v) => doc.email = v as String,
                           validate: (v) {
-                            if (v!.length != 10 && v.length != 11) {
-                              return ' ادخل رقم هاتف صحيح';
+                            if (!v!.contains('@') || !v.contains('.com')) {
+                              return 'ادخل بريد الكتروني صحيح';
                             }
                           },
-                          multiline: false)),
-                  Switch(
-                    value: prove.value,
-                    onChanged: (v) => prove.value = v,
+                          multiline: false),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                              side: const BorderSide(
+                                  width: 1, color: Colors.greenAccent),
+                            ),
+                            elevation: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(16.0),
+                              child: DropdownButton(
+                                isDense: true,
+                                elevation: 0,
+                                // focusColor: Colors.white,
+                                underline: Container(),
+                                value: doc.type,
+                                isExpanded: true,
+                                hint: const Text('اختر التخصص'),
+                                onChanged: (va) {
+                                  doc.setType(va as String);
+                                },
+                                items: List.generate(
+                                  speciality.length,
+                                  (index) => DropdownMenuItem(
+                                    child: Text(
+                                      speciality[index],
+                                    ),
+                                    value: speciality[index],
+                                  ),
+                                ).toList(),
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (doc.triedToValidate && doc.val == null)
+                          const Text(
+                            'اختر التخصص',
+                            style: TextStyle(color: Colors.red, fontSize: 12),
+                          ),
+                      ],
+                    ),
+                  ),
+                  AddPatientTextField(
+                      label: 'ملاحظة',
+                      controller: hintController,
+                      tKey: hintKey,
+                      save: (v) => doc.hint = v as String,
+                      validate: (v) {},
+                      multiline: true),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 20, horizontal: 7),
+                    child: GestureDetector(
+                      child: Row(
+                        children: [
+                          const Text('موافق يشتغل معانا؟'),
+                          const Spacer(),
+                          (!doc.agreed)
+                              ? const Icon(
+                                  Icons.check_box_outlined,
+                                  color: Colors.red,
+                                )
+                              : const Icon(
+                                  Icons.check_box,
+                                  color: Colors.green,
+                                ),
+                        ],
+                      ),
+                      onTap: () {
+                        doc.toggle();
+                      },
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      save(doc);
+                    },
+                    child: const Text('save'),
+                    style: ButtonStyle(
+                      fixedSize: MaterialStateProperty.all(
+                        Size.fromWidth(size.width * .8),
+                      ),
+                    ),
                   ),
                 ],
               ),
-              (prove.value)
-                  ? Container()
-                  : AddPatientTextField(
-                      label: 'طريقة التواصل',
-                      controller: docEmailController,
-                      tKey: docEmailKey,
-                      save: (v) => prove.email = v as String,
-                      validate: (v) {
-                        if (!v!.contains('@') || !v.contains('.com')) {
-                          return 'ادخل بريد الكتروني صحيح';
-                        }
-                      },
-                      multiline: false),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          side: const BorderSide(
-                              width: 1, color: Colors.greenAccent),
-                        ),
-                        elevation: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(16.0),
-                          child: DropdownButton(
-                            isDense: true,
-                            elevation: 0,
-                            // focusColor: Colors.white,
-                            underline: Container(),
-                            value: prove.val,
-                            isExpanded: true,
-                            hint: const Text('اختر التخصص'),
-                            onChanged: (va) => prove.val = va as String,
-                            items: List.generate(
-                              speciality.length,
-                              (index) => DropdownMenuItem(
-                                child: Text(
-                                  speciality[index],
-                                ),
-                                value: speciality[index],
-                              ),
-                            ).toList(),
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (prove.triedToValidate && prove.val == null)
-                      const Text(
-                        'اختر التخصص',
-                        style: TextStyle(color: Colors.red, fontSize: 12),
-                      ),
-                  ],
-                ),
-              ),
-              AddPatientTextField(
-                  label: 'ملاحظة',
-                  controller: hintController,
-                  tKey: hintKey,
-                  save: (v) => prove.hint = v as String,
-                  validate: (v) {},
-                  multiline: true),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 7),
-                child: GestureDetector(
-                  child: Row(
-                    children: [
-                      const Text('موافق يشتغل معانا؟'),
-                      const Spacer(),
-                      (!prove.agreed)
-                          ? const Icon(
-                              Icons.check_box_outlined,
-                              color: Colors.red,
-                            )
-                          : const Icon(
-                              Icons.check_box,
-                              color: Colors.green,
-                            ),
-                    ],
-                  ),
-                  onTap: () {
-                    prove.toggle();
-                  },
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  save(prove);
-                },
-                child: const Text('save'),
-                style: ButtonStyle(
-                  fixedSize: MaterialStateProperty.all(
-                    Size.fromWidth(size.width * .8),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

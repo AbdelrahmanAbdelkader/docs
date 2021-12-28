@@ -6,7 +6,7 @@ class Docs extends ChangeNotifier {
   Map _data = {};
   List<Doc> doctors = [];
   List<Doc> searchedDoctors = [];
-  Future<void> refresh() async {
+  Future<void> refresh(Function fun) async {
     final database = FirebaseDatabase.instance;
     doctors = [];
     DataSnapshot dataSnap = await database.ref().child("doctors").get();
@@ -17,7 +17,8 @@ class Docs extends ChangeNotifier {
         doctors.add(
           Doc()
             ..Id = key as String
-            ..initData(value),
+            ..initData(value)
+            ..ref = fun,
         );
       });
     }
