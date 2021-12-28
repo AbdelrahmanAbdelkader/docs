@@ -13,7 +13,6 @@ class PatientScreen extends StatefulWidget {
 
 class _PatientScreenState extends State<PatientScreen> {
   void setStates() {
-    print("kk");
     setState(() {});
   }
 

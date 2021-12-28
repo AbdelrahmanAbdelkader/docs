@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/docs.dart';
-import 'package:sample/provider/state.dart';
+import 'package:sample/provider/patient.dart';
+import 'package:sample/provider/patients.dart';
 
 // ignore: must_be_immutable
-class PatientDropDown extends StatefulWidget {
+class PatientDropDown extends StatelessWidget {
   PatientDropDown({
     Key? key,
     required this.text,
   }) : super(key: key);
   final String text;
-  @override
-  _PatientDropDownState createState() => _PatientDropDownState();
-}
-
-class _PatientDropDownState extends State<PatientDropDown> {
   String? value;
 
   @override
   Widget build(BuildContext context) {
-    final doctors = Provider.of<Docs>(context).doctors;
-    final statemanage = Provider.of<StateManagment>(context, listen: false);
+    final patientProvider = Provider.of<Patient>(context);
+    final patientsProvider = Provider.of<PatientsProv>(context);
     return Card(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -28,29 +23,24 @@ class _PatientDropDownState extends State<PatientDropDown> {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
         child: DropdownButton(
-          // icon: Icon(
-          //   Icons.arrow_drop_down_sharp,
-          //   color: Colors.green,
-          // ),
           isExpanded: true,
           hint: Text(
-            widget.text,
+            text,
           ),
-          value: statemanage.patientDocDropDownBottonValue,
+          value: patientProvider.docId,
           underline: Container(),
           style: TextStyle(
             color: Colors.green,
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
-          onChanged: (v) => setState(() {
-            statemanage.patientDocDropDownBottonValue = v as String;
-          }),
-          items: doctors
+          onChanged: (v) => patientProvider.setDoctor(
+              v as String, patientsProvider.currentDoctors),
+          items: patientsProvider.currentDoctors
               .map(
                 (e) => DropdownMenuItem(
-                  child: Text(e.name),
-                  value: e.name,
+                  child: Text(e['name']),
+                  value: e['idDoc'],
                 ),
               )
               .toList(),

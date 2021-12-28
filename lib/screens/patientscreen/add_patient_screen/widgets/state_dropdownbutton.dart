@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
+import 'package:sample/provider/patient.dart';
 import 'package:sample/provider/state.dart';
 
-class StateDropDownButton extends StatefulWidget {
+class StateDropDownButton extends StatelessWidget {
   const StateDropDownButton({
     Key? key,
     required this.label,
@@ -13,13 +14,8 @@ class StateDropDownButton extends StatefulWidget {
   final String label;
   final List items;
   @override
-  _StateDropDownButtonState createState() => _StateDropDownButtonState();
-}
-
-class _StateDropDownButtonState extends State<StateDropDownButton> {
-  String? value;
-  @override
   Widget build(BuildContext context) {
+    final patientProvider = Provider.of<Patient>(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: Card(
@@ -41,11 +37,10 @@ class _StateDropDownButtonState extends State<StateDropDownButton> {
               fontWeight: FontWeight.bold,
             ),
             hint: Text(
-              widget.label,
-              
+              label,
             ),
-            value: value,
-            items: widget.items
+            value: patientProvider.state,
+            items: items
                 .map(
                   (e) => DropdownMenuItem(
                     child: Text(e),
@@ -54,16 +49,7 @@ class _StateDropDownButtonState extends State<StateDropDownButton> {
                 )
                 .toList(),
             onChanged: (v) {
-              setState(() {
-                value = v as String;
-              });
-              if (widget.items == states) {
-                Provider.of<StateManagment>(context, listen: false)
-                    .setPatientVillageDropDownButtonValue(v as String);
-              } else {
-                Provider.of<StateManagment>(context, listen: false)
-                    .setPatientIllnessTypeDropDownButtonValue(v as String);
-              }
+              patientProvider.setState(v as String);
             },
           ),
         ),

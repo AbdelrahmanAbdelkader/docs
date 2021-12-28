@@ -1,14 +1,61 @@
 import 'package:flutter/cupertino.dart';
 
-class Patient {
-  String? ill = '';
-  String? doctor = '';
-  String? vol = '';
+class Patient extends ChangeNotifier {
+  String? illnessType;
+  String? doctor;
+  String? docId;
+  String? volId = '';
+  String? volName = '';
   String? name = '';
   String? address = '';
   String? phone = '';
   String? source = '';
-  String? latest = '';
+  List<Map> latests = [];
+  String? latestToPush = '';
   String? date = '';
-  String? state = '';
+  String? state;
+  List<Map> illnesses = [];
+  bool? stateValidate;
+  void stateNotvalidated() {
+    stateValidate = false;
+    notifyListeners();
+  }
+
+  void setLatest(String latest) {
+    latestToPush = latest;
+    latests.add({
+      'title': latest,
+      'id': '${(DateTime.now().second)}:${(DateTime.now().millisecond)}'
+    });
+    notifyListeners();
+  }
+
+  void addIllnesses(Map val) {
+    illnesses.add(val);
+    notifyListeners();
+  }
+
+  void removeIllness(Map val) {
+    illnesses.remove(val);
+    notifyListeners();
+  }
+
+  void setillnessType(String val) {
+    illnessType = val;
+    notifyListeners();
+  }
+
+  void setState(String val) {
+    state = val;
+    stateValidate = true;
+    notifyListeners();
+  }
+
+  void setDoctor(String id, List doctors) {
+    docId = id;
+    print(id);
+    print(doctors);
+    doctor = doctors.firstWhere((element) => element['idDoc'] == id)['name'];
+    notifyListeners();
+  }
 }

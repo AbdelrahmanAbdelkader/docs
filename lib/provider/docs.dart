@@ -1,12 +1,14 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:sample/provider/doc.dart';
+import 'package:sample/provider/patients.dart';
 
 class Docs extends ChangeNotifier {
   Map _data = {};
   List<Doc> doctors = [];
   List<Doc> searchedDoctors = [];
-  Future<void> refresh(Function fun) async {
+  Future<void> refresh(
+      Function fun, Function(List<Map>) setCurrentDoctors) async {
     final database = FirebaseDatabase.instance;
     doctors = [];
     DataSnapshot dataSnap = await database.ref().child("doctors").get();
@@ -21,6 +23,14 @@ class Docs extends ChangeNotifier {
             ..ref = fun,
         );
       });
+      setCurrentDoctors(
+        doctors
+            .map((e) => {
+                  'idDoc': e.Id,
+                  'name': e.name,
+                })
+            .toList(),
+      );
     }
   }
 

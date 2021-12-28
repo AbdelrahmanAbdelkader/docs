@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
-import 'package:sample/screens/patientscreen/add_patient_screen/widgets/state_dropdownbutton.dart';
+import 'package:sample/provider/patient.dart';
 
-import 'illness.dart';
 import 'illnesstextfield.dart';
 
-class IllnessList extends StatefulWidget {
-  const IllnessList(
+class IllnessList extends StatelessWidget {
+  IllnessList(
       {Key? key,
       required this.illnessController,
       required this.illnessValueController})
@@ -14,15 +14,48 @@ class IllnessList extends StatefulWidget {
   final TextEditingController illnessController;
   final TextEditingController illnessValueController;
   @override
-  _IllnessListState createState() => _IllnessListState();
-}
-
-class _IllnessListState extends State<IllnessList> {
-  List<Map> illnesses = [];
-  @override
   Widget build(BuildContext context) {
+    final patientProvider = Provider.of<Patient>(context);
     return Column(children: [
-      StateDropDownButton(label: 'تخصص المرض', items: speciality),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(
+              width: 1,
+              color: Colors.greenAccent,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
+            child: DropdownButton(
+              underline: Container(),
+              isExpanded: true,
+              style: TextStyle(
+                color: Colors.green,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+              hint: Text(
+                'تخصص المرض',
+              ),
+              value: patientProvider.illnessType,
+              items: speciality
+                  .map(
+                    (e) => DropdownMenuItem(
+                      child: Text(e),
+                      value: e,
+                    ),
+                  )
+                  .toList(),
+              onChanged: (v) {
+                patientProvider.setillnessType(v as String);
+              },
+            ),
+          ),
+        ),
+      ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: Row(
@@ -31,23 +64,18 @@ class _IllnessListState extends State<IllnessList> {
               flex: 2,
               child: IconButton(
                 onPressed: () {
-                  print(illnesses);
-                  setState(
-                    () {
-                      if (widget.illnessValueController.text.isNotEmpty ||
-                          widget.illnessController.text.isNotEmpty)
-                        illnesses.add(
-                          {
-                            'المرض': widget.illnessController.text.toString(),
-                            'القيمة':
-                                widget.illnessValueController.text.toString(),
-                          },
-                        );
-                      widget.illnessValueController.clear();
-                      widget.illnessController.clear();
-                    },
-                  );
-                  print(illnesses);
+                  if (illnessValueController.text.isNotEmpty ||
+                      illnessController.text.isNotEmpty)
+                    patientProvider.addIllnesses(
+                      {
+                        'المرض': illnessController.text.toString(),
+                        'القيمة': illnessValueController.text.toString(),
+                        'id':
+                            '${(DateTime.now().second)}:${(DateTime.now().millisecond)}',
+                      },
+                    );
+                  illnessValueController.clear();
+                  illnessController.clear();
                 },
                 icon: const Icon(
                   Icons.add,
@@ -58,7 +86,7 @@ class _IllnessListState extends State<IllnessList> {
             Expanded(
               flex: 5,
               child: IllnessTextField(
-                  controller: widget.illnessController,
+                  controller: illnessController,
                   label: 'المرض',
                   save: (v) {},
                   validate: (v) {},
@@ -67,7 +95,7 @@ class _IllnessListState extends State<IllnessList> {
             Expanded(
               flex: 2,
               child: IllnessTextField(
-                  controller: widget.illnessValueController,
+                  controller: illnessValueController,
                   label: 'القيمة',
                   save: (v) {},
                   validate: (v) {},
@@ -76,12 +104,15 @@ class _IllnessListState extends State<IllnessList> {
           ],
         ),
       ),
-      ...illnesses
+      ...patientProvider.illnesses
           .map(
             (e) => Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8),
               child: ListTile(
+                onLongPress: () {
+                  patientProvider.removeIllness(e);
+                },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                     side: BorderSide(width: 1, color: Colors.greenAccent)),

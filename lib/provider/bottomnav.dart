@@ -11,6 +11,7 @@ class Account extends ChangeNotifier {
   String _role = '';
   bool? _accepted;
   String? _team;
+  String? name;
   Map<String, Map> types = {};
   int current = 0;
   List<Map> bottomNavBarItems = [{}];
@@ -19,6 +20,10 @@ class Account extends ChangeNotifier {
   String get role => _role;
   bool? get accepted => _accepted;
   String? get team => _team;
+  void setName(String val) {
+    name = val;
+  }
+
   void setCurrent(int ne) {
     current = ne;
     if (ne == 0) {

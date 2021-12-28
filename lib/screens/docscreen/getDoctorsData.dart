@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/docs.dart';
+import 'package:sample/provider/patients.dart';
 
 import 'doc_page.dart';
 
@@ -17,9 +18,11 @@ class _GetDoctorsDataState extends State<GetDoctorsData> {
 
   @override
   Widget build(BuildContext context) {
-    final prove = Provider.of<Docs>(context, listen: false);
+    final docsProve = Provider.of<Docs>(context, listen: false);
+    final patientsProve = Provider.of<PatientsProv>(context, listen: false);
     return FutureBuilder(
-        future: prove.refresh(settingState),
+        future:
+            docsProve.refresh(settingState, patientsProve.setCurrentDoctors),
         builder: (cont, snap) {
           if (snap.connectionState == ConnectionState.waiting)
             return Center(

@@ -57,7 +57,7 @@ class PatientProfileScreen extends StatelessWidget {
           ),
           PatientProfieListTile(
             title: 'نوع المرض :',
-            trailing: patient.ill,
+            trailing: patient.illnessType,
           )
         ],
       ),

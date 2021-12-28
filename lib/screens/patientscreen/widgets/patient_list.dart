@@ -20,7 +20,6 @@ class PatientList extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (proveTrue.patients.isNotEmpty) {
-          print(proveTrue.patients);
           return ListView(
             children: proveTrue.patients
                 .map((e) => PatientListTile(
