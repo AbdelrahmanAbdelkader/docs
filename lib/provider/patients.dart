@@ -10,8 +10,6 @@ class PatientsProv extends ChangeNotifier {
   }
 
   void addPatient(Map newPatient) {
-    print("ss");
-    print(newPatient);
     _patients.add(
       Patient()
         ..address = newPatient['adress']
@@ -21,6 +19,7 @@ class PatientsProv extends ChangeNotifier {
         ..name = newPatient['name']
         ..phone = newPatient['phoneNum']
         ..source = newPatient['source']
+        ..nationalId = newPatient['nationalId']
         // ..vol = newPatient['volName']
         ..date = newPatient['date']
         ..state = newPatient['state'],
@@ -50,5 +49,20 @@ class PatientsProv extends ChangeNotifier {
         addPatient(element);
       });
     }
+    sortLatest();
+  }
+
+  sortLatest() {
+    patients.forEach((element) {
+      for (int i = 1; i < element.latest!.length; i++) {
+        if (DateTime.parse(element.latest![i - 1]['date'])
+            .isAfter(element.latest![i]['date'])) {
+          Map temp = {};
+          temp = element.latest![i - 1]['date'];
+          element.latest![i - 1]['date'] = element.latest![i]['date'];
+          element.latest![i]['date'] = temp;
+        }
+      }
+    });
   }
 }

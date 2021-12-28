@@ -105,12 +105,15 @@ class AddDoctor extends StatelessWidget {
                       validate: (v) {
                         if (v!.length < 4) return 'ادخل اسم صحيح';
                       },
+                      textInputAction: TextInputAction.next,
                       multiline: false),
                   Row(
                     children: [
                       SizedBox(
                           width: size.width * .8,
                           child: AddPatientTextField(
+                              textInputAction: TextInputAction.next,
+                              textInputType: TextInputType.phone,
                               label: 'رقم التليفون',
                               controller: docPhoneController,
                               tKey: docPhoneKey,
@@ -134,6 +137,8 @@ class AddDoctor extends StatelessWidget {
                       : AddPatientTextField(
                           label: 'طريقة التواصل',
                           controller: docEmailController,
+                          textInputAction: TextInputAction.next,
+                          textInputType: TextInputType.emailAddress,
                           tKey: docEmailKey,
                           save: (v) => doc.email = v as String,
                           validate: (v) {

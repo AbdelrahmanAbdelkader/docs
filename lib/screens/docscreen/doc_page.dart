@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/doc.dart';
 import 'package:sample/provider/docs.dart';
+import 'package:sample/provider/patients.dart';
 import 'package:sample/screens/widgets/app_bar_button.dart';
 
 import 'package:sample/screens/docscreen/getAddDocProvited.dart';
@@ -18,17 +20,26 @@ class DocList extends StatefulWidget {
 class _DocListState extends State<DocList> {
   List<Doc> searchedDoctors = [];
   bool search = false;
+
   @override
   Widget build(BuildContext context) {
     final prove = Provider.of<Docs>(context, listen: false);
     final proveTrue = Provider.of<Docs>(context);
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: (search)
-          ? null
-          : AppBar(
-              title: const Text('الدكاترة'),
-              actions: [
+      appBar: AppBar(
+        title: Text((search) ? 'البحث' : 'الدكاترة'),
+        actions: (search)
+            ? [
+                IconButton(
+                    onPressed: () {
+                      setState(() {
+                        search = false;
+                      });
+                    },
+                    icon: Icon(Icons.arrow_back))
+              ]
+            : [
                 IconButton(
                   onPressed: () => FirebaseAuth.instance.signOut(),
                   icon: Icon(Icons.logout),
@@ -50,7 +61,7 @@ class _DocListState extends State<DocList> {
                   ),
                 ),
               ],
-            ),
+      ),
       body: Container(
         height: size.height,
         child: Stack(
@@ -68,54 +79,58 @@ class _DocListState extends State<DocList> {
                   ? SingleChildScrollView(
                       child: Column(children: [
                         if (search)
-                          Container(
-                            color: Colors.green[800],
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height: MediaQuery.of(context).padding.top,
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: TextFormField(
-                                        onChanged: (value) {
-                                          setState(() {
-                                            searchedDoctors =
-                                                prove.doctors.where((element) {
-                                              return element.name
-                                                  .contains(value);
-                                            }).toList();
-                                          });
-                                        },
-                                        decoration: InputDecoration(
-                                          hintText: 'search for doctor',
-                                          hintStyle: TextStyle(
-                                              color: Colors.green[100]),
-                                          // label: Text(label),
-                                          border: InputBorder.none,
-                                          errorBorder: InputBorder.none,
-                                          enabledBorder: InputBorder.none,
-                                          focusedBorder: InputBorder.none,
-                                          disabledBorder: InputBorder.none,
-                                          focusedErrorBorder: InputBorder.none,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 30.0, vertical: 15),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.green.shade50.withOpacity(.2),
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(
+                                      width: 1, color: Colors.green.shade400)),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0, vertical: 10),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: TextFormField(
+                                            onChanged: (value) {
+                                              setState(() {
+                                                searchedDoctors = prove.doctors
+                                                    .where((element) {
+                                                  return element.name
+                                                      .contains(value);
+                                                }).toList();
+                                              });
+                                            },
+                                            decoration: InputDecoration(
+                                              hintText: 'اسم الدكتور',
+                                              suffixIcon: Icon(
+                                                Icons.search,
+                                                color: Colors.green[200],
+                                              ),
+                                              hintStyle: TextStyle(
+                                                  color: Colors.green[200]),
+                                              // label: Text(label),
+
+                                              border: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                              focusedErrorBorder:
+                                                  InputBorder.none,
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                      ],
                                     ),
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.close,
-                                        color: Colors.green[100],
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          search = false;
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         if (!search)

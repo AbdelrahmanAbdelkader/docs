@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
 import 'package:sample/provider/account.dart';
@@ -17,6 +18,8 @@ class AddPatientPage extends StatelessWidget {
   final fkey = GlobalKey<FormState>();
 
   final TextEditingController patientNameController = TextEditingController();
+
+  final TextEditingController nationalIdController = TextEditingController();
 
   final TextEditingController patientPhoneController = TextEditingController();
 
@@ -37,6 +40,8 @@ class AddPatientPage extends StatelessWidget {
   final Key patientNameKey = const Key('patientName');
 
   final Key patientNumKey = const Key('patientNum');
+
+  final Key nationalIdKey = const Key('NationalIdKey');
 
   final Key patientAdressKey = const Key('patientAdress');
 
@@ -100,6 +105,7 @@ class AddPatientPage extends StatelessWidget {
                   AddPatientTextField(
                     label: 'الاسم',
                     controller: patientNameController,
+                    textInputAction: TextInputAction.next,
                     tKey: patientNameKey,
                     save: (v) {
                       newPatient['name'] = v;
@@ -110,8 +116,23 @@ class AddPatientPage extends StatelessWidget {
                     multiline: false,
                   ),
                   AddPatientTextField(
+                    label: 'الرقم القومي',
+                    controller: nationalIdController,
+                    textInputAction: TextInputAction.next,
+                    tKey: nationalIdKey,
+                    save: (v) {
+                      newPatient['nationalId'] = v;
+                    },
+                    validate: (String v) {
+                      if (v.length != 14)
+                        return 'ادخل رقم قومي صحيح';
+                    },
+                    multiline: false,
+                  ),
+                  AddPatientTextField(
                     label: 'رقم التلفون',
                     controller: patientPhoneController,
+                    textInputAction: TextInputAction.next,
                     tKey: patientNumKey,
                     save: (v) {
                       newPatient['phoneNum'] = v;
@@ -129,6 +150,7 @@ class AddPatientPage extends StatelessWidget {
                   AddPatientTextField(
                     label: 'العنوان',
                     controller: patientAdressController,
+                    textInputAction: TextInputAction.next,
                     tKey: patientAdressKey,
                     multiline: false,
                     save: (v) {
@@ -141,6 +163,7 @@ class AddPatientPage extends StatelessWidget {
                   AddPatientTextField(
                     label: 'اسم السورس',
                     controller: sourceController,
+                    textInputAction: TextInputAction.next,
                     tKey: sourceKey,
                     multiline: false,
                     save: (v) => newPatient['source'] = v,
@@ -167,9 +190,15 @@ class AddPatientPage extends StatelessWidget {
                   AddPatientTextField(
                     label: 'اخر ما وصلناله',
                     controller: latestController,
+                    textInputAction: TextInputAction.newline,
                     tKey: latestKey,
                     validate: (v) {},
-                    save: (v) => newPatient['latest'] = v,
+                    save: (v) => newPatient['latest'] = {
+                      DateFormat('Hms').format(DateTime.now()): {
+                        'text': v,
+                        'date': DateTime.now().toString(),
+                      }
+                    },
                     multiline: true,
                   ),
                   ElevatedButton(onPressed: save, child: const Text('save')),

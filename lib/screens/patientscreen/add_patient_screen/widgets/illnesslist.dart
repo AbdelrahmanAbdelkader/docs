@@ -59,6 +59,7 @@ class _IllnessListState extends State<IllnessList> {
               flex: 5,
               child: IllnessTextField(
                   controller: widget.illnessController,
+                  textInputAction: TextInputAction.next,
                   label: 'المرض',
                   save: (v) {},
                   validate: (v) {},
@@ -67,6 +68,8 @@ class _IllnessListState extends State<IllnessList> {
             Expanded(
               flex: 2,
               child: IllnessTextField(
+                  textInputAction: TextInputAction.next,
+                  textInputType: TextInputType.number,
                   controller: widget.illnessValueController,
                   label: 'القيمة',
                   save: (v) {},

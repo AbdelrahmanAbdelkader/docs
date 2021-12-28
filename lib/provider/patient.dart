@@ -8,7 +8,8 @@ class Patient {
   String? address = '';
   String? phone = '';
   String? source = '';
-  String? latest = '';
+  String? nationalId='';
+  Map? latest = {};
   String? date = '';
   String? state = '';
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sample/provider/patient.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/patient_profile_listtile.dart';
 
@@ -36,6 +37,10 @@ class PatientProfileScreen extends StatelessWidget {
             trailing: patient.name,
           ),
           PatientProfieListTile(
+            title: 'الرقم القومي :',
+            trailing: patient.nationalId,
+          ),
+          PatientProfieListTile(
             title: 'المركز :',
             trailing: patient.state,
           ),
@@ -58,7 +63,54 @@ class PatientProfileScreen extends StatelessWidget {
           PatientProfieListTile(
             title: 'نوع المرض :',
             trailing: patient.ill,
-          )
+          ),
+          Text(
+            'latest',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+                side: BorderSide(
+                  width: 1,
+                  color: Colors.blue.shade300,
+                ),
+              ),
+              child: Column(
+                children: List.generate(
+                  patient.latest!.length,
+                  (index) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(children: [
+                      Expanded(
+                          child: Text(
+                        patient.latest!.values.elementAt(index)['text'],
+                        style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      )),
+                      Text(
+                        DateFormat('M/d/y').format(DateTime.parse(
+                            patient.latest!.values.elementAt(index)['date'])),
+                        style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ]),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

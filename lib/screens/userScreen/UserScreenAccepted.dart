@@ -16,6 +16,7 @@ class UserScreen extends StatelessWidget {
           body: account.bottomNavBarItems[account.current]['screen'],
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
+            
             fixedColor: Colors.white,
             backgroundColor: Colors.green,
             items: List.generate(
