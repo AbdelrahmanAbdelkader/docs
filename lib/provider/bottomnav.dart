@@ -117,7 +117,7 @@ class Account extends ChangeNotifier {
         {
           'icon': DocIcons.doctor,
           'label': 'الدكاترة',
-          'screen': DocList(),
+          'screen': GetDoctorsData(),
         },
         {
           'icon': Icons.notes,

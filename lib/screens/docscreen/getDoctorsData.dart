@@ -24,7 +24,7 @@ class _GetDoctorsDataState extends State<GetDoctorsData> {
           if (snap.connectionState == ConnectionState.waiting)
             return Center(
                 child: Center(child: const CircularProgressIndicator()));
-          return DocList();
+          return DocList(settingState);
         });
   }
 }

@@ -9,17 +9,13 @@ import 'package:sample/screens/docscreen/getAddDocProvited.dart';
 import 'widgets/doc_sample.dart';
 
 class DocList extends StatefulWidget {
-  const DocList({Key? key}) : super(key: key);
-
+  const DocList(this.refresh, {Key? key}) : super(key: key);
+  final Function refresh;
   @override
   State<DocList> createState() => _DocListState();
 }
 
 class _DocListState extends State<DocList> {
-  void settingState() {
-    setState(() {});
-  }
-
   List<Doc> searchedDoctors = [];
   bool search = false;
   @override
@@ -49,7 +45,7 @@ class _DocListState extends State<DocList> {
                 AppBarButton(
                   onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => GetAddDocProve(settingState),
+                      builder: (context) => GetAddDocProve(widget.refresh),
                     ),
                   ),
                 ),
