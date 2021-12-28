@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sample/helpers/docicon.dart';
 import 'package:sample/screens/docscreen/doc_page.dart';
+import 'package:sample/screens/docscreen/getDoctorsData.dart';
 import 'package:sample/screens/patientscreen/patientScreen.dart';
 import 'package:sample/screens/volscreen/volscreen.dart';
 import 'package:sample/screens/volscreen/widgets/volprofile/volprofilescreen.dart';
@@ -20,6 +21,25 @@ class Account extends ChangeNotifier {
   String? get team => _team;
   void setCurrent(int ne) {
     current = ne;
+    if (ne == 0) {
+      if (_role == 'متطوع غني' || _role == 'مسؤول دكاترة')
+        bottomNavBarItems[current]['screen'] = GetDoctorsData();
+      else
+        bottomNavBarItems[current]['screen'] = PatientScreen();
+    } else if (ne == 1) {
+      if (_role == 'متطوع غني' || _role == 'مسؤول دكاترة')
+        bottomNavBarItems[current]['screen'] = PatientScreen();
+      else
+        bottomNavBarItems[current]['screen'] = VolanteerProfileScreen();
+    } else if (ne == 2) {
+      if (_role == 'مسؤول دكاترة')
+        bottomNavBarItems[current]['screen'] = VolanteerProfileScreen();
+      else
+        bottomNavBarItems[current]['screen'] = VolScreen();
+    } else if (ne == 3) {
+      bottomNavBarItems[current]['screen'] = VolanteerProfileScreen();
+    }
+
     notifyListeners();
   }
 
@@ -43,7 +63,7 @@ class Account extends ChangeNotifier {
         {
           'icon': DocIcons.doctor,
           'label': 'الدكاترة',
-          'screen': DocList(),
+          'screen': GetDoctorsData(),
         },
         {
           'icon': Icons.notes,
