@@ -32,11 +32,12 @@ class PatientsProv extends ChangeNotifier {
       ..phone = newPatient['phone']
       ..source = newPatient['source']
       ..latests = [
-        ...(newPatient['latests'] as Map).keys.map((e) => {
-              'id': e,
-              'date': newPatient['latests'][e]['date'],
-              'title': newPatient['latests'][e]['title'],
-            })
+        if (newPatient['latests'] != null)
+          ...(newPatient['latests'] as Map).keys.map((e) => {
+                'id': e,
+                'date': newPatient['latests'][e]['date'],
+                'title': newPatient['latests'][e]['title'],
+              })
       ]
       ..state = newPatient['state']
       ..date = newPatient['date']);
