@@ -8,6 +8,7 @@ class PatientListTile extends StatelessWidget {
   PatientListTile({
     Key? key,
   }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final patient = Provider.of<Patient>(context);

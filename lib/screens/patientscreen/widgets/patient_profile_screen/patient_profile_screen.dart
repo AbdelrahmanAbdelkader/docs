@@ -13,7 +13,9 @@ class PatientProfileScreen extends StatelessWidget {
   PatientProfileScreen({
     Key? key,
   }) : super(key: key);
-  TextEditingController dialogController = TextEditingController();
+  TextEditingController dialogLatestController = TextEditingController();
+  TextEditingController dialogCostController = TextEditingController();
+  TextEditingController dialogCostValueController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final patient = Provider.of<Patient>(context);
@@ -72,8 +74,108 @@ class PatientProfileScreen extends StatelessWidget {
             trailing: patient.doctor,
           ),
           PatientProfieListTile(
+            title: 'المرض :',
+            trailing: patient.illness,
+          ),
+          PatientProfieListTile(
             title: 'نوع المرض :',
             trailing: patient.illnessType,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'التكاليف',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              if (patient.volId == account.id)
+                IconButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (ctx) => Dialog(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text('أدخل تكليف للحالة :-'),
+                                    Text(patient.name as String),
+                                    TextField(
+                                      controller: dialogCostController,
+                                    ),
+                                    TextField(
+                                      controller: dialogCostValueController,
+                                    ),
+                                    TextButton(
+                                        onPressed: () async {
+                                          await FirebaseDatabase.instance
+                                              .ref()
+                                              .child('patients')
+                                              .child(account.team as String)
+                                              .child(
+                                                  patient.nationalId as String)
+                                              .child('costs')
+                                              .child(
+                                                  '${(DateTime.now().second)}:${(DateTime.now().millisecond)}')
+                                              .set({
+                                            'التكليف':
+                                                dialogCostController.text,
+                                            'القيمة':
+                                                dialogCostValueController.text,
+                                          });
+                                          Navigator.of(ctx).pop();
+                                          // dialogCostController.clear();
+                                          Navigator.of(context).pop();
+                                          account.setCurrent(account.current);
+                                        },
+                                        child: Text('save')),
+                                  ],
+                                ),
+                              ));
+                    },
+                    icon: Icon(Icons.add)),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+                side: BorderSide(
+                  width: 1,
+                  color: Colors.blue.shade300,
+                ),
+              ),
+              child: Column(
+                children: List.generate(
+                  patient.costs.length,
+                  (index) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(children: [
+                      Expanded(
+                          child: Text(
+                        patient.costs[index]['التكليف'],
+                        style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      )),
+                      Text(
+                        patient.costs[index]['القيمة'],
+                        style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ]),
+                  ),
+                ),
+              ),
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -99,7 +201,7 @@ class PatientProfileScreen extends StatelessWidget {
                                     Text('أدخل أخر ما وصلته مع الحالة :-'),
                                     Text(patient.name as String),
                                     TextField(
-                                      controller: dialogController,
+                                      controller: dialogLatestController,
                                     ),
                                     TextButton(
                                         onPressed: () async {
@@ -113,11 +215,13 @@ class PatientProfileScreen extends StatelessWidget {
                                               .child(
                                                   '${(DateTime.now().second)}:${(DateTime.now().millisecond)}')
                                               .set({
-                                            'title': dialogController.text,
+                                            'title':
+                                                dialogLatestController.text,
                                             'date': DateTime.now().toString(),
                                           });
                                           Navigator.of(ctx).pop();
                                           Navigator.of(context).pop();
+                                          account.setCurrent(account.current);
                                         },
                                         child: Text('save')),
                                   ],

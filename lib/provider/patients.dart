@@ -20,12 +20,13 @@ class PatientsProv extends ChangeNotifier {
       ..docId = newPatient['docId']
       ..doctor = newPatient['docName']
       ..illnessType = newPatient['illnessType']
-      ..illnesses = [
-        if ((newPatient['illnesses']) != null)
-          ...(newPatient['illnesses'] as Map).keys.map((e) => {
+      ..illness = newPatient['illness']
+      ..costs = [
+        if ((newPatient['costs']) != null)
+          ...(newPatient['costs'] as Map).keys.map((e) => {
                 'id': e,
-                'المرض': newPatient['illnesses'][e]['المرض'],
-                'القيمة': newPatient['illnesses'][e]['القيمة'],
+                'التكليف': newPatient['costs'][e]['التكليف'],
+                'القيمة': newPatient['costs'][e]['القيمة'],
               })
       ]
       ..address = newPatient['adress']
@@ -47,7 +48,6 @@ class PatientsProv extends ChangeNotifier {
   Future<void> refresh(String team, String role) async {
     _patients = [];
     final database = FirebaseDatabase.instance;
-    final users = await database.ref().child('users').get();
     final ref = await database.ref().child("patients").child(team).get();
     final DataSnapshot? ref2;
     if (role == 'متطوع غني')

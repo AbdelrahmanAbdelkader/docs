@@ -14,8 +14,7 @@ import 'package:sample/screens/patientscreen/add_patient_screen/widgets/patient_
 
 // ignore: must_be_immutable
 class AddPatientPage extends StatelessWidget {
-  AddPatientPage(this.refrech, {Key? key}) : super(key: key);
-  final Function refrech;
+  AddPatientPage({Key? key}) : super(key: key);
   final fkey = GlobalKey<FormState>();
 
   final TextEditingController patientNameController = TextEditingController();
@@ -28,15 +27,13 @@ class AddPatientPage extends StatelessWidget {
 
   final TextEditingController sourceController = TextEditingController();
 
-  final TextEditingController volNameController = TextEditingController();
-
   final TextEditingController illnessController = TextEditingController();
 
+  final TextEditingController costController = TextEditingController();
+
+  final TextEditingController costValueController = TextEditingController();
+
   final TextEditingController latestController = TextEditingController();
-
-  final TextEditingController illnessValueController = TextEditingController();
-
-  final TextEditingController village = TextEditingController();
 
   final Key patientNameKey = const Key('patientName');
 
@@ -48,24 +45,21 @@ class AddPatientPage extends StatelessWidget {
 
   final Key sourceKey = const Key('sourceKey');
 
-  final Key volNameKey = const Key('volNameKey');
-
-  final Key ilnessKey = const Key('ilnessKey');
+  final Key illnessKey = const Key('illnessKey');
 
   final Key latestKey = const Key('latestKey');
-
-  final Key villageKey = const Key('villageKey');
 
   @override
   Widget build(BuildContext context) {
     final account = Provider.of<Account>(context);
     final patientsProvider = Provider.of<PatientsProv>(context, listen: false);
     final doctorsProvider = Provider.of<Docs>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(),
       body: FutureBuilder(
         future: doctorsProvider.refresh(
-            refrech, patientsProvider.setCurrentDoctors),
+            account.setCurrent, patientsProvider.setCurrentDoctors),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting)
             return Center(
@@ -79,85 +73,87 @@ class AddPatientPage extends StatelessWidget {
               final patientProvider = Provider.of<Patient>(context);
               void save() async {
                 if (fkey.currentState!.validate()) {
-                  if (patientProvider.stateValidate == true) {
-                    patientProvider.date = DateTime.now().toIso8601String();
-                    final database = FirebaseDatabase.instance.ref();
-                    fkey.currentState!.save();
-                    // print(account.id);
-                    // print(patientProvider.volName);
-                    // print(patientProvider.name);
-                    // print(patientProvider.docId);
-                    // print(patientProvider.doctor);
-                    // print(patientProvider.illnessType);
-                    // print(Map.fromIterable(
-                    //   patientProvider.illnesses,
-                    //   key: (e) => e['id'],
-                    //   value: (e) =>
-                    //       {'المرض': e['المرض'], 'القيمة': e['القيمة']},
-                    // ));
-                    // print(patientProvider.address);
-                    // print(patientProvider.phone);
-                    // print(patientProvider.source);
-                    // print(Map.fromIterable(
-                    //   patientProvider.latests,
-                    //   key: (e) {
-                    //     return e['id'];
-                    //   },
-                    //   value: (e) {
-                    //     print(e['date']);
-                    //     if (e['date'] == null)
-                    //       e['date'] = DateTime.now().toIso8601String();
-                    //     return {
-                    //       'date': e['date'],
-                    //       'title': e['title'],
-                    //     };
-                    //   },
-                    // ));
-                    // print(patientProvider.state);
-                    // print(patientProvider.date);
-                    final ref = database
-                        .child('patients')
-                        .child(account.team as String)
-                        .child(patientProvider.nationalId as String)
-                        .update({
-                      'volanteerId': account.id,
-                      'volanteerName': patientProvider.volName,
-                      'patientName': patientProvider.name,
-                      'nationaId': patientProvider.nationalId,
-                      'docId': patientProvider.docId,
-                      'docName': patientProvider.doctor,
-                      'illnessType': patientProvider.illnessType,
-                      'illnesses': Map.fromIterable(
-                        patientProvider.illnesses,
-                        key: (e) => e['id'],
-                        value: (e) =>
-                            {'المرض': e['المرض'], 'القيمة': e['القيمة']},
-                      ),
-                      'adress': patientProvider.address,
-                      'phone': patientProvider.phone,
-                      'source': patientProvider.source,
-                      'latests': Map.fromIterable(
-                        patientProvider.latests,
-                        key: (e) {
-                          return e['id'];
-                        },
-                        value: (e) {
-                          if (e['date'] == null)
-                            e['date'] = DateTime.now().toIso8601String();
-                          return {
-                            'date': e['date'],
-                            'title': e['title'],
-                          };
-                        },
-                      ),
-                      'state': patientProvider.state,
-                      'date': patientProvider.date,
-                    });
-                    Navigator.pop(context);
-                    refrech();
-                  }
-                } else
-                  patientProvider.stateNotvalidated();
+                  // if (patientProvider.stateValidate == true) {
+                  patientProvider.date = DateTime.now().toIso8601String();
+                  final database = FirebaseDatabase.instance.ref();
+                  fkey.currentState!.save();
+                  // print(account.id);
+                  // print(patientProvider.volName);
+                  // print(patientProvider.name);
+                  // print(patientProvider.docId);
+                  // print(patientProvider.doctor);
+                  // print(patientProvider.illnessType);
+                  // print(Map.fromIterable(
+                  //   patientProvider.illnesses,
+                  //   key: (e) => e['id'],
+                  //   value: (e) =>
+                  //       {'المرض': e['المرض'], 'القيمة': e['القيمة']},
+                  // ));
+                  // print(patientProvider.address);
+                  // print(patientProvider.phone);
+                  // print(patientProvider.source);
+                  // print(Map.fromIterable(
+                  //   patientProvider.latests,
+                  //   key: (e) {
+                  //     return e['id'];
+                  //   },
+                  //   value: (e) {
+                  //     print(e['date']);
+                  //     if (e['date'] == null)
+                  //       e['date'] = DateTime.now().toIso8601String();
+                  //     return {
+                  //       'date': e['date'],
+                  //       'title': e['title'],
+                  //     };
+                  //   },
+                  // ));
+                  // print(patientProvider.state);
+                  // print(patientProvider.date);
+                  final ref = database
+                      .child('patients')
+                      .child(account.team as String)
+                      .child(patientProvider.nationalId as String)
+                      .update({
+                    'volanteerId': account.id,
+                    'volanteerName': patientProvider.volName,
+                    'patientName': patientProvider.name,
+                    'nationaId': patientProvider.nationalId,
+                    'docId': patientProvider.docId,
+                    'docName': patientProvider.doctor,
+                    'illnessType': patientProvider.illnessType,
+                    'illness': patientProvider.illness,
+                    'costs': Map.fromIterable(
+                      patientProvider.costs,
+                      key: (e) => e['id'],
+                      value: (e) =>
+                          {'التكليف': e['التكليف'], 'القيمة': e['القيمة']},
+                    ),
+                    'adress': patientProvider.address,
+                    'phone': patientProvider.phone,
+                    'source': patientProvider.source,
+                    'latests': Map.fromIterable(
+                      patientProvider.latests,
+                      key: (e) {
+                        return e['id'];
+                      },
+                      value: (e) {
+                        if (e['date'] == null)
+                          e['date'] = DateTime.now().toIso8601String();
+                        return {
+                          'date': e['date'],
+                          'title': e['title'],
+                        };
+                      },
+                    ),
+                    'state': patientProvider.state,
+                    'date': patientProvider.date,
+                  });
+                  Navigator.pop(context);
+
+                  account.setCurrent((account.current));
+                }
+                // } else
+                //   patientProvider.stateNotvalidated();
               }
 
               return Form(
@@ -219,8 +215,8 @@ class AddPatientPage extends StatelessWidget {
                           if (v.length < 4) return 'ادخل عنوان مناسب';
                         },
                       ),
-                      if (patientProvider.stateValidate == false)
-                        Text("أختار مركز من فضلك"),
+                      // if (patientProvider.stateValidate == false)
+                      //   Text("أختار مركز من فضلك"),
                       AddPatientTextField(
                         label: 'اسم السورس',
                         controller: sourceController,
@@ -244,9 +240,19 @@ class AddPatientPage extends StatelessWidget {
                           ],
                         ),
                       ),
+                      AddPatientTextField(
+                        label: 'المرض المصاحب للمريض',
+                        controller: illnessController,
+                        tKey: illnessKey,
+                        multiline: false,
+                        save: (v) => patientProvider.illness = v,
+                        validate: (String v) {
+                          if (v.length == 0) return 'ادخل المرض من فضلك';
+                        },
+                      ),
                       IllnessList(
-                          illnessController: illnessController,
-                          illnessValueController: illnessValueController),
+                          costController: costController,
+                          costValueController: costValueController),
                       AddPatientTextField(
                         label: 'اخر ما وصلناله',
                         controller: latestController,

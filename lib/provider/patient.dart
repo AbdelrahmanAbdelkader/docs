@@ -15,10 +15,11 @@ class Patient extends ChangeNotifier {
   String? nationalId = '';
   String? date = '';
   String? state;
-  List<Map> illnesses = [];
-  bool? stateValidate;
+  String? illness = '';
+  List<Map> costs = [];
+  // bool? stateValidate;
   void stateNotvalidated() {
-    stateValidate = false;
+    // stateValidate = false;
     notifyListeners();
   }
 
@@ -31,13 +32,18 @@ class Patient extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addIllnesses(Map val) {
-    illnesses.add(val);
+  void setIllness(String val) {
+    illness = val;
     notifyListeners();
   }
 
-  void removeIllness(Map val) {
-    illnesses.remove(val);
+  void addCost(Map val) {
+    costs.add(val);
+    notifyListeners();
+  }
+
+  void removeCost(Map val) {
+    costs.remove(val);
     notifyListeners();
   }
 
@@ -48,7 +54,7 @@ class Patient extends ChangeNotifier {
 
   void setState(String val) {
     state = val;
-    stateValidate = true;
+    // stateValidate = true;
     notifyListeners();
   }
 
