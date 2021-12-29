@@ -88,7 +88,7 @@ class PatientsProv extends ChangeNotifier {
       for (int i = 0; i < element.latests.length; i++) {
         for (int y = i + 1; i < element.latests.length; y++) {
           if (DateTime.parse(element.latests[y]['date'] as String)
-              .isBefore(DateTime.parse(element.latests[i]['date'] as String))) {
+              .isAfter(DateTime.parse(element.latests[i]['date'] as String))) {
             Map temp = element.latests[i];
             element.latests[i] = element.latests[y];
             element.latests[y] = temp;
