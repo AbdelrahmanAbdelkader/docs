@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class StateManagment extends ChangeNotifier {
-  String? patientDocDropDownBottonValue;
-  setpatientDocDropDownBottonValue(String v) {
-    patientDocDropDownBottonValue = v;
-    notifyListeners();
-  }
+  // String? patientDocDropDownBottonValue;
+  // setpatientDocDropDownBottonValue(String v) {
+  //   patientDocDropDownBottonValue = v;
+  //   notifyListeners();
+  // }
 
   String? userTeamDropDownBottonValue;
   setUserTeamDropDownBottonValue(String v) {
@@ -25,26 +25,26 @@ class StateManagment extends ChangeNotifier {
     notifyListeners();
   }
 
-  String? doctorSearchDropDownButtonValue;
-  setDoctorSearchDropDownButtonValue(String v) {
-    doctorSearchDropDownButtonValue = v;
-    notifyListeners();
-  }
+  // String? doctorSearchDropDownButtonValue;
+  // setDoctorSearchDropDownButtonValue(String v) {
+  //   doctorSearchDropDownButtonValue = v;
+  //   notifyListeners();
+  // }
 
-  String? patientVillageDropDownButtonValue;
-  setPatientVillageDropDownButtonValue(String v) {
-    patientVillageDropDownButtonValue = v;
-  }
+  // String? patientVillageDropDownButtonValue;
+  // setPatientVillageDropDownButtonValue(String v) {
+  //   patientVillageDropDownButtonValue = v;
+  // }
 
-  String? patientIllnessTypeDropDownButtonValue;
-  setPatientIllnessTypeDropDownButtonValue(String v) {
-    patientIllnessTypeDropDownButtonValue = v;
-  }
+  // String? patientIllnessTypeDropDownButtonValue;
+  // setPatientIllnessTypeDropDownButtonValue(String v) {
+  //   patientIllnessTypeDropDownButtonValue = v;
+  // }
 
-  String? patientSelectedDoctorDropDownButtonValue;
-  setpatientSelectedDoctorDropDownButtonValue(String v) {
-    patientVillageDropDownButtonValue = v;
-  }
+  // String? patientSelectedDoctorDropDownButtonValue;
+  // setpatientSelectedDoctorDropDownButtonValue(String v) {
+  //   patientVillageDropDownButtonValue = v;
+  // }
 
   bool signIn = true;
   changeSigning() {

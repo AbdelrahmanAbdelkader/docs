@@ -7,6 +7,7 @@ class Auth {
   late String _password;
   final auth = FirebaseAuth.instance;
   final database = FirebaseDatabase.instance;
+
   void setEmail(email) {
     _email = email;
   }

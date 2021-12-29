@@ -14,7 +14,6 @@ class CheckAcception extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final account = Provider.of<Account>(context, listen: false);
-    print(DateTime.now().second);
     account.setId(FirebaseAuth.instance.currentUser!.uid);
     return Container(
       color: Colors.white,
@@ -23,7 +22,7 @@ class CheckAcception extends StatelessWidget {
               .ref()
               .child('users')
               .child(account.id as String)
-              .child('name')
+              .child('userName')
               .get(),
           builder: (context, snaps) {
             if (snaps.connectionState == ConnectionState.waiting)
