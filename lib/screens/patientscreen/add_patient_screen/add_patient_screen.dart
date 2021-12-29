@@ -7,7 +7,6 @@ import 'package:sample/provider/account.dart';
 import 'package:sample/provider/docs.dart';
 import 'package:sample/provider/patient.dart';
 import 'package:sample/provider/patients.dart';
-import 'package:sample/provider/state.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/illnesslist.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/state_dropdownbutton.dart';
 import 'package:sample/screens/widgets/custom_text_field.dart';

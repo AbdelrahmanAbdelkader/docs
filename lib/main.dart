@@ -4,9 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/account.dart';
+import 'package:sample/provider/auth.dart';
 import 'package:sample/provider/docs.dart';
 import 'package:sample/provider/patients.dart';
-import 'package:sample/provider/state.dart';
 import 'package:sample/provider/vol.dart';
 import 'package:sample/screens/splashscreen/splashscreen.dart';
 
@@ -29,8 +29,8 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<StateManagment>(
-          create: (context) => StateManagment(),
+        ChangeNotifierProvider<Auth>(
+          create: (context) => Auth(),
         ),
         ChangeNotifierProvider<Account>(
           create: (context) => Account(),

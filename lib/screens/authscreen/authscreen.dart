@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
 import 'package:sample/provider/auth.dart';
-import 'package:sample/provider/state.dart';
 import 'package:sample/screens/widgets/custom_text_field.dart';
 
 class AuthScreen extends StatelessWidget {
   AuthScreen(this.thereAreUsers, {Key? key}) : super(key: key);
   final bool thereAreUsers;
 
-  final auth = Auth();
   final userNameController = TextEditingController();
 
   final emailController = TextEditingController();
@@ -35,25 +33,25 @@ class AuthScreen extends StatelessWidget {
   bool triedToValidate = false;
   void save(
     Auth auth,
-    StateManagment teamTrue,
-    StateManagment teamFalse,
+    // StateManagment teamTrue,
+    // StateManagment teamFalse,
   ) {
-    teamFalse.toggleTriedToValidate();
+    auth.toggleTriedToValidate();
     if (authFormKey.currentState!.validate()) {
       authFormKey.currentState!.save();
-      if (teamFalse.signIn) {
-        auth.signIn();
-      } else if (!teamFalse.signIn &&
-          teamTrue.userTeamDropDownBottonValue != null &&
-          teamTrue.roleDropDownBottonValue != null) {
+      if (auth.signIn) {
+        auth.signInFun();
+      } else if (!auth.signIn &&
+          auth.userTeamDropDownBottonValue != null &&
+          auth.roleDropDownBottonValue != null) {
         auth.register(
           userNameController.text,
           userPhoneController.text,
-          teamTrue.userTeamDropDownBottonValue,
-          (teamTrue.userTeamDropDownBottonValue.toString() != 'طب')
+          auth.userTeamDropDownBottonValue,
+          (auth.userTeamDropDownBottonValue.toString() != 'طب')
               ? null
-              : teamTrue.userSpecialityDropDownBottonValue,
-          teamTrue.roleDropDownBottonValue.toString(),
+              : auth.userSpecialityDropDownBottonValue,
+          auth.roleDropDownBottonValue.toString(),
           thereAreUsers,
         );
       }
@@ -63,10 +61,8 @@ class AuthScreen extends StatelessWidget {
   bool once = true;
   @override
   Widget build(BuildContext context) {
-    final chosenTeamFalse = Provider.of<StateManagment>(context, listen: false);
-    final chosenTeam = Provider.of<StateManagment>(context);
+    final auth = Provider.of<Auth>(context);
     final size = MediaQuery.of(context).size;
-    print(thereAreUsers);
     if (once) {
       role = (!thereAreUsers)
           ? ['متطوع غني']
@@ -108,7 +104,7 @@ class AuthScreen extends StatelessWidget {
                         SizedBox(
                           height: size.height * .075,
                         ),
-                        if (!chosenTeam.signIn)
+                        if (!auth.signIn)
                           AddPatientTextField(
                               label: 'اسم المستخدم',
                               controller: userNameController,
@@ -153,7 +149,7 @@ class AuthScreen extends StatelessWidget {
                             }
                           },
                         ),
-                        if (!chosenTeam.signIn)
+                        if (!auth.signIn)
                           AddPatientTextField(
                             textInputAction: TextInputAction.next,
                             invisible: true,
@@ -169,7 +165,7 @@ class AuthScreen extends StatelessWidget {
                               }
                             },
                           ),
-                        if (!chosenTeam.signIn)
+                        if (!auth.signIn)
                           AddPatientTextField(
                               textInputAction: TextInputAction.next,
                               textInputType: TextInputType.number,
@@ -184,10 +180,10 @@ class AuthScreen extends StatelessWidget {
                                 }
                               },
                               multiline: false),
-                        if (!chosenTeam.signIn)
+                        if (!auth.signIn)
                           Column(
                             children: [
-                              Consumer<StateManagment>(
+                              Consumer<Auth>(
                                 builder: (context, stateManagment, _) =>
                                     Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -205,12 +201,11 @@ class AuthScreen extends StatelessWidget {
                                         elevation: 50,
                                         // focusColor: Colors.white,
                                         underline: Container(),
-                                        value: stateManagment
-                                            .roleDropDownBottonValue,
+                                        value: auth.roleDropDownBottonValue,
                                         isExpanded: true,
 
-                                        onChanged: (v) => stateManagment
-                                            .setRoleDropDownBottonValue(
+                                        onChanged: (v) =>
+                                            auth.setRoleDropDownBottonValue(
                                                 v as String),
                                         hint: Text('مهمتك في الفريق'),
                                         items: List.generate(
@@ -227,17 +222,15 @@ class AuthScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              if (chosenTeam.triedToValidate &&
-                                  Provider.of<StateManagment>(context)
-                                          .roleDropDownBottonValue ==
-                                      null)
+                              if (auth.triedToValidate &&
+                                  auth.roleDropDownBottonValue == null)
                                 Text(
                                   'اختر مهمتك في الفريق',
                                   style: TextStyle(color: Colors.red),
                                 )
                             ],
                           ),
-                        if (!chosenTeam.signIn)
+                        if (!auth.signIn)
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 10.0),
@@ -249,7 +242,7 @@ class AuthScreen extends StatelessWidget {
                                       flex: 1,
                                       child: Column(
                                         children: [
-                                          Consumer<StateManagment>(
+                                          Consumer<Auth>(
                                             builder:
                                                 (context, stateManagment, _) =>
                                                     Card(
@@ -269,11 +262,11 @@ class AuthScreen extends StatelessWidget {
                                                   elevation: 50,
                                                   // focusColor: Colors.white,
                                                   underline: Container(),
-                                                  value: stateManagment
+                                                  value: auth
                                                       .userTeamDropDownBottonValue,
                                                   hint:
                                                       const Text('اختر الفريق'),
-                                                  onChanged: (v) => stateManagment
+                                                  onChanged: (v) => auth
                                                       .setUserTeamDropDownBottonValue(
                                                           v as String),
                                                   items: List.generate(
@@ -292,13 +285,12 @@ class AuthScreen extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                    if (!chosenTeam.signIn)
-                                      if (chosenTeam
-                                              .userTeamDropDownBottonValue ==
+                                    if (!auth.signIn)
+                                      if (auth.userTeamDropDownBottonValue ==
                                           'طب')
                                         Expanded(
                                           flex: 1,
-                                          child: Consumer<StateManagment>(
+                                          child: Consumer<Auth>(
                                             builder:
                                                 (context, stateManagment, _) =>
                                                     Card(
@@ -318,11 +310,11 @@ class AuthScreen extends StatelessWidget {
                                                   elevation: 50,
                                                   // focusColor: Colors.white,
                                                   underline: Container(),
-                                                  value: stateManagment
+                                                  value: auth
                                                       .userSpecialityDropDownBottonValue,
                                                   hint:
                                                       const Text('اختر التخصص'),
-                                                  onChanged: (v) => stateManagment
+                                                  onChanged: (v) => auth
                                                       .setUserSpecialityDropDownButtonValue(
                                                     v as String,
                                                   ),
@@ -348,10 +340,8 @@ class AuthScreen extends StatelessWidget {
                                   child: Row(
                                     children: [
                                       Expanded(
-                                        child: (chosenTeam.triedToValidate &&
-                                                Provider.of<StateManagment>(
-                                                            context)
-                                                        .userTeamDropDownBottonValue ==
+                                        child: (auth.triedToValidate &&
+                                                auth.userTeamDropDownBottonValue ==
                                                     null)
                                             ? Text(
                                                 'اختر الفريق',
@@ -361,14 +351,10 @@ class AuthScreen extends StatelessWidget {
                                             : Container(),
                                       ),
                                       Expanded(
-                                        child: (chosenTeam.triedToValidate &&
-                                                Provider.of<StateManagment>(
-                                                            context)
-                                                        .userSpecialityDropDownBottonValue ==
+                                        child: (auth.triedToValidate &&
+                                                auth.userSpecialityDropDownBottonValue ==
                                                     null &&
-                                                Provider.of<StateManagment>(
-                                                            context)
-                                                        .userTeamDropDownBottonValue ==
+                                                auth.userTeamDropDownBottonValue ==
                                                     'طب')
                                             ? Text(
                                                 'اختر تخصصك',
@@ -385,15 +371,13 @@ class AuthScreen extends StatelessWidget {
                           ),
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
-                          child: Consumer<StateManagment>(
+                          child: Consumer<Auth>(
                             builder: (context, state, _) {
                               return ElevatedButton(
                                   onPressed: () => save(
                                         auth,
-                                        chosenTeam,
-                                        chosenTeamFalse,
                                       ),
-                                  child: (state.signIn)
+                                  child: (auth.signIn)
                                       ? const Text('تسجيل الدخول')
                                       : const Text('التسجيل'));
                             },
@@ -404,9 +388,9 @@ class AuthScreen extends StatelessWidget {
                               backgroundColor: MaterialStateProperty.all(
                                   Color.fromRGBO(255, 255, 255, 0))),
                           onPressed: () {
-                            chosenTeam.changeSigning();
+                            auth.changeSigning();
                           },
-                          child: (chosenTeam.signIn)
+                          child: (auth.signIn)
                               ? Text('التسجيل')
                               : Text('تسجيل الدخول'),
                         ),
