@@ -15,6 +15,7 @@ class PatientsProv extends ChangeNotifier {
       ..volId = newPatient['volanteerId']
       ..volName = newPatient['volanteerName']
       ..name = newPatient['patientName']
+      ..nationalId = newPatient['nationaId']
       ..docId = newPatient['docId']
       ..doctor = newPatient['docName']
       ..illnessType = newPatient['illnessType']
@@ -65,6 +66,43 @@ class PatientsProv extends ChangeNotifier {
             element, (users.value as Map)[element['volanteerId']]['name']);
       });
     }
+    sortLatest();
+  }
+
+  sortLatest() {
+    for (int i = 0; i < patients.length; i++) {
+      for (int y = i + 1; y < patients.length; y++) {
+        if (DateTime.parse(patients[y].date as String)
+            .isAfter(DateTime.parse(patients[i].date as String))) {
+          Patient temp = patients[i];
+          patients[i] = patients[y];
+          patients[y] = temp;
+        }
+      }
+    }
+    patients.forEach((element) {
+      for (int i = 0; i < element.latests.length; i++) {
+        for (int y = i + 1; i < element.latests.length; y++) {
+          if (DateTime.parse(element.latests[y]['date'] as String)
+              .isBefore(DateTime.parse(element.latests[i]['date'] as String))) {
+            Map temp = element.latests[i];
+            element.latests[i] = element.latests[y];
+            element.latests[y] = temp;
+          }
+        }
+      }
+    });
+    // patients.forEach((element) {
+    //   for (int i = 1; i < element.latests!.length; i++) {
+    //     if (DateTime.parse(element.latests![i - 1]['date'])
+    //         .isAfter(element.latests![i]['date'])) {
+    //       Map temp = {};
+    //       temp = element.latests![i - 1]['date'];
+    //       element.latests![i - 1]['date'] = element.latests![i]['date'];
+    //       element.latests![i]['date'] = temp;
+    //     }
+    //   }
+    // });
   }
 
   void setCurrentDoctors(List<Map> doctors) {

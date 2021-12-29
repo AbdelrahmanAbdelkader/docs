@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/doc.dart';
@@ -12,6 +14,7 @@ class DocSample extends StatefulWidget {
 
 class _DocSampleState extends State<DocSample> {
   bool toggled = false;
+  bool showText = false;
   late final String docName;
   late final String id;
   late final String? docNum;
@@ -41,6 +44,7 @@ class _DocSampleState extends State<DocSample> {
 
   @override
   Widget build(BuildContext context) {
+    print(docNum);
     final size = MediaQuery.of(context).size;
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),
@@ -55,15 +59,16 @@ class _DocSampleState extends State<DocSample> {
               colorBlendMode: BlendMode.lighten,
               fit: BoxFit.cover,
               width: size.width,
-              height: size.height * .18,
+              height: (toggled) ? size.height * .25 : size.height * .18,
             ),
           ),
           AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            height: size.height * .18,
+            //height: (toggled) ? size.height * .25 : size.height * .18,
             curve: Curves.bounceOut,
             margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
             padding: const EdgeInsets.symmetric(horizontal: 10),
+            
             decoration: BoxDecoration(
                 color: Colors.blue.shade100.withOpacity(.3),
                 borderRadius: BorderRadius.circular(15),
@@ -100,16 +105,17 @@ class _DocSampleState extends State<DocSample> {
                               color: Colors.green,
                             ),
                           ),
+                          Text(
+                            (docEmail != '') ? '$docEmail' : '$docNum',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.green,
+                            ),
+                          ),
                         ],
                       ),
-                      Text(
-                        '${(docEmail != null) ? docEmail : docNum}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.green,
-                        ),
-                      ),
                       IconButton(
+                        iconSize: 16,
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
@@ -118,15 +124,16 @@ class _DocSampleState extends State<DocSample> {
                           );
                         },
                         icon: const Icon(
+                          
                           Icons.edit,
-                          size: 22,
+                          size: 20,
                           color: Colors.green,
                         ),
                       ),
                     ],
                   ),
                 ),
-                if (hint != '' && toggled)
+                if (hint != '' && toggled )
                   Text(
                     hint as String,
                     style: const TextStyle(

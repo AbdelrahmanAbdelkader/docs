@@ -1,9 +1,9 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
-import 'package:sample/provider/bottomnav.dart';
-import 'package:sample/provider/doc.dart';
+import 'package:sample/provider/account.dart';
 import 'package:sample/provider/docs.dart';
 import 'package:sample/provider/patient.dart';
 import 'package:sample/provider/patients.dart';
@@ -20,6 +20,8 @@ class AddPatientPage extends StatelessWidget {
   final fkey = GlobalKey<FormState>();
 
   final TextEditingController patientNameController = TextEditingController();
+
+  final TextEditingController nationalIdController = TextEditingController();
 
   final TextEditingController patientPhoneController = TextEditingController();
 
@@ -40,6 +42,8 @@ class AddPatientPage extends StatelessWidget {
   final Key patientNameKey = const Key('patientName');
 
   final Key patientNumKey = const Key('patientNum');
+
+  final Key nationalIdKey = const Key('NationalIdKey');
 
   final Key patientAdressKey = const Key('patientAdress');
 
@@ -115,11 +119,12 @@ class AddPatientPage extends StatelessWidget {
                     final ref = database
                         .child('patients')
                         .child(account.team as String)
-                        .push();
-                    database.child(ref.path).update({
+                        .child(patientProvider.nationalId as String)
+                        .update({
                       'volanteerId': account.id,
                       'volanteerName': patientProvider.volName,
                       'patientName': patientProvider.name,
+                      'nationaId': patientProvider.nationalId,
                       'docId': patientProvider.docId,
                       'docName': patientProvider.doctor,
                       'illnessType': patientProvider.illnessType,
@@ -170,6 +175,19 @@ class AddPatientPage extends StatelessWidget {
                         },
                         validate: (String v) {
                           if (v.length < 4) return 'ادخل اسم صحيح';
+                        },
+                        multiline: false,
+                      ),
+                      AddPatientTextField(
+                        label: 'الرقم القومي',
+                        controller: nationalIdController,
+                        textInputAction: TextInputAction.next,
+                        tKey: nationalIdKey,
+                        save: (v) {
+                          patientProvider.nationalId = v;
+                        },
+                        validate: (String v) {
+                          if (v.length != 14) return 'ادخل رقم قومي صحيح';
                         },
                         multiline: false,
                       ),
@@ -241,6 +259,109 @@ class AddPatientPage extends StatelessWidget {
                       ElevatedButton(
                           onPressed: save, child: const Text('save')),
                     ],
+                    // return Form(
+                    // key: fkey,
+                    // child: SingleChildScrollView(
+                    //   child: Column(
+                    //     children: [
+                    //       AddPatientTextField(
+                    //         label: 'الاسم',
+                    //         controller: patientNameController,
+                    //         textInputAction: TextInputAction.next,
+                    //         tKey: patientNameKey,
+                    //         save: (v) {
+                    //           newPatient['name'] = v;
+                    //   },
+                    //   validate: (String v) {
+                    //     if (v.length < 4) return 'ادخل اسم صحيح';
+                    //   },
+                    //   multiline: false,
+                    // ),
+                    // AddPatientTextField(
+                    //   label: 'الرقم القومي',
+                    //   controller: nationalIdController,
+                    //   textInputAction: TextInputAction.next,
+                    //   tKey: nationalIdKey,
+                    //   save: (v) {
+                    //     newPatient['nationalId'] = v;
+                    //   },
+                    //   validate: (String v) {
+                    //     if (v.length != 14)
+                    //       return 'ادخل رقم قومي صحيح';
+                    //   },
+                    //   multiline: false,
+                    // ),
+                    // AddPatientTextField(
+                    //   label: 'رقم التلفون',
+                    //   controller: patientPhoneController,
+                    //   textInputAction: TextInputAction.next,
+                    //   tKey: patientNumKey,
+                    //   save: (v) {
+                    //     newPatient['phoneNum'] = v;
+                    //   },
+                    //   validate: (String v) {
+                    //     if (v.length != 10 && v.length != 11)
+                    //       return 'ادخل رقم صحيح';
+                    //   },
+                    //   multiline: false,
+                    // ),
+                    // StateDropDownButton(
+                    //   label: 'اختر المركز',
+                    //   items: states,
+                    // ),
+                    // AddPatientTextField(
+                    //   label: 'العنوان',
+                    //   controller: patientAdressController,
+                    //   textInputAction: TextInputAction.next,
+                    //   tKey: patientAdressKey,
+                    //   multiline: false,
+                    //   save: (v) {
+                    //     newPatient['adress'] = v;
+                    //   },
+                    //   validate: (String v) {
+                    //     if (v.length < 4) return 'ادخل عنوان مناسب';
+                    //   },
+                    // ),
+                    // AddPatientTextField(
+                    //   label: 'اسم السورس',
+                    //   controller: sourceController,
+                    //   textInputAction: TextInputAction.next,
+                    //   tKey: sourceKey,
+                    //   multiline: false,
+                    //   save: (v) => newPatient['source'] = v,
+                    //   validate: (v) {
+                    //     if (v.length < 4) return 'ادخل اسم صحيح';
+                    //   },
+                    // ),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    //   child: Row(
+                    //     children: [
+                    //       Expanded(
+                    //         flex: 1,
+                    //         child: PatientDropDown(
+                    //           text: 'اختر الطبيب المتابع',
+                    //         ),
+                    //       )
+                    //     ],
+                    //   ),
+                    // ),
+                    // IllnessList(
+                    //     illnessController: illnessController,
+                    //     illnessValueController: illnessValueController),
+                    // AddPatientTextField(
+                    //   label: 'اخر ما وصلناله',
+                    //   controller: latestController,
+                    //   textInputAction: TextInputAction.newline,
+                    //   tKey: latestKey,
+                    //   validate: (v) {},
+                    //   save: (v) => newPatient['latest'] = {
+                    //     DateFormat('Hms').format(DateTime.now()): {
+                    //       'text': v,
+                    //       'date': DateTime.now().toString(),
+                    //     }
+                    //   },
+                    //   multiline: true,
                   ),
                 ),
               );

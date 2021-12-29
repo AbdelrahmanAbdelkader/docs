@@ -12,6 +12,7 @@ class Patient extends ChangeNotifier {
   String? source = '';
   List<Map> latests = [];
   String? latestToPush = '';
+  String? nationalId = '';
   String? date = '';
   String? state;
   List<Map> illnesses = [];

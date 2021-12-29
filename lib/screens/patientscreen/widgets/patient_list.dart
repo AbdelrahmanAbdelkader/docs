@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/bottomnav.dart';
+import 'package:sample/provider/account.dart';
 import 'package:sample/provider/patient.dart';
 import 'package:sample/provider/patients.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_list_tile.dart';
@@ -22,8 +22,9 @@ class PatientList extends StatelessWidget {
         if (proveTrue.patients.isNotEmpty) {
           return ListView(
             children: proveTrue.patients
-                .map((e) => PatientListTile(
-                      patient: e,
+                .map((e) => ChangeNotifierProvider.value(
+                      value: e,
+                      child: PatientListTile(),
                     ))
                 .toList(),
           );

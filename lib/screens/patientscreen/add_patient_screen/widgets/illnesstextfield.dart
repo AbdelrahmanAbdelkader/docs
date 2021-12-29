@@ -8,6 +8,8 @@ class IllnessTextField extends StatelessWidget {
     required this.validate,
     required this.multiline,
     required this.controller,
+    this.textInputAction,
+    this.textInputType,
   }) : super(key: key);
   final String label;
 
@@ -15,6 +17,8 @@ class IllnessTextField extends StatelessWidget {
   final Function validate;
   final bool multiline;
   final TextEditingController controller;
+  final TextInputAction? textInputAction;
+  final TextInputType? textInputType;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -36,7 +40,6 @@ class IllnessTextField extends StatelessWidget {
           decoration: InputDecoration(
             label: Text(
               label,
-              
             ),
             border: InputBorder.none,
             errorBorder: InputBorder.none,

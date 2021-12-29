@@ -87,6 +87,7 @@ class IllnessList extends StatelessWidget {
               flex: 5,
               child: IllnessTextField(
                   controller: illnessController,
+                  textInputAction: TextInputAction.next,
                   label: 'المرض',
                   save: (v) {},
                   validate: (v) {},
@@ -96,6 +97,8 @@ class IllnessList extends StatelessWidget {
               flex: 2,
               child: IllnessTextField(
                   controller: illnessValueController,
+                  textInputAction: TextInputAction.next,
+                  textInputType: TextInputType.number,
                   label: 'القيمة',
                   save: (v) {},
                   validate: (v) {},
