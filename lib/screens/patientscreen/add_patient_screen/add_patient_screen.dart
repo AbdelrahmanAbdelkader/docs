@@ -114,6 +114,7 @@ class AddPatientPage extends StatelessWidget {
                       .child(account.team as String)
                       .child(patientProvider.nationalId as String)
                       .update({
+                    'team': account.team,
                     'volanteerId': account.id,
                     'volanteerName': patientProvider.volName,
                     'patientName': patientProvider.name,

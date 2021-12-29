@@ -13,6 +13,7 @@ class PatientsProv extends ChangeNotifier {
   void addPatient(Map newPatient) {
     print(newPatient);
     _patients.add(Patient()
+      ..team = newPatient['team']
       ..volId = newPatient['volanteerId']
       ..volName = newPatient['volanteerName']
       ..name = newPatient['patientName']

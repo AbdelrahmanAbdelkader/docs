@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 class Patient extends ChangeNotifier {
+  String? team;
   String? illnessType;
   String? doctor;
   String? docId;
