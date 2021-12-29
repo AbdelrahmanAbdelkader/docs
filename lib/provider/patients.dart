@@ -10,7 +10,8 @@ class PatientsProv extends ChangeNotifier {
     return _patients;
   }
 
-  void addPatient(Map newPatient, String volanteerName) {
+  void addPatient(Map newPatient) {
+    print(newPatient);
     _patients.add(Patient()
       ..volId = newPatient['volanteerId']
       ..volName = newPatient['volanteerName']
@@ -20,11 +21,12 @@ class PatientsProv extends ChangeNotifier {
       ..doctor = newPatient['docName']
       ..illnessType = newPatient['illnessType']
       ..illnesses = [
-        ...(newPatient['illnesses'] as Map).keys.map((e) => {
-              'id': e,
-              'المرض': newPatient['illnesses'][e]['المرض'],
-              'القيمة': newPatient['illnesses'][e]['القيمة'],
-            })
+        if ((newPatient['illnesses']) != null)
+          ...(newPatient['illnesses'] as Map).keys.map((e) => {
+                'id': e,
+                'المرض': newPatient['illnesses'][e]['المرض'],
+                'القيمة': newPatient['illnesses'][e]['القيمة'],
+              })
       ]
       ..address = newPatient['adress']
       ..phone = newPatient['phone']
@@ -38,6 +40,7 @@ class PatientsProv extends ChangeNotifier {
       ]
       ..state = newPatient['state']
       ..date = newPatient['date']);
+    print(patients);
   }
 
   Future<void> refresh(String team, String role) async {
@@ -56,14 +59,14 @@ class PatientsProv extends ChangeNotifier {
       ref2 = null;
     if (ref.exists) {
       (ref.value as Map).values.forEach((element) {
-        addPatient(
-            element, (users.value as Map)[element['volanteerId']]['name']);
+        addPatient(element);
       });
+      print('ss');
+      print(patients);
     }
     if (ref2!.exists) {
       (ref2.value as Map).values.forEach((element) {
-        addPatient(
-            element, (users.value as Map)[element['volanteerId']]['name']);
+        addPatient(element);
       });
     }
     sortLatest();
