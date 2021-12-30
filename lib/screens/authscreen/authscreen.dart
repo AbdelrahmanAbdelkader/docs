@@ -40,20 +40,16 @@ class AuthScreen extends StatelessWidget {
     if (authFormKey.currentState!.validate()) {
       authFormKey.currentState!.save();
       if (auth.signIn) {
-        auth.signInFun();
+        auth.signInFun(emailController.text, passwordController.text);
       } else if (!auth.signIn &&
           auth.userTeamDropDownBottonValue != null &&
           auth.roleDropDownBottonValue != null) {
         auth.register(
-          userNameController.text,
-          userPhoneController.text,
-          auth.userTeamDropDownBottonValue,
-          (auth.userTeamDropDownBottonValue.toString() != 'طب')
-              ? null
-              : auth.userSpecialityDropDownBottonValue,
-          auth.roleDropDownBottonValue.toString(),
-          thereAreUsers,
-        );
+            email: emailController.text,
+            password: passwordController.text,
+            thereAreUsers: thereAreUsers,
+            userName: userNameController.text,
+            userPhone: userPhoneController.text);
       }
     }
   }
@@ -67,6 +63,7 @@ class AuthScreen extends StatelessWidget {
       role = (!thereAreUsers)
           ? ['متطوع غني']
           : [
+              'متطوع غني',
               'متطوع فقير',
               'مسؤول أبحاث',
               'مسؤول دكاترة',
@@ -124,15 +121,58 @@ class AuthScreen extends StatelessWidget {
                           controller: emailController,
                           tKey: emailKey,
                           multiline: false,
-                          save: (v) {
-                            auth.setEmail(v);
-                          },
+                          save: (v) {},
                           validate: (String v) {
                             if (!v.endsWith('.com') && !v.contains('@')) {
                               return 'ادخل ايميل صحيح';
                             }
                           },
                         ),
+                        if (!auth.signIn)
+                          Consumer<Auth>(
+                            builder: (context, stateManagment, _) => Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: const BorderSide(
+                                      width: 1, color: Colors.greenAccent),
+                                ),
+                                elevation: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: DropdownButton(
+                                    onTap: () =>
+                                        FocusScope.of(context).unfocus(),
+                                    isDense: true,
+                                    elevation: 50,
+                                    // focusColor: Colors.white,
+                                    underline: Container(),
+                                    hint: Text('اختر المركز'),
+                                    value:
+                                        stateManagment.stateDropDownBottonValue,
+                                    isExpanded: true,
+
+                                    onChanged: (v) {
+                                      stateManagment
+                                          .setstateDropDownBottonValue(
+                                              v as String);
+                                    },
+                                    items: List.generate(
+                                      states.length,
+                                      (index) => DropdownMenuItem(
+                                        child: Text(
+                                          states[index],
+                                        ),
+                                        value: states[index],
+                                      ),
+                                    ).toList(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         AddPatientTextField(
                           textInputAction: TextInputAction.next,
                           invisible: true,
@@ -140,9 +180,7 @@ class AuthScreen extends StatelessWidget {
                           controller: passwordController,
                           tKey: passwordKey,
                           multiline: false,
-                          save: (v) {
-                            auth.setPassword(v);
-                          },
+                          save: (v) {},
                           validate: (v) {
                             if (v.length < 8) {
                               return 'ادخل علي الاقل 8 حروف او ارقام';
@@ -198,6 +236,8 @@ class AuthScreen extends StatelessWidget {
                                     child: Container(
                                       padding: const EdgeInsets.all(8.0),
                                       child: DropdownButton(
+                                        onTap: () =>
+                                            FocusScope.of(context).unfocus(),
                                         elevation: 50,
                                         // focusColor: Colors.white,
                                         underline: Container(),
@@ -258,15 +298,18 @@ class AuthScreen extends StatelessWidget {
                                                 padding:
                                                     const EdgeInsets.all(8.0),
                                                 child: DropdownButton(
+                                                  onTap: () =>
+                                                      FocusScope.of(context)
+                                                          .unfocus(),
                                                   isExpanded: true,
                                                   elevation: 50,
                                                   // focusColor: Colors.white,
                                                   underline: Container(),
-                                                  value: auth
+                                                  value: stateManagment
                                                       .userTeamDropDownBottonValue,
                                                   hint:
                                                       const Text('اختر الفريق'),
-                                                  onChanged: (v) => auth
+                                                  onChanged: (v) => stateManagment
                                                       .setUserTeamDropDownBottonValue(
                                                           v as String),
                                                   items: List.generate(
@@ -285,53 +328,6 @@ class AuthScreen extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                    if (!auth.signIn)
-                                      if (auth.userTeamDropDownBottonValue ==
-                                          'طب')
-                                        Expanded(
-                                          flex: 1,
-                                          child: Consumer<Auth>(
-                                            builder:
-                                                (context, stateManagment, _) =>
-                                                    Card(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                side: const BorderSide(
-                                                    width: 1,
-                                                    color: Colors.greenAccent),
-                                              ),
-                                              elevation: 0,
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: DropdownButton(
-                                                  isExpanded: true,
-                                                  elevation: 50,
-                                                  // focusColor: Colors.white,
-                                                  underline: Container(),
-                                                  value: auth
-                                                      .userSpecialityDropDownBottonValue,
-                                                  hint:
-                                                      const Text('اختر التخصص'),
-                                                  onChanged: (v) => auth
-                                                      .setUserSpecialityDropDownButtonValue(
-                                                    v as String,
-                                                  ),
-                                                  items: List.generate(
-                                                    speciality.length,
-                                                    (index) => DropdownMenuItem(
-                                                      child: Text(
-                                                        speciality[index],
-                                                      ),
-                                                      value: speciality[index],
-                                                    ),
-                                                  ).toList(),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
                                   ],
                                 ),
                                 Padding(
@@ -350,19 +346,6 @@ class AuthScreen extends StatelessWidget {
                                               )
                                             : Container(),
                                       ),
-                                      Expanded(
-                                        child: (auth.triedToValidate &&
-                                                auth.userSpecialityDropDownBottonValue ==
-                                                    null &&
-                                                auth.userTeamDropDownBottonValue ==
-                                                    'طب')
-                                            ? Text(
-                                                'اختر تخصصك',
-                                                style: TextStyle(
-                                                    color: Colors.red),
-                                              )
-                                            : Container(),
-                                      ),
                                     ],
                                   ),
                                 )
@@ -374,9 +357,12 @@ class AuthScreen extends StatelessWidget {
                           child: Consumer<Auth>(
                             builder: (context, state, _) {
                               return ElevatedButton(
-                                  onPressed: () => save(
-                                        auth,
-                                      ),
+                                  onPressed: () {
+                                    FocusScope.of(context).unfocus();
+                                    save(
+                                      auth,
+                                    );
+                                  },
                                   child: (auth.signIn)
                                       ? const Text('تسجيل الدخول')
                                       : const Text('التسجيل'));

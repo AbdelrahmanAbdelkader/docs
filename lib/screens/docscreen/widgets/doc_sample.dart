@@ -19,7 +19,6 @@ class _DocSampleState extends State<DocSample> {
   late final String id;
   late final String? docNum;
   late final String? docEmail;
-  late final String docType;
   late final bool agreed;
   late final String? hint;
   late final List<Map>? patients;
@@ -34,7 +33,6 @@ class _DocSampleState extends State<DocSample> {
       id = prove.Id as String;
       docNum = prove.phone;
       docEmail = prove.email;
-      docType = prove.type as String;
       agreed = prove.agreed;
       hint = prove.hint;
       patients = prove.patients;
@@ -68,7 +66,7 @@ class _DocSampleState extends State<DocSample> {
             curve: Curves.bounceOut,
             margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            
+
             decoration: BoxDecoration(
                 color: Colors.blue.shade100.withOpacity(.3),
                 borderRadius: BorderRadius.circular(15),
@@ -99,13 +97,6 @@ class _DocSampleState extends State<DocSample> {
                                 height: 1),
                           ),
                           Text(
-                            docType,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: Colors.green,
-                            ),
-                          ),
-                          Text(
                             (docEmail != '') ? '$docEmail' : '$docNum',
                             style: const TextStyle(
                               fontSize: 18,
@@ -124,7 +115,6 @@ class _DocSampleState extends State<DocSample> {
                           );
                         },
                         icon: const Icon(
-                          
                           Icons.edit,
                           size: 20,
                           color: Colors.green,
@@ -133,7 +123,7 @@ class _DocSampleState extends State<DocSample> {
                     ],
                   ),
                 ),
-                if (hint != '' && toggled )
+                if (hint != '' && toggled)
                   Text(
                     hint as String,
                     style: const TextStyle(

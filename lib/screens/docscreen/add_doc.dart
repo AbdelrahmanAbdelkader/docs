@@ -53,7 +53,7 @@ class AddDoctor extends StatelessWidget {
       prove.triedToValidate = true;
       print(prove.Id);
       bool validate = keys.currentState!.validate();
-      if (prove.type != null && validate) {
+      if (validate) {
         // prove.type = prove.val as String;
         keys.currentState!.save();
         DatabaseReference ref;
@@ -69,7 +69,6 @@ class AddDoctor extends StatelessWidget {
           "hint": prove.hint,
           "name": prove.name,
           "petients": prove.patients.asMap(),
-          "type": prove.type,
         });
         // database.ref()
         // .set(toAdd);
@@ -147,54 +146,6 @@ class AddDoctor extends StatelessWidget {
                             }
                           },
                           multiline: false),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              side: const BorderSide(
-                                  width: 1, color: Colors.greenAccent),
-                            ),
-                            elevation: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(16.0),
-                              child: DropdownButton(
-                                isDense: true,
-                                elevation: 0,
-                                // focusColor: Colors.white,
-                                underline: Container(),
-                                value: doc.type,
-                                isExpanded: true,
-                                hint: const Text('اختر التخصص'),
-                                onChanged: (va) {
-                                  doc.setType(va as String);
-                                },
-                                items: List.generate(
-                                  speciality.length,
-                                  (index) => DropdownMenuItem(
-                                    child: Text(
-                                      speciality[index],
-                                    ),
-                                    value: speciality[index],
-                                  ),
-                                ).toList(),
-                              ),
-                            ),
-                          ),
-                        ),
-                        if (doc.triedToValidate && doc.type == null)
-                          const Text(
-                            'اختر التخصص',
-                            style: TextStyle(color: Colors.red, fontSize: 12),
-                          ),
-                      ],
-                    ),
-                  ),
                   AddPatientTextField(
                       label: 'ملاحظة',
                       controller: hintController,

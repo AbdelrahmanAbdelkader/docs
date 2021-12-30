@@ -10,6 +10,10 @@ class PatientsProv extends ChangeNotifier {
     return _patients;
   }
 
+  void clear() {
+    _patients = [];
+  }
+
   void addPatient(Map newPatient) {
     print(newPatient);
     _patients.add(Patient()

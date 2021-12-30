@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/vol.dart';
+import 'package:sample/provider/account.dart';
+import 'package:sample/provider/volanteers.dart';
 import 'package:sample/screens/volscreen/widgets/vollist.dart';
 
 class VolScreen extends StatelessWidget {
@@ -9,8 +10,9 @@ class VolScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final prove = Provider.of<Vols>(context, listen: false);
-    final size= MediaQuery.of(context).size;
+    final prove = Provider.of<Volanteers>(context, listen: false);
+    final account = Provider.of<Account>(context);
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text('المتطوعين'),
@@ -23,7 +25,7 @@ class VolScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
-           Positioned(
+          Positioned(
               bottom: 0,
               child: Container(
                   width: size.width,
@@ -32,7 +34,7 @@ class VolScreen extends StatelessWidget {
                     fit: BoxFit.fill,
                   ))),
           FutureBuilder(
-              future: prove.refresh(),
+              future: prove.refresh(account.role),
               builder: (context, snap) {
                 if (snap.connectionState == ConnectionState.waiting)
                   return Center(

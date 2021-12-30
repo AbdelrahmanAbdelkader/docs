@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sample/helpers/docicon.dart';
+import 'package:sample/provider/volanteer.dart';
 import 'package:sample/screens/docscreen/doc_page.dart';
 import 'package:sample/screens/docscreen/getDoctorsData.dart';
 import 'package:sample/screens/patientscreen/patientScreen.dart';
@@ -12,7 +13,6 @@ class Account extends ChangeNotifier {
   bool? _accepted;
   String? _team;
   String? name;
-  Map<String, Map> types = {};
   int current = 0;
   List<Map> bottomNavBarItems = [{}];
 
@@ -22,6 +22,16 @@ class Account extends ChangeNotifier {
   String? get team => _team;
   void setName(String val) {
     name = val;
+  }
+
+  void printData() {
+    print(_id);
+    print(_role);
+    print(_accepted);
+    print(_team);
+    print(name);
+    print(current);
+    print(bottomNavBarItems);
   }
 
   void setCurrent(int ne) {
@@ -35,14 +45,20 @@ class Account extends ChangeNotifier {
       if (_role == 'متطوع غني' || _role == 'مسؤول دكاترة')
         bottomNavBarItems[current]['screen'] = PatientScreen();
       else
-        bottomNavBarItems[current]['screen'] = VolanteerProfileScreen();
+        bottomNavBarItems[current]['screen'] =
+            VolanteerProfileScreen(Volanteer());
     } else if (ne == 2) {
       if (_role == 'مسؤول دكاترة')
-        bottomNavBarItems[current]['screen'] = VolanteerProfileScreen();
-      else
+        bottomNavBarItems[current]['screen'] =
+            VolanteerProfileScreen(Volanteer());
+      else {
+        print('ss');
         bottomNavBarItems[current]['screen'] = VolScreen();
+        print('bb');
+      }
     } else if (ne == 3) {
-      bottomNavBarItems[current]['screen'] = VolanteerProfileScreen();
+      bottomNavBarItems[current]['screen'] =
+          VolanteerProfileScreen(Volanteer());
     }
 
     notifyListeners();
@@ -83,7 +99,7 @@ class Account extends ChangeNotifier {
         {
           'icon': Icons.person,
           'label': 'المتطوعين',
-          'screen': VolanteerProfileScreen(),
+          'screen': VolanteerProfileScreen(Volanteer()),
         }
         // {
         //   'icon': Icons.account_circle_outlined,
@@ -101,7 +117,7 @@ class Account extends ChangeNotifier {
         {
           'icon': Icons.account_circle_outlined,
           'label': 'الأكونت',
-          'screen': VolanteerProfileScreen(),
+          'screen': VolanteerProfileScreen(Volanteer()),
         },
       ];
     } else if (r == 'مسؤول أبحاث') {
@@ -114,7 +130,7 @@ class Account extends ChangeNotifier {
         {
           'icon': Icons.account_circle_outlined,
           'label': 'الأكونت',
-          'screen': VolanteerProfileScreen(),
+          'screen': VolanteerProfileScreen(Volanteer()),
         },
       ];
     } else if (r == 'مسؤول دكاترة') {
@@ -132,7 +148,7 @@ class Account extends ChangeNotifier {
         {
           'icon': Icons.account_circle_outlined,
           'label': 'الأكونت',
-          'screen': VolanteerProfileScreen(),
+          'screen': VolanteerProfileScreen(Volanteer()),
         },
       ];
     }

@@ -12,11 +12,6 @@ class Doc extends ChangeNotifier {
   bool value = true;
   bool triedToValidate = false;
   String? val;
-  String? type;
-  void setType(String val) {
-    type = val;
-    notifyListeners();
-  }
 
   void setCommuicate(bool s) {
     value = s;
@@ -27,7 +22,6 @@ class Doc extends ChangeNotifier {
     if (data['phone'] != null) phone = data['phone'];
     if (data['hint'] != null) hint = data['hint'];
     if (data['name'] != null) name = data['name'];
-    if (data['type'] != null) type = data['type'];
     if (data['agreed'] != null) agreed = data['agreed'];
     if (data['email'] != null) email = data['email'];
     if (data['petients'] != null)

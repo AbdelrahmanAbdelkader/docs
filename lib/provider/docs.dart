@@ -45,12 +45,6 @@ class Docs extends ChangeNotifier {
             if (element.name.contains(searchFor)) {
               searchedDoctors.add(element);
             }
-          } else if (byname == 'التخصص' && searchFor != '') {
-            print('ff');
-            if ((element.type as String).contains(searchFor)) {
-              searchedDoctors.add(element);
-            } else
-              searchedDoctors.remove(element);
           }
         }
       },

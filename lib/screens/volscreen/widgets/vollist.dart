@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/vol.dart';
+import 'package:sample/provider/volanteers.dart';
 import 'package:sample/screens/volscreen/widgets/vollisttile.dart';
 
 class VolList extends StatelessWidget {
@@ -8,34 +8,12 @@ class VolList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vol = Provider.of<Vols>(context);
-    return ListView(children: [
-      ...vol.volsPharm
-          .map(
-            (e) => VolListTile(
-              name: e['userName'] as String,
-              phone: e['phone'] as String,
-              type: e['state'] as String,
-              accepted: e['accepted'],
-              email: e['email'],
-              id: e['id'],
-              uid: e['uid'],
-            ),
-          )
-          .toList(),
-      ...vol.volsChem
-          .map(
-            (e) => VolListTile(
-              name: e['userName'] as String,
-              phone: e['phone'] as String,
-              type: e['state'] as String,
-              accepted: e['accepted'],
-              email: e['email'],
-              id: e['id'],
-              uid: e['uid'],
-            ),
-          )
-          .toList(),
-    ]);
+    final volanteers = Provider.of<Volanteers>(context);
+    return ListView(
+        children: volanteers.vols
+            .map((e) => VolListTile(
+                  volanteer: e,
+                ))
+            .toList());
   }
 }

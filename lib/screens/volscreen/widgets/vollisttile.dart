@@ -1,37 +1,18 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sample/provider/account.dart';
+import 'package:sample/provider/volanteer.dart';
 import 'package:sample/screens/volscreen/widgets/volprofile/volprofilescreen.dart';
 
 // ignore: must_be_immutable
-class VolListTile extends StatefulWidget {
-  VolListTile({
-    Key? key,
-    required this.name,
-    required this.phone,
-    required this.type,
-    required this.id,
-    required this.accepted,
-    required this.email,
-    this.patients,
-    required this.uid,
-  }) : super(key: key);
-  final String name;
-  final String phone;
-  final String type;
-  final String id;
-  bool accepted;
-  final String email;
-  final String uid;
-  Map<String, Object>? patients;
+class VolListTile extends StatelessWidget {
+  VolListTile({Key? key, required this.volanteer}) : super(key: key);
+  final Volanteer volanteer;
 
-  @override
-  State<VolListTile> createState() => _VolListTileState();
-}
-
-class _VolListTileState extends State<VolListTile> {
-  @override
   Widget build(BuildContext context) {
+    final account = Provider.of<Account>(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListTile(
@@ -43,28 +24,23 @@ class _VolListTileState extends State<VolListTile> {
             context,
             MaterialPageRoute(
               builder: (context) => VolanteerProfileScreen(
-                  // name: widget.name,
-                  // phone: widget.phone,
-                  // email: widget.email,
-                  // type: widget.type,
-                  // patients: widget.patients,
-                  ),
+                volanteer,
+              ),
             ),
           );
         },
-        tileColor: (widget.accepted) ? Colors.blue[300] : Colors.red[300],
+        tileColor:
+            (volanteer.accepted as bool) ? Colors.blue[300] : Colors.red[300],
         leading: IconButton(
           onPressed: () {
             FirebaseDatabase.instance
                 .ref()
                 .child("activation")
-                .child(widget.uid)
-                .set({"accepted": !widget.accepted});
-            setState(() {
-              widget.accepted = !widget.accepted;
-            });
+                .child(volanteer.id as String)
+                .set({"accepted": !(volanteer.accepted as bool)});
+            account.setCurrent(account.current);
           },
-          icon: (widget.accepted)
+          icon: (volanteer.accepted as bool)
               ? Icon(
                   Icons.check_box,
                   color: Colors.green,
@@ -77,26 +53,18 @@ class _VolListTileState extends State<VolListTile> {
         title: Column(
           children: [
             Text(
-              widget.name,
+              volanteer.name as String,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
-            Text(
-              widget.type,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            )
           ],
         ),
         trailing: FittedBox(
           child: Text(
-            widget.phone,
+            volanteer.phone as String,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 20,

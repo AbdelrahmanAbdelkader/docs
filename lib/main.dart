@@ -7,7 +7,7 @@ import 'package:sample/provider/account.dart';
 import 'package:sample/provider/auth.dart';
 import 'package:sample/provider/docs.dart';
 import 'package:sample/provider/patients.dart';
-import 'package:sample/provider/vol.dart';
+import 'package:sample/provider/volanteers.dart';
 import 'package:sample/screens/splashscreen/splashscreen.dart';
 
 void main() async {
@@ -40,8 +40,8 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider<PatientsProv>(
             create: (context) => PatientsProv()),
-        ChangeNotifierProvider<Vols>(
-          create: (context) => Vols(),
+        ChangeNotifierProvider<Volanteers>(
+          create: (context) => Volanteers(),
         ),
       ],
       child: MaterialApp(

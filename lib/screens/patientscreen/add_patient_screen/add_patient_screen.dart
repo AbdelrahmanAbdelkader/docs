@@ -150,7 +150,7 @@ class AddPatientPage extends StatelessWidget {
                     'date': patientProvider.date,
                   });
                   Navigator.pop(context);
-
+                  patientsProvider.clear();
                   account.setCurrent((account.current));
                 }
                 // } else

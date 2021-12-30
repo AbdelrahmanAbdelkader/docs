@@ -34,6 +34,7 @@ class AddPatientTextField extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: TextFormField(
+            // focusNode: FocusNode(canRequestFocus: false),
             maxLines: (multiline) ? 3 : 1,
             controller: controller,
             key: tKey,
