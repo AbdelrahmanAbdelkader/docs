@@ -8,11 +8,11 @@ import 'illnesstextfield.dart';
 class IllnessList extends StatelessWidget {
   IllnessList(
       {Key? key,
-      required this.illnessController,
-      required this.illnessValueController})
+      required this.costController,
+      required this.costValueController})
       : super(key: key);
-  final TextEditingController illnessController;
-  final TextEditingController illnessValueController;
+  final TextEditingController costController;
+  final TextEditingController costValueController;
   @override
   Widget build(BuildContext context) {
     final patientProvider = Provider.of<Patient>(context);
@@ -64,18 +64,18 @@ class IllnessList extends StatelessWidget {
               flex: 2,
               child: IconButton(
                 onPressed: () {
-                  if (illnessValueController.text.isNotEmpty ||
-                      illnessController.text.isNotEmpty)
-                    patientProvider.addIllnesses(
+                  if (costValueController.text.isNotEmpty ||
+                      costController.text.isNotEmpty)
+                    patientProvider.addCost(
                       {
-                        'المرض': illnessController.text.toString(),
-                        'القيمة': illnessValueController.text.toString(),
+                        'التكليف': costController.text.toString(),
+                        'القيمة': costValueController.text.toString(),
                         'id':
                             '${(DateTime.now().second)}:${(DateTime.now().millisecond)}',
                       },
                     );
-                  illnessValueController.clear();
-                  illnessController.clear();
+                  costValueController.clear();
+                  costController.clear();
                 },
                 icon: const Icon(
                   Icons.add,
@@ -86,9 +86,9 @@ class IllnessList extends StatelessWidget {
             Expanded(
               flex: 5,
               child: IllnessTextField(
-                  controller: illnessController,
+                  controller: costController,
                   textInputAction: TextInputAction.next,
-                  label: 'المرض',
+                  label: 'التكليف',
                   save: (v) {},
                   validate: (v) {},
                   multiline: false),
@@ -96,7 +96,7 @@ class IllnessList extends StatelessWidget {
             Expanded(
               flex: 2,
               child: IllnessTextField(
-                  controller: illnessValueController,
+                  controller: costValueController,
                   textInputAction: TextInputAction.next,
                   textInputType: TextInputType.number,
                   label: 'القيمة',
@@ -107,20 +107,20 @@ class IllnessList extends StatelessWidget {
           ],
         ),
       ),
-      ...patientProvider.illnesses
+      ...patientProvider.costs
           .map(
             (e) => Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8),
               child: ListTile(
                 onLongPress: () {
-                  patientProvider.removeIllness(e);
+                  patientProvider.removeCost(e);
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                     side: BorderSide(width: 1, color: Colors.greenAccent)),
                 leading: Text(
-                  '${e['المرض']}:',
+                  '${e['التكليف']}:',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.green,

@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sample/provider/patients.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_list.dart';
 import '../widgets/app_bar_button.dart';
 import 'add_patient_screen/add_patient_screen.dart';
@@ -12,10 +14,7 @@ class PatientScreen extends StatefulWidget {
 }
 
 class _PatientScreenState extends State<PatientScreen> {
-  void setStates() {
-    setState(() {});
-  }
-
+  @override
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -30,7 +29,7 @@ class _PatientScreenState extends State<PatientScreen> {
           AppBarButton(
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => AddPatientPage(setStates),
+                builder: (context) => AddPatientPage(),
               ),
             ),
           ),

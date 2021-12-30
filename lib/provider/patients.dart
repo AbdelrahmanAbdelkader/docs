@@ -13,6 +13,7 @@ class PatientsProv extends ChangeNotifier {
   void addPatient(Map newPatient) {
     print(newPatient);
     _patients.add(Patient()
+      ..team = newPatient['team']
       ..volId = newPatient['volanteerId']
       ..volName = newPatient['volanteerName']
       ..name = newPatient['patientName']
@@ -20,23 +21,25 @@ class PatientsProv extends ChangeNotifier {
       ..docId = newPatient['docId']
       ..doctor = newPatient['docName']
       ..illnessType = newPatient['illnessType']
-      ..illnesses = [
-        if ((newPatient['illnesses']) != null)
-          ...(newPatient['illnesses'] as Map).keys.map((e) => {
+      ..illness = newPatient['illness']
+      ..costs = [
+        if ((newPatient['costs']) != null)
+          ...(newPatient['costs'] as Map).keys.map((e) => {
                 'id': e,
-                'المرض': newPatient['illnesses'][e]['المرض'],
-                'القيمة': newPatient['illnesses'][e]['القيمة'],
+                'التكليف': newPatient['costs'][e]['التكليف'],
+                'القيمة': newPatient['costs'][e]['القيمة'],
               })
       ]
       ..address = newPatient['adress']
       ..phone = newPatient['phone']
       ..source = newPatient['source']
       ..latests = [
-        ...(newPatient['latests'] as Map).keys.map((e) => {
-              'id': e,
-              'date': newPatient['latests'][e]['date'],
-              'title': newPatient['latests'][e]['title'],
-            })
+        if (newPatient['latests'] != null)
+          ...(newPatient['latests'] as Map).keys.map((e) => {
+                'id': e,
+                'date': newPatient['latests'][e]['date'],
+                'title': newPatient['latests'][e]['title'],
+              })
       ]
       ..state = newPatient['state']
       ..date = newPatient['date']);
@@ -46,7 +49,6 @@ class PatientsProv extends ChangeNotifier {
   Future<void> refresh(String team, String role) async {
     _patients = [];
     final database = FirebaseDatabase.instance;
-    final users = await database.ref().child('users').get();
     final ref = await database.ref().child("patients").child(team).get();
     final DataSnapshot? ref2;
     if (role == 'متطوع غني')
@@ -87,7 +89,7 @@ class PatientsProv extends ChangeNotifier {
       for (int i = 0; i < element.latests.length; i++) {
         for (int y = i + 1; i < element.latests.length; y++) {
           if (DateTime.parse(element.latests[y]['date'] as String)
-              .isBefore(DateTime.parse(element.latests[i]['date'] as String))) {
+              .isAfter(DateTime.parse(element.latests[i]['date'] as String))) {
             Map temp = element.latests[i];
             element.latests[i] = element.latests[y];
             element.latests[y] = temp;
