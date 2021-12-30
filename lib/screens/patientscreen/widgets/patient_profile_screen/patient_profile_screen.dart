@@ -284,7 +284,7 @@ class PatientProfileScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text('تغيير المصدر'),
-                            Text(patient.name as String),
+                            Text(patient.source as String),
                             TextField(
                               controller: dialogSourceController,
                             ),
@@ -315,42 +315,45 @@ class PatientProfileScreen extends StatelessWidget {
             editFunction: () {
               showDialog(
                   context: context,
-                  builder: (ctx) => Dialog(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('تغيير الطبيب'),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 1,
-                                    child: PatientDropDown(
-                                      text: 'اختر الطبيب المتابع',
-                                    ),
-                                  )
-                                ],
+                  builder: (ctx) => ChangeNotifierProvider.value(
+                        value: patient,
+                        child: Dialog(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text('تغيير الطبيب'),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: PatientDropDown(
+                                        text: 'اختر الطبيب المتابع',
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                            TextButton(
-                                onPressed: () async {
-                                  await FirebaseDatabase.instance
-                                      .ref()
-                                      .child('patients')
-                                      .child(account.team as String)
-                                      .child(patient.nationalId as String)
-                                      .update({
-                                    'docId': patient.docId,
-                                    'docName': patient.doctor,
-                                  });
-                                  Navigator.of(ctx).pop();
-                                  Navigator.of(context).pop();
-                                  account.setCurrent(account.current);
-                                },
-                                child: Text('save')),
-                          ],
+                              TextButton(
+                                  onPressed: () async {
+                                    await FirebaseDatabase.instance
+                                        .ref()
+                                        .child('patients')
+                                        .child(account.team as String)
+                                        .child(patient.nationalId as String)
+                                        .update({
+                                      'docId': patient.docId,
+                                      'docName': patient.doctor,
+                                    });
+                                    Navigator.of(ctx).pop();
+                                    Navigator.of(context).pop();
+                                    account.setCurrent(account.current);
+                                  },
+                                  child: Text('save')),
+                            ],
+                          ),
                         ),
                       ));
             },
@@ -366,7 +369,7 @@ class PatientProfileScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text('تغيير المرض'),
-                            Text(patient.name as String),
+                            Text(patient.illness as String),
                             TextField(
                               controller: dialogIllnessController,
                             ),
@@ -396,50 +399,58 @@ class PatientProfileScreen extends StatelessWidget {
             editFunction: () {
               showDialog(
                   context: context,
-                  builder: (ctx) => Dialog(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('تغيير نوع المرض'),
-                            DropdownButton(
-                              underline: Container(),
-                              isExpanded: true,
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              hint: Text(
-                                'تخصص المرض',
-                              ),
-                              value: patient.illnessType,
-                              items: speciality
-                                  .map(
-                                    (e) => DropdownMenuItem(
-                                      child: Text(e),
-                                      value: e,
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (v) {
-                                patient.setillnessType(v as String);
-                              },
-                            ),
-                            TextButton(
-                                onPressed: () async {
-                                  await FirebaseDatabase.instance
-                                      .ref()
-                                      .child('patients')
-                                      .child(account.team as String)
-                                      .child(patient.nationalId as String)
-                                      .update(
-                                          {'illnessType': patient.illnessType});
-                                  Navigator.of(ctx).pop();
-                                  Navigator.of(context).pop();
-                                  account.setCurrent(account.current);
-                                },
-                                child: Text('save')),
-                          ],
+                  builder: (ctx) => ChangeNotifierProvider.value(
+                        value: patient,
+                        child: Dialog(
+                          child: Builder(builder: (context) {
+                            final supPatient = Provider.of<Patient>(context);
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text('تغيير نوع المرض'),
+                                DropdownButton(
+                                  underline: Container(),
+                                  isExpanded: true,
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  hint: Text(
+                                    'تخصص المرض',
+                                  ),
+                                  value: supPatient.illnessType,
+                                  items: speciality
+                                      .map(
+                                        (e) => DropdownMenuItem(
+                                          child: Text(e),
+                                          value: e,
+                                        ),
+                                      )
+                                      .toList(),
+                                  onChanged: (v) {
+                                    patient.setillnessType(v as String);
+                                  },
+                                ),
+                                TextButton(
+                                    onPressed: () async {
+                                      await FirebaseDatabase.instance
+                                          .ref()
+                                          .child('patients')
+                                          .child(account.team as String)
+                                          .child(
+                                              supPatient.nationalId as String)
+                                          .update({
+                                        'illnessType': supPatient.illnessType
+                                      });
+                                      Navigator.of(ctx).pop();
+                                      Navigator.of(context).pop();
+                                      account.setCurrent(account.current);
+                                    },
+                                    child: Text('save')),
+                              ],
+                            );
+                          }),
                         ),
                       ));
             },
