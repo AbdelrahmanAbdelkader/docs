@@ -388,7 +388,7 @@ class AuthScreen extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 0,
+            top: MediaQuery.of(context).padding.top,
             left: 0,
             child: TextButton(
               style: ButtonStyle(

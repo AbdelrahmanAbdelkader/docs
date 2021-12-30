@@ -8,6 +8,7 @@ import 'package:sample/provider/patient.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/patient_screen_doctors_dropdownbutton.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/state_dropdownbutton.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/patient_profile_listtile.dart';
+import 'package:sample/screens/widgets/custom_text_field.dart';
 
 //need to clean
 class PatientProfileScreen extends StatelessWidget {
@@ -27,6 +28,7 @@ class PatientProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final patient = Provider.of<Patient>(context);
     final account = Provider.of<Account>(context);
+    bool sameUser = patient.volId == account.id;
     return Scaffold(
       backgroundColor: Colors.green,
       appBar: AppBar(
@@ -38,15 +40,54 @@ class PatientProfileScreen extends StatelessWidget {
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_rounded,
-            color: Colors.green,
+        leading: PopupMenuButton(
+            icon: Icon(
+              Icons.more_vert,
+              color: Colors.green,
+            ),
+            itemBuilder: (context) => [
+                  PopupMenuItem(
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal:8.0),
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.green,
+                          ),
+                        ),
+                        Text('اضف الحالة لصفحة الزوار ؟'),
+                      ],
+                    ),
+                    onTap: () {},
+                  ),
+                  PopupMenuItem(
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal:8.0),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.green,
+                          ),
+                        ),
+                        Text('ازل الحالة بالكامل ؟'),
+                      ],
+                    ),
+                    onTap: () {},
+                  ),
+                ]),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.arrow_forward_rounded,
+              color: Colors.green,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
+        ],
       ),
       body: ListView(
         children: [

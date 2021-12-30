@@ -4,12 +4,12 @@ import 'package:sample/provider/account.dart';
 import 'package:sample/provider/patient.dart';
 
 class PatientProfieListTile extends StatelessWidget {
-  const PatientProfieListTile(
-      {Key? key,
-      required this.title,
-      required this.trailing,
-      required this.editFunction})
-      : super(key: key);
+  const PatientProfieListTile({
+    Key? key,
+    required this.title,
+    required this.trailing,
+    required this.editFunction,
+  }) : super(key: key);
   final String? title;
   final String? trailing;
   final Function? editFunction;
