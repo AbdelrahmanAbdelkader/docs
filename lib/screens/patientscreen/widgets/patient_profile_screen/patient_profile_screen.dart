@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
 import 'package:sample/provider/account.dart';
 import 'package:sample/provider/patient.dart';
+import 'package:sample/provider/patients.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/patient_screen_doctors_dropdownbutton.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/state_dropdownbutton.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/patient_profile_listtile.dart';
@@ -28,7 +29,7 @@ class PatientProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final patient = Provider.of<Patient>(context);
     final account = Provider.of<Account>(context);
-    bool sameUser = patient.volId == account.id;
+    final patients = Provider.of<PatientsProv>(context);
     return Scaffold(
       backgroundColor: Colors.green,
       appBar: AppBar(
@@ -50,7 +51,7 @@ class PatientProfileScreen extends StatelessWidget {
                     child: Row(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal:8.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Icon(
                             Icons.add,
                             color: Colors.green,
@@ -65,7 +66,7 @@ class PatientProfileScreen extends StatelessWidget {
                     child: Row(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal:8.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Icon(
                             Icons.delete,
                             color: Colors.green,
@@ -96,34 +97,20 @@ class PatientProfileScreen extends StatelessWidget {
             trailing: patient.name,
             editFunction: () {
               showDialog(
-                  context: context,
-                  builder: (ctx) => Dialog(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('تغيير الإسم'),
-                            Text(patient.name as String),
-                            TextField(
-                              controller: dialogNameController,
-                            ),
-                            TextButton(
-                                onPressed: () async {
-                                  await FirebaseDatabase.instance
-                                      .ref()
-                                      .child('patients')
-                                      .child(account.team as String)
-                                      .child(patient.nationalId as String)
-                                      .update({
-                                    'patientName': dialogNameController.text
-                                  });
-                                  Navigator.of(ctx).pop();
-                                  Navigator.of(context).pop();
-                                  account.setCurrent(account.current);
-                                },
-                                child: Text('save')),
-                          ],
-                        ),
-                      ));
+                context: context,
+                builder: (ctx) => MultiProvider(
+                  providers: [
+                    ChangeNotifierProvider.value(value: patient),
+                    ChangeNotifierProvider.value(value: account),
+                  ],
+                  child: TextFieldDialog(
+                    typeChanges: 'تغيير الاسم',
+                    currentValue: patient.name as String,
+                    controller: dialogNameController,
+                    keyOfDataBase: 'patientName',
+                  ),
+                ),
+              );
             },
           ),
           PatientProfieListTile(
@@ -136,76 +123,20 @@ class PatientProfileScreen extends StatelessWidget {
             trailing: patient.nationalId,
             editFunction: () {
               showDialog(
-                  context: context,
-                  builder: (ctx) => Dialog(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('تغيير الرقم القومي'),
-                            Text(patient.nationalId as String),
-                            TextField(
-                              controller: dialogNationIdController,
-                            ),
-                            TextButton(
-                                onPressed: () async {
-                                  await FirebaseDatabase.instance
-                                      .ref()
-                                      .child('patients')
-                                      .child(patient.team as String)
-                                      .child(dialogNationIdController.text)
-                                      .update({
-                                    'team': patient.team,
-                                    'volanteerId': patient.volId,
-                                    'volanteerName': patient.volName,
-                                    'patientName': patient.name,
-                                    'nationaId': dialogNationIdController.text,
-                                    'docId': patient.docId,
-                                    'docName': patient.doctor,
-                                    'illnessType': patient.illnessType,
-                                    'illness': patient.illness,
-                                    'costs': Map.fromIterable(
-                                      patient.costs,
-                                      key: (e) => e['id'],
-                                      value: (e) => {
-                                        'التكليف': e['التكليف'],
-                                        'القيمة': e['القيمة']
-                                      },
-                                    ),
-                                    'adress': patient.address,
-                                    'phone': patient.phone,
-                                    'source': patient.source,
-                                    'latests': Map.fromIterable(
-                                      patient.latests,
-                                      key: (e) {
-                                        return e['id'];
-                                      },
-                                      value: (e) {
-                                        if (e['date'] == null)
-                                          e['date'] =
-                                              DateTime.now().toIso8601String();
-                                        return {
-                                          'date': e['date'],
-                                          'title': e['title'],
-                                        };
-                                      },
-                                    ),
-                                    'state': patient.state,
-                                    'date': patient.date,
-                                  });
-                                  await FirebaseDatabase.instance
-                                      .ref()
-                                      .child('patients')
-                                      .child(patient.team as String)
-                                      .child(patient.nationalId as String)
-                                      .set(null);
-                                  Navigator.of(ctx).pop();
-                                  Navigator.of(context).pop();
-                                  account.setCurrent(account.current);
-                                },
-                                child: Text('save')),
-                          ],
-                        ),
-                      ));
+                context: context,
+                builder: (ctx) => MultiProvider(
+                  providers: [
+                    ChangeNotifierProvider.value(value: patient),
+                    ChangeNotifierProvider.value(value: account),
+                  ],
+                  child: TextFieldDialog(
+                    typeChanges: 'تغيير الرقم القومي',
+                    currentValue: patient.nationalId as String,
+                    controller: dialogNationIdController,
+                    keyOfDataBase: 'nationId',
+                  ),
+                ),
+              );
             },
           ),
           PatientProfieListTile(
@@ -214,32 +145,20 @@ class PatientProfileScreen extends StatelessWidget {
             editFunction: () {
               showDialog(
                   context: context,
-                  builder: (ctx) => ChangeNotifierProvider.value(
-                        value: patient,
-                        child: Dialog(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text('تغيير المركز'),
-                              StateDropDownButton(
-                                label: 'اختر المركز',
-                                items: states,
-                              ),
-                              TextButton(
-                                  onPressed: () async {
-                                    await FirebaseDatabase.instance
-                                        .ref()
-                                        .child('patients')
-                                        .child(account.team as String)
-                                        .child(patient.nationalId as String)
-                                        .update({'state': patient.state});
-                                    Navigator.of(ctx).pop();
-                                    Navigator.of(context).pop();
-                                    account.setCurrent(account.current);
-                                  },
-                                  child: Text('save')),
-                            ],
+                  builder: (ctx) => MultiProvider(
+                        providers: [
+                          ChangeNotifierProvider.value(
+                            value: patient,
                           ),
+                          ChangeNotifierProvider.value(value: account),
+                        ],
+                        child: DropDownDialog(
+                          typeChanges: 'تغيير المركز',
+                          dropDownButton: StateDropDownButton(
+                            label: 'اختر المركز',
+                            items: states,
+                          ),
+                          changes: 'state',
                         ),
                       ));
             },
@@ -249,34 +168,20 @@ class PatientProfileScreen extends StatelessWidget {
             trailing: patient.address,
             editFunction: () {
               showDialog(
-                  context: context,
-                  builder: (ctx) => Dialog(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('تغيير العنوان'),
-                            Text(patient.address as String),
-                            TextField(
-                              controller: dialogAdressController,
-                            ),
-                            TextButton(
-                                onPressed: () async {
-                                  await FirebaseDatabase.instance
-                                      .ref()
-                                      .child('patients')
-                                      .child(account.team as String)
-                                      .child(patient.nationalId as String)
-                                      .update({
-                                    'adress': dialogAdressController.text
-                                  });
-                                  Navigator.of(ctx).pop();
-                                  Navigator.of(context).pop();
-                                  account.setCurrent(account.current);
-                                },
-                                child: Text('save')),
-                          ],
-                        ),
-                      ));
+                context: context,
+                builder: (ctx) => MultiProvider(
+                  providers: [
+                    ChangeNotifierProvider.value(value: patient),
+                    ChangeNotifierProvider.value(value: account),
+                  ],
+                  child: TextFieldDialog(
+                    typeChanges: 'تغيير العنوان',
+                    currentValue: patient.address as String,
+                    controller: dialogAdressController,
+                    keyOfDataBase: 'adress',
+                  ),
+                ),
+              );
             },
           ),
           PatientProfieListTile(
@@ -284,34 +189,20 @@ class PatientProfileScreen extends StatelessWidget {
             trailing: patient.phone,
             editFunction: () {
               showDialog(
-                  context: context,
-                  builder: (ctx) => Dialog(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('تغيير المحمول'),
-                            Text(patient.phone as String),
-                            TextField(
-                              controller: dialogPhoneController,
-                            ),
-                            TextButton(
-                                onPressed: () async {
-                                  await FirebaseDatabase.instance
-                                      .ref()
-                                      .child('patients')
-                                      .child(account.team as String)
-                                      .child(patient.nationalId as String)
-                                      .update({
-                                    'phone': dialogPhoneController.text
-                                  });
-                                  Navigator.of(ctx).pop();
-                                  Navigator.of(context).pop();
-                                  account.setCurrent(account.current);
-                                },
-                                child: Text('save')),
-                          ],
-                        ),
-                      ));
+                context: context,
+                builder: (ctx) => MultiProvider(
+                  providers: [
+                    ChangeNotifierProvider.value(value: patient),
+                    ChangeNotifierProvider.value(value: account),
+                  ],
+                  child: TextFieldDialog(
+                    typeChanges: 'تغيير المحمول',
+                    currentValue: patient.phone as String,
+                    controller: dialogPhoneController,
+                    keyOfDataBase: 'phone',
+                  ),
+                ),
+              );
             },
           ),
           PatientProfieListTile(
@@ -319,35 +210,20 @@ class PatientProfileScreen extends StatelessWidget {
             trailing: patient.source,
             editFunction: () {
               showDialog(
-                  context: context,
-                  builder: (ctx) => Dialog(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('تغيير المصدر'),
-                            Text(patient.source as String),
-                            TextField(
-                              controller: dialogSourceController,
-                            ),
-                            TextButton(
-                                onPressed: () async {
-                                  await FirebaseDatabase.instance
-                                      .ref()
-                                      .child('patients')
-                                      .child(account.team as String)
-                                      .child(patient.nationalId as String)
-                                      .update({
-                                    'source': dialogSourceController.text
-                                  });
-
-                                  Navigator.of(ctx).pop();
-                                  Navigator.of(context).pop();
-                                  account.setCurrent(account.current);
-                                },
-                                child: Text('save')),
-                          ],
-                        ),
-                      ));
+                context: context,
+                builder: (ctx) => MultiProvider(
+                  providers: [
+                    ChangeNotifierProvider.value(value: patient),
+                    ChangeNotifierProvider.value(value: account),
+                  ],
+                  child: TextFieldDialog(
+                    typeChanges: 'تغيير المصدر',
+                    currentValue: patient.source as String,
+                    controller: dialogSourceController,
+                    keyOfDataBase: 'source',
+                  ),
+                ),
+              );
             },
           ),
           PatientProfieListTile(
@@ -356,45 +232,20 @@ class PatientProfileScreen extends StatelessWidget {
             editFunction: () {
               showDialog(
                   context: context,
-                  builder: (ctx) => ChangeNotifierProvider.value(
-                        value: patient,
-                        child: Dialog(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text('تغيير الطبيب'),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 1,
-                                      child: PatientDropDown(
-                                        text: 'اختر الطبيب المتابع',
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              TextButton(
-                                  onPressed: () async {
-                                    await FirebaseDatabase.instance
-                                        .ref()
-                                        .child('patients')
-                                        .child(account.team as String)
-                                        .child(patient.nationalId as String)
-                                        .update({
-                                      'docId': patient.docId,
-                                      'docName': patient.doctor,
-                                    });
-                                    Navigator.of(ctx).pop();
-                                    Navigator.of(context).pop();
-                                    account.setCurrent(account.current);
-                                  },
-                                  child: Text('save')),
-                            ],
+                  builder: (ctx) => MultiProvider(
+                        providers: [
+                          ChangeNotifierProvider.value(
+                            value: patient,
                           ),
+                          ChangeNotifierProvider.value(value: account),
+                          ChangeNotifierProvider.value(value: patients),
+                        ],
+                        child: DropDownDialog(
+                          typeChanges: 'تغيير الطبيب',
+                          dropDownButton: PatientDropDown(
+                            text: 'اختر الطبيب المتابع',
+                          ),
+                          changes: 'docName',
                         ),
                       ));
             },
@@ -404,34 +255,20 @@ class PatientProfileScreen extends StatelessWidget {
             trailing: patient.illness,
             editFunction: () {
               showDialog(
-                  context: context,
-                  builder: (ctx) => Dialog(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('تغيير المرض'),
-                            Text(patient.illness as String),
-                            TextField(
-                              controller: dialogIllnessController,
-                            ),
-                            TextButton(
-                                onPressed: () async {
-                                  await FirebaseDatabase.instance
-                                      .ref()
-                                      .child('patients')
-                                      .child(account.team as String)
-                                      .child(patient.nationalId as String)
-                                      .update({
-                                    'illness': dialogIllnessController.text
-                                  });
-                                  Navigator.of(ctx).pop();
-                                  Navigator.of(context).pop();
-                                  account.setCurrent(account.current);
-                                },
-                                child: Text('save')),
-                          ],
-                        ),
-                      ));
+                context: context,
+                builder: (ctx) => MultiProvider(
+                  providers: [
+                    ChangeNotifierProvider.value(value: patient),
+                    ChangeNotifierProvider.value(value: account),
+                  ],
+                  child: TextFieldDialog(
+                    typeChanges: 'تغيير المرض',
+                    currentValue: patient.illness as String,
+                    controller: dialogIllnessController,
+                    keyOfDataBase: 'illness',
+                  ),
+                ),
+              );
             },
           ),
           PatientProfieListTile(
@@ -440,58 +277,37 @@ class PatientProfileScreen extends StatelessWidget {
             editFunction: () {
               showDialog(
                   context: context,
-                  builder: (ctx) => ChangeNotifierProvider.value(
-                        value: patient,
-                        child: Dialog(
-                          child: Builder(builder: (context) {
-                            final supPatient = Provider.of<Patient>(context);
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text('تغيير نوع المرض'),
-                                DropdownButton(
-                                  underline: Container(),
-                                  isExpanded: true,
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  hint: Text(
-                                    'تخصص المرض',
-                                  ),
-                                  value: supPatient.illnessType,
-                                  items: speciality
-                                      .map(
-                                        (e) => DropdownMenuItem(
-                                          child: Text(e),
-                                          value: e,
-                                        ),
-                                      )
-                                      .toList(),
-                                  onChanged: (v) {
-                                    patient.setillnessType(v as String);
-                                  },
-                                ),
-                                TextButton(
-                                    onPressed: () async {
-                                      await FirebaseDatabase.instance
-                                          .ref()
-                                          .child('patients')
-                                          .child(account.team as String)
-                                          .child(
-                                              supPatient.nationalId as String)
-                                          .update({
-                                        'illnessType': supPatient.illnessType
-                                      });
-                                      Navigator.of(ctx).pop();
-                                      Navigator.of(context).pop();
-                                      account.setCurrent(account.current);
-                                    },
-                                    child: Text('save')),
-                              ],
+                  builder: (ctx) => MultiProvider(
+                        providers: [
+                          ChangeNotifierProvider.value(value: patient),
+                          ChangeNotifierProvider.value(value: account),
+                        ],
+                        child: DropDownDialog(
+                          typeChanges: 'تغيير نوع المرض',
+                          dropDownButton: Builder(builder: (context) {
+                            final patient = Provider.of<Patient>(context);
+                            return DropdownButton(
+                              underline: Container(),
+                              isExpanded: true,
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              hint: Text(
+                                'تخصص المرض',
+                              ),
+                              value: patient.illnessType,
+                              items: speciality
+                                  .map((e) => DropdownMenuItem(
+                                      child: Text(e), value: e))
+                                  .toList(),
+                              onChanged: (v) {
+                                patient.setillnessType(v as String);
+                              },
                             );
                           }),
+                          changes: 'illnessType',
                         ),
                       ));
             },
@@ -692,4 +508,138 @@ class PatientProfileScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class TextFieldDialog extends Dialog {
+  TextFieldDialog({
+    required String typeChanges,
+    required String currentValue,
+    required TextEditingController controller,
+    required String keyOfDataBase,
+  }) : super(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(typeChanges),
+              Text(currentValue),
+              TextField(
+                controller: controller,
+              ),
+              Builder(builder: (context) {
+                return TextButton(
+                    onPressed: () async {
+                      final account =
+                          Provider.of<Account>(context, listen: false);
+                      final patient =
+                          Provider.of<Patient>(context, listen: false);
+                      if (keyOfDataBase != 'nationId')
+                        await FirebaseDatabase.instance
+                            .ref()
+                            .child('patients')
+                            .child(account.team as String)
+                            .child(patient.nationalId as String)
+                            .update({keyOfDataBase: controller.text});
+                      else {
+                        await FirebaseDatabase.instance
+                            .ref()
+                            .child('patients')
+                            .child(patient.team as String)
+                            .child(controller.text)
+                            .update({
+                          'team': patient.team,
+                          'volanteerId': patient.volId,
+                          'volanteerName': patient.volName,
+                          'patientName': patient.name,
+                          'nationaId': controller.text,
+                          'docId': patient.docId,
+                          'docName': patient.doctor,
+                          'illnessType': patient.illnessType,
+                          'illness': patient.illness,
+                          'costs': Map.fromIterable(
+                            patient.costs,
+                            key: (e) => e['id'],
+                            value: (e) => {
+                              'التكليف': e['التكليف'],
+                              'القيمة': e['القيمة']
+                            },
+                          ),
+                          'adress': patient.address,
+                          'phone': patient.phone,
+                          'source': patient.source,
+                          'latests': Map.fromIterable(
+                            patient.latests,
+                            key: (e) {
+                              return e['id'];
+                            },
+                            value: (e) {
+                              if (e['date'] == null)
+                                e['date'] = DateTime.now().toIso8601String();
+                              return {
+                                'date': e['date'],
+                                'title': e['title'],
+                              };
+                            },
+                          ),
+                          'state': patient.state,
+                          'date': patient.date,
+                        });
+                        await FirebaseDatabase.instance
+                            .ref()
+                            .child('patients')
+                            .child(patient.team as String)
+                            .child(patient.nationalId as String)
+                            .set(null);
+                      }
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                      account.setCurrent(account.current);
+                    },
+                    child: Text('save'));
+              }),
+            ],
+          ),
+        );
+}
+
+class DropDownDialog extends Dialog {
+  DropDownDialog(
+      {required String typeChanges,
+      required Widget dropDownButton,
+      required String changes})
+      : super(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(typeChanges),
+              dropDownButton,
+              Builder(builder: (context) {
+                final account = Provider.of<Account>(context, listen: false);
+                final patient = Provider.of<Patient>(context, listen: false);
+                return TextButton(
+                    onPressed: () async {
+                      await FirebaseDatabase.instance
+                          .ref()
+                          .child('patients')
+                          .child(account.team as String)
+                          .child(patient.nationalId as String)
+                          .update((changes != 'docName')
+                              ? {
+                                  changes: (changes == 'state')
+                                      ? patient.state
+                                      : patient.illnessType,
+                                }
+                              : {
+                                  'docName': patient.doctor,
+                                  'docId': patient.docId,
+                                });
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+
+                      account.setCurrent(account.current);
+                    },
+                    child: Text('save'));
+              }),
+            ],
+          ),
+        );
 }
