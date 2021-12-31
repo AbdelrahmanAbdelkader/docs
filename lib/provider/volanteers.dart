@@ -77,12 +77,6 @@ class Volanteers extends ChangeNotifier {
               return {};
             });
           }
-          print(userDetail);
-          print(pts);
-          print(userId);
-          print(team);
-          print(accepted);
-          print(role);
           pts.removeWhere((element) => element == {});
           return {
             'name': userDetail['userName'],

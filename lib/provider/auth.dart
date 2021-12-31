@@ -38,6 +38,7 @@ class Auth extends ChangeNotifier {
   }
 
   void printData() {
+    print('auth data');
     print(id);
     print(userTeamDropDownBottonValue);
     print(roleDropDownBottonValue);

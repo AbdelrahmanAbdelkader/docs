@@ -15,7 +15,6 @@ class PatientsProv extends ChangeNotifier {
   }
 
   void addPatient(Map newPatient) {
-    print(newPatient);
     _patients.add(Patient()
       ..team = newPatient['team']
       ..volId = newPatient['volanteerId']
@@ -47,7 +46,6 @@ class PatientsProv extends ChangeNotifier {
       ]
       ..state = newPatient['state']
       ..date = newPatient['date']);
-    print(patients);
   }
 
   Future<void> refresh(String team, String role) async {
@@ -67,8 +65,6 @@ class PatientsProv extends ChangeNotifier {
       (ref.value as Map).values.forEach((element) {
         addPatient(element);
       });
-      print('ss');
-      print(patients);
     }
     if (ref2!.exists) {
       (ref2.value as Map).values.forEach((element) {

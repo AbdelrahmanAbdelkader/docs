@@ -1,5 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sample/provider/account.dart';
+import 'package:sample/provider/auth.dart';
+import 'package:sample/provider/docs.dart';
+import 'package:sample/provider/patients.dart';
+import 'package:sample/provider/volanteers.dart';
 import 'package:sample/screens/authscreen/authscreen.dart';
 import 'package:sample/screens/authscreen/checkFirstEmailBeforeAuth.dart';
 import 'package:sample/screens/userScreen/UserScreenAccepted.dart';
@@ -24,9 +30,22 @@ class MainStream extends StatelessWidget {
           if (snapshot.data!.isAnonymous) {
             return const GuestScreen(false);
           }
-          return CheckAcception();
+          return MultiProvider(providers: [
+            ChangeNotifierProvider<Account>(
+              create: (context) => Account(),
+            ),
+            ChangeNotifierProvider<Docs>(
+              create: (context) => Docs(),
+            ),
+            ChangeNotifierProvider<PatientsProv>(
+                create: (context) => PatientsProv()),
+            ChangeNotifierProvider<Volanteers>(
+              create: (context) => Volanteers(),
+            ),
+          ], child: CheckAcception());
         }
-        return const CheckFirstEmailBeforeAuth();
+        return ChangeNotifierProvider<Auth>(
+            create: (context) => Auth(), child: CheckFirstEmailBeforeAuth());
       },
     );
   }

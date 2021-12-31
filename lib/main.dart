@@ -27,65 +27,47 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<Auth>(
-          create: (context) => Auth(),
-        ),
-        ChangeNotifierProvider<Account>(
-          create: (context) => Account(),
-        ),
-        ChangeNotifierProvider<Docs>(
-          create: (context) => Docs(),
-        ),
-        ChangeNotifierProvider<PatientsProv>(
-            create: (context) => PatientsProv()),
-        ChangeNotifierProvider<Volanteers>(
-          create: (context) => Volanteers(),
-        ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate
-        ],
-        supportedLocales: const [Locale('ar', '')],
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          textButtonTheme: TextButtonThemeData(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.green[50]),
-            ),
-          ),
-          textTheme: TextTheme(
-              headline1: TextStyle(
-                color: Colors.green,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-              subtitle1: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-              headline2: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              )),
-          primarySwatch: Colors.green,
-          scaffoldBackgroundColor: Colors.white,
-          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-            backgroundColor: Colors.green,
-            selectedItemColor: Colors.white,
-            selectedLabelStyle: TextStyle(
-              fontSize: 16,
-            ),
+      supportedLocales: const [Locale('ar', '')],
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.green[50]),
           ),
         ),
-        home: Splash(),
+        textTheme: TextTheme(
+            headline1: TextStyle(
+              color: Colors.green,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+            subtitle1: TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+            headline2: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            )),
+        primarySwatch: Colors.green,
+        scaffoldBackgroundColor: Colors.white,
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          backgroundColor: Colors.green,
+          selectedItemColor: Colors.white,
+          selectedLabelStyle: TextStyle(
+            fontSize: 16,
+          ),
+        ),
       ),
+      home: Splash(),
     );
   }
 }

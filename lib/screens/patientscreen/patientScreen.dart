@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sample/provider/account.dart';
+import 'package:sample/provider/docs.dart';
 import 'package:sample/provider/patients.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_list.dart';
 import '../widgets/app_bar_button.dart';
@@ -26,13 +28,27 @@ class _PatientScreenState extends State<PatientScreen> {
             onPressed: () => FirebaseAuth.instance.signOut(),
             icon: Icon(Icons.logout),
           ),
-          AppBarButton(
-            onPressed: () => Navigator.of(context).push(
+          AppBarButton(onPressed: () {
+            final account = Provider.of<Account>(context, listen: false);
+            final patientsProvider =
+                Provider.of<PatientsProv>(context, listen: false);
+            final doctorsProvider = Provider.of<Docs>(context, listen: false);
+            Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => AddPatientPage(),
+                builder: (context) => MultiProvider(providers: [
+                  ChangeNotifierProvider.value(
+                    value: account,
+                  ),
+                  ChangeNotifierProvider.value(
+                    value: patientsProvider,
+                  ),
+                  ChangeNotifierProvider.value(
+                    value: doctorsProvider,
+                  ),
+                ], child: AddPatientPage()),
               ),
-            ),
-          ),
+            );
+          }),
         ],
       ),
       body: Stack(

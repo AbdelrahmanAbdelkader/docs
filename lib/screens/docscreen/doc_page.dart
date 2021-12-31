@@ -1,10 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/doc.dart';
 import 'package:sample/provider/docs.dart';
-import 'package:sample/provider/patients.dart';
 import 'package:sample/screens/widgets/app_bar_button.dart';
 
 import 'package:sample/screens/docscreen/getAddDocProvited.dart';

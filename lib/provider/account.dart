@@ -25,6 +25,7 @@ class Account extends ChangeNotifier {
   }
 
   void printData() {
+    print('acount data');
     print(_id);
     print(_role);
     print(_accepted);
@@ -52,9 +53,7 @@ class Account extends ChangeNotifier {
         bottomNavBarItems[current]['screen'] =
             VolanteerProfileScreen(Volanteer());
       else {
-        print('ss');
         bottomNavBarItems[current]['screen'] = VolScreen();
-        print('bb');
       }
     } else if (ne == 3) {
       bottomNavBarItems[current]['screen'] =
@@ -77,7 +76,6 @@ class Account extends ChangeNotifier {
   }
 
   void setRole(String r) {
-    // print(r);
     _role = r;
     if (r == 'متطوع غني') {
       bottomNavBarItems = [

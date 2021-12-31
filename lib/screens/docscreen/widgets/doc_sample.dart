@@ -42,7 +42,6 @@ class _DocSampleState extends State<DocSample> {
 
   @override
   Widget build(BuildContext context) {
-    print(docNum);
     final size = MediaQuery.of(context).size;
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),

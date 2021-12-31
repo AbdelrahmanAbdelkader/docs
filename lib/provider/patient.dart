@@ -61,8 +61,6 @@ class Patient extends ChangeNotifier {
 
   void setDoctor(String id, List doctors) {
     docId = id;
-    print(id);
-    print(doctors);
     doctor = doctors.firstWhere((element) => element['idDoc'] == id)['name'];
     notifyListeners();
   }

@@ -38,10 +38,8 @@ class Docs extends ChangeNotifier {
     searchedDoctors = [];
     doctors.forEach(
       (element) {
-        print(element.name);
         {
           if ((byname == 'الاسم' || byname == null) && searchFor != '') {
-            print(byname);
             if (element.name.contains(searchFor)) {
               searchedDoctors.add(element);
             }
@@ -49,7 +47,6 @@ class Docs extends ChangeNotifier {
         }
       },
     );
-    searchedDoctors.forEach((e) => print(e.name));
     notifyListeners();
   }
 }
