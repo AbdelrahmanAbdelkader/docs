@@ -1,7 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sample/helpers/docicon.dart';
+import 'package:sample/model/post.dart';
 import 'package:sample/provider/volanteer.dart';
-import 'package:sample/screens/docscreen/doc_page.dart';
 import 'package:sample/screens/docscreen/getDoctorsData.dart';
 import 'package:sample/screens/patientscreen/patientScreen.dart';
 import 'package:sample/screens/volscreen/volscreen.dart';
@@ -14,7 +15,7 @@ class Account extends ChangeNotifier {
   String? _team;
   String? name;
   int current = 0;
-  List<Map> bottomNavBarItems = [{}];
+  List<Map> bottomNavBarItems = [];
 
   String? get id => _id;
   String get role => _role;
@@ -24,16 +25,16 @@ class Account extends ChangeNotifier {
     name = val;
   }
 
-  void printData() {
-    print('acount data');
-    print(_id);
-    print(_role);
-    print(_accepted);
-    print(_team);
-    print(name);
-    print(current);
-    print(bottomNavBarItems);
-  }
+  // void printData() {
+  //   print('acount data');
+  //   print(_id);
+  //   print(_role);
+  //   print(_accepted);
+  //   print(_team);
+  //   print(name);
+  //   print(current);
+  //   print(bottomNavBarItems);
+  // }
 
   void setCurrent(int ne) {
     current = ne;
@@ -46,19 +47,23 @@ class Account extends ChangeNotifier {
       if (_role == 'متطوع غني' || _role == 'مسؤول دكاترة')
         bottomNavBarItems[current]['screen'] = PatientScreen();
       else
+        bottomNavBarItems[current]['screen'] = Container();
+    } else if (ne == 2) {
+      if (_role == 'مسؤول دكاترة' || _role == 'متطوع غني')
+        bottomNavBarItems[current]['screen'] = Container();
+      else
         bottomNavBarItems[current]['screen'] =
             VolanteerProfileScreen(Volanteer());
-    } else if (ne == 2) {
+    } else if (ne == 3) {
       if (_role == 'مسؤول دكاترة')
         bottomNavBarItems[current]['screen'] =
             VolanteerProfileScreen(Volanteer());
       else {
         bottomNavBarItems[current]['screen'] = VolScreen();
       }
-    } else if (ne == 3) {
+    } else
       bottomNavBarItems[current]['screen'] =
           VolanteerProfileScreen(Volanteer());
-    }
 
     notifyListeners();
   }
@@ -77,78 +82,72 @@ class Account extends ChangeNotifier {
 
   void setRole(String r) {
     _role = r;
-    if (r == 'متطوع غني') {
-      bottomNavBarItems = [
-        {
-          'icon': DocIcons.doctor,
-          'label': 'الدكاترة',
-          'screen': GetDoctorsData(),
-        },
-        {
-          'icon': Icons.notes,
-          'label': 'أبحاث',
-          'screen': PatientScreen(),
-        },
+    bottomNavBarItems = [];
+    if (r == 'متطوع غني' || r == 'مسؤول دكاترة')
+      bottomNavBarItems.add({
+        'icon': DocIcons.doctor,
+        'label': 'الدكاترة',
+        'screen': GetDoctorsData(),
+      });
+    bottomNavBarItems.add(
+      {
+        'icon': Icons.notes,
+        'label': 'أبحاث',
+        'screen': PatientScreen(),
+      },
+    );
+    bottomNavBarItems.add(
+      {
+        'icon': Icons.card_giftcard,
+        'label': 'البوستات',
+        'screen': Container(),
+      },
+    );
+    if (r == 'متطوع غني')
+      bottomNavBarItems.add(
         {
           'icon': Icons.person,
           'label': 'المتطوعين',
           'screen': VolScreen(),
         },
-        {
-          'icon': Icons.person,
-          'label': 'المتطوعين',
-          'screen': VolanteerProfileScreen(Volanteer()),
-        }
-        // {
-        //   'icon': Icons.account_circle_outlined,
-        //   'label': 'الأكونت',
-        //   'screen': VolanteerProfileScreen(),
-        // },
-      ];
-    } else if (r == 'متطوع فقير') {
-      bottomNavBarItems = [
-        {
-          'icon': Icons.notes,
-          'label': 'أبحاث',
-          'screen': PatientScreen(),
-        },
-        {
-          'icon': Icons.account_circle_outlined,
-          'label': 'الأكونت',
-          'screen': VolanteerProfileScreen(Volanteer()),
-        },
-      ];
-    } else if (r == 'مسؤول أبحاث') {
-      bottomNavBarItems = [
-        {
-          'icon': Icons.notes,
-          'label': 'أبحاث',
-          'screen': PatientScreen(),
-        },
-        {
-          'icon': Icons.account_circle_outlined,
-          'label': 'الأكونت',
-          'screen': VolanteerProfileScreen(Volanteer()),
-        },
-      ];
-    } else if (r == 'مسؤول دكاترة') {
-      bottomNavBarItems = [
-        {
-          'icon': DocIcons.doctor,
-          'label': 'الدكاترة',
-          'screen': GetDoctorsData(),
-        },
-        {
-          'icon': Icons.notes,
-          'label': 'أبحاث',
-          'screen': PatientScreen(),
-        },
-        {
-          'icon': Icons.account_circle_outlined,
-          'label': 'الأكونت',
-          'screen': VolanteerProfileScreen(Volanteer()),
-        },
-      ];
+      );
+    bottomNavBarItems.add({
+      'icon': Icons.person,
+      'label': 'الأكونت',
+      'screen': VolanteerProfileScreen(Volanteer()),
+    });
+  }
+
+  void uploadPost({
+    String? title,
+    required PostType type,
+    required DateTime deadLine,
+    List<String>? votesItems,
+  }) {
+    final database = FirebaseFirestore.instance;
+    if (type == PostType.VotingPost) {
+      int i = 1;
+      database.collection('posts').add({
+        'type': 'vote',
+        'title': title,
+        'votesItems': Map.fromIterable(
+          votesItems as List,
+          key: (e) {
+            return i;
+          },
+          value: (e) {
+            i++;
+            return e;
+          },
+        ),
+        'deadLine': deadLine.toString(),
+      });
+    } else if (type == PostType.NormalPost) {
+      database.collection('posts').add({
+        'type': 'vote',
+        'title': title,
+        'deadLine': deadLine.toString(),
+      });
     }
   }
 }

@@ -2,12 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:provider/provider.dart';
-import 'package:sample/provider/account.dart';
-import 'package:sample/provider/auth.dart';
-import 'package:sample/provider/docs.dart';
-import 'package:sample/provider/patients.dart';
-import 'package:sample/provider/volanteers.dart';
 import 'package:sample/screens/splashscreen/splashscreen.dart';
 
 void main() async {
