@@ -8,6 +8,34 @@ class PostsScreen extends StatelessWidget {
   PostsScreen({Key? key}) : super(key: key);
   List<Map<String, dynamic>> posts = [
     {
+      'volName': 'محمود الهادي',
+      'date': DateTime.now(),
+      'text': 'موافقين ؟',
+      'type': 'pole',
+      'votes': [
+        {
+          'voteName': 'موافق',
+          'quantity':3,
+          'selected': false,
+        },
+        {
+          'voteName': 'مش موافق',
+          'quantity': 2,
+          'selected': false,
+        },
+        {
+          'voteName': 'يعم لا',
+          'quantity': 5,
+          'selected': false,
+        },
+        {
+          'voteName': 'محصلش',
+          'quantity': 1,
+          'selected': false,
+        },
+      ]
+    },
+    {
       'date': DateTime.now(),
       'text': 'عاش يا شباب',
       'volName': 'محمود الهادي',
@@ -35,43 +63,15 @@ class PostsScreen extends StatelessWidget {
       ],
       'type': 'important',
     },
-    {
-      'volName': 'محمود الهادي',
-      'date': DateTime.now(),
-      'text': 'موافقين ؟',
-      'type': 'pole',
-      'votes': [
-        {
-          'voteName': 'موافق',
-          'quantity': 30,
-          'selected': false,
-        },
-        {
-          'voteName': 'مش موافق',
-          'quantity': 70,
-          'selected': true,
-        },
-      ]
-    },
   ];
-  int get total {
-    num theTotal = 0;
-    posts.forEach(
-      (element) {
-        if (element['type'] == 'pole')
-          (element['votes'] as List).forEach((element) {
-            theTotal += element['quantity'];
-          });
-      },
-    );
-    return theTotal.toInt();
-  }
+  
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
+        title: Text('نتائج الغلطة :('),
         actions: [
           AppBarButton(
             onPressed: () {
@@ -143,7 +143,6 @@ class PostsScreen extends StatelessWidget {
                         : (posts[i]['type'] == 'pole')
                             ? VotePost(
                                 votes: posts[i]['votes'],
-                                totalVotes: total,
                                 volName: 'محمود الهادي',
                                 date: posts[i]['date'],
                                 text: posts[i]['text'],

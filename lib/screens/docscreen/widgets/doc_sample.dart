@@ -47,18 +47,7 @@ class _DocSampleState extends State<DocSample> {
       borderRadius: BorderRadius.circular(15),
       child: Stack(
         children: [
-          Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
-            margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
-            child: Image.asset(
-              'assets/docbackground.png',
-              color: Colors.white60,
-              colorBlendMode: BlendMode.lighten,
-              fit: BoxFit.cover,
-              width: size.width,
-              height: (toggled) ? size.height * .25 : size.height * .18,
-            ),
-          ),
+          
           AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             //height: (toggled) ? size.height * .25 : size.height * .18,

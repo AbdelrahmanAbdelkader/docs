@@ -62,18 +62,29 @@ class AddDoctor extends StatelessWidget {
           ref = database.ref().child('doctors').push();
         } else
           ref = database.ref().child('doctors').child(prove.Id as String);
-        database.ref(ref.path).set({
-          "phone": prove.phone,
-          "agreed": prove.agreed,
-          "email": prove.email,
-          "hint": prove.hint,
-          "name": prove.name,
-          "petients": prove.patients.asMap(),
-        });
+        try {
+          database.ref(ref.path).set({
+            "phone": prove.phone,
+            "agreed": prove.agreed,
+            "email": prove.email,
+            "hint": prove.hint,
+            "name": prove.name,
+            "petients": prove.patients.asMap(),
+          });
+        Navigator.of(context).pop();
+        } catch (error) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                error.toString(),
+              ),
+            ),
+          );
+        }
         // database.ref()
         // .set(toAdd);
-        Navigator.of(context).pop();
-        prove.ref();
+        //prove.ref();
       }
     }
 

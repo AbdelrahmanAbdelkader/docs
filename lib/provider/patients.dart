@@ -1,5 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:sample/provider/patient.dart';
 
 class PatientsProv extends ChangeNotifier {
@@ -48,17 +48,42 @@ class PatientsProv extends ChangeNotifier {
       ..date = newPatient['date']);
   }
 
-  Future<void> refresh(String team, String role) async {
+  Future<void> refresh(String team, String role, BuildContext context) async {
     _patients = [];
     final database = FirebaseDatabase.instance;
-    final ref = await database.ref().child("patients").child(team).get();
-    final DataSnapshot? ref2;
+    var ref;
+    try {
+      ref = await database.ref().child("patients").child(team).get();
+    } catch (error) {
+      showDialog(
+        context: context,
+        builder: (context) => Dialog(
+          child: Container(
+            height: 200,
+            child: Center(child: Text('معلش غيرك اشطر')),
+          ),
+        ),
+      );
+    }
+    DataSnapshot? ref2;
     if (role == 'متطوع غني')
-      ref2 = await database
-          .ref()
-          .child("patients")
-          .child((team == 'طب') ? 'صيدلة' : 'طب')
-          .get();
+      try {
+        ref2 = await database
+            .ref()
+            .child("patients")
+            .child((team == 'طب') ? 'صيدلة' : 'طب')
+            .get();
+      } catch (e) {
+        showDialog(
+        context: context,
+        builder: (context) => Dialog(
+          child: Container(
+            height: 200,
+            child: Center(child: Text('sorry bro')),
+          ),
+        ),
+      );
+      }
     else
       ref2 = null;
     if (ref.exists) {

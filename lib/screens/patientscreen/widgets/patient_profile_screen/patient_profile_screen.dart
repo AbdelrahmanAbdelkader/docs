@@ -65,16 +65,22 @@ class PatientProfileScreen extends StatelessWidget {
                     onTap: () {},
                   ),
                   PopupMenuItem(
+                    child: Divider(),
+                  ),
+                  PopupMenuItem(
                     child: Row(
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Icon(
                             Icons.delete,
-                            color: Colors.green,
+                            color: Colors.red,
                           ),
                         ),
-                        Text('ازل الحالة بالكامل ؟'),
+                        Text(
+                          'ازل الحالة بالكامل ؟',
+                          style: TextStyle(color: Colors.red),
+                        ),
                       ],
                     ),
                     onTap: () {},

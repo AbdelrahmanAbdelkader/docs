@@ -33,6 +33,7 @@ class AuthScreen extends StatelessWidget {
   bool triedToValidate = false;
   void save(
     Auth auth,
+    BuildContext context,
     // StateManagment teamTrue,
     // StateManagment teamFalse,
   ) {
@@ -40,16 +41,18 @@ class AuthScreen extends StatelessWidget {
     if (authFormKey.currentState!.validate()) {
       authFormKey.currentState!.save();
       if (auth.signIn) {
-        auth.signInFun(emailController.text, passwordController.text);
+        auth.signInFun(emailController.text, passwordController.text, context);
       } else if (!auth.signIn &&
           auth.userTeamDropDownBottonValue != null &&
           auth.roleDropDownBottonValue != null) {
         auth.register(
-            email: emailController.text,
-            password: passwordController.text,
-            thereAreUsers: thereAreUsers,
-            userName: userNameController.text,
-            userPhone: userPhoneController.text);
+          email: emailController.text,
+          password: passwordController.text,
+          thereAreUsers: thereAreUsers,
+          userName: userNameController.text,
+          userPhone: userPhoneController.text,
+          context: context,
+        );
       }
     }
   }
@@ -361,6 +364,7 @@ class AuthScreen extends StatelessWidget {
                                     FocusScope.of(context).unfocus();
                                     save(
                                       auth,
+                                      context,
                                     );
                                   },
                                   child: (auth.signIn)
@@ -396,7 +400,7 @@ class AuthScreen extends StatelessWidget {
                   Color.fromRGBO(255, 255, 255, 0),
                 ),
               ),
-              onPressed: () => auth.guest(),
+              onPressed: () => auth.guest(context),
               child: Text('اكمل كزائر'),
             ),
           )

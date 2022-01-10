@@ -20,7 +20,10 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
   final voteKey = Key('voteKey');
 
   void save(BuildContext context) {
-    if (postsAddFormKey.currentState!.validate()) {
+    if (postsAddFormKey.currentState!.validate() && postTypeValue != null ||
+        (postsAddFormKey.currentState!.validate() &&
+            postTypeValue == 'تصويت' &&
+            votes.length < 2)) {
       postsAddFormKey.currentState!.save();
       Navigator.pop(context);
     }
@@ -193,7 +196,7 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
-                        onPressed:()=> save(context),
+                        onPressed: () => save(context),
                         child: Text('اضف المنشور'),
                       ),
                     ],

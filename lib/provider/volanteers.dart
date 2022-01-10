@@ -40,29 +40,72 @@ class Volanteers extends ChangeNotifier {
   //     return;
   //   });
   // }
-  Future<void> refresh(String role) async {
+  Future<void> refresh(String role, BuildContext context) async {
     _vols = [];
+    print('e');
     if (role == 'متطوع غني') {
+      DataSnapshot? users;
+      DataSnapshot? activations;
       final database = FirebaseDatabase.instance;
-      final users = await database.ref().child("users").get();
-      final activations = await database.ref().child('activation').get();
-      if (users.exists) {
+      try {
+        users = await database.ref().child("users").get();
+      } catch (e) {
+        showDialog(
+          context: context,
+          builder: (context) => Dialog(
+            child: Container(
+              height: 200,
+              child: Center(child: Text('معلش غيرك اشطر')),
+            ),
+          ),
+        );
+      }
+      print('f');
+      try {
+        activations = await database.ref().child('activation').get();
+      } catch (e) {
+        showDialog(
+          context: context,
+          builder: (context) => Dialog(
+            child: Container(
+              height: 200,
+              child: Center(child: Text('معلش غيرك اشطر')),
+            ),
+          ),
+        );
+      }
+      if (users!.exists) {
+        print('s');
         final List<Map> data;
-        final patients = await database.ref().child('patients').get();
+        DataSnapshot? patients;
+        try {
+          patients = await database.ref().child('patients').get();
+        } catch (e) {
+          showDialog(
+            context: context,
+            builder: (context) => Dialog(
+              child: Container(
+                height: 200,
+                child: Center(child: Text('معلش غيرك اشطر')),
+              ),
+            ),
+          );
+        }
+        print('z');
         data = List.generate((users.value as Map).length, (index) {
-          Map userDetail = (users.value as Map).values.elementAt(index);
+          Map userDetail = (users!.value as Map).values.elementAt(index);
           String userId = (users.value as Map).keys.elementAt(index);
-          String team = (activations.value
+          String team = (activations!.value
               as Map)[(users.value as Map).keys.elementAt(index)]['team'];
           String role = (activations.value
               as Map)[(users.value as Map).keys.elementAt(index)]['role'];
           bool accepted = (activations.value
               as Map)[(users.value as Map).keys.elementAt(index)]['accepted'];
           List<Map> pts = [];
-          if (patients.exists) if ((patients.value as Map)[team] != null) {
+          if (patients!.exists) if ((patients.value as Map)[team] != null) {
             pts = List.generate(((patients.value as Map)[team] as Map).length,
                 (index) {
-              if (((patients.value as Map)[team] as Map)
+              if (((patients!.value as Map)[team] as Map)
                       .values
                       .elementAt(index)['volanteerId'] ==
                   userId)
@@ -78,6 +121,8 @@ class Volanteers extends ChangeNotifier {
             });
           }
           pts.removeWhere((element) => element == {});
+          print('cc');
+          print(_vols);
           return {
             'name': userDetail['userName'],
             'phone': userDetail['phone'],

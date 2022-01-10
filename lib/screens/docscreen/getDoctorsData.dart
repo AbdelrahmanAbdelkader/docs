@@ -21,8 +21,11 @@ class _GetDoctorsDataState extends State<GetDoctorsData> {
     final docsProve = Provider.of<Docs>(context, listen: false);
     final patientsProve = Provider.of<PatientsProv>(context, listen: false);
     return FutureBuilder(
-        future:
-            docsProve.refresh(settingState, patientsProve.setCurrentDoctors),
+        future: docsProve.refresh(
+          settingState,
+          context,
+          patientsProve.setCurrentDoctors,
+        ),
         builder: (cont, snap) {
           if (snap.connectionState == ConnectionState.waiting)
             return Center(

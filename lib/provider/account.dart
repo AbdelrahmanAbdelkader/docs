@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sample/helpers/docicon.dart';
+import 'package:sample/provider/patient.dart';
 import 'package:sample/provider/volanteer.dart';
 import 'package:sample/screens/docscreen/doc_page.dart';
 import 'package:sample/screens/docscreen/getDoctorsData.dart';
@@ -13,7 +14,11 @@ class Account extends ChangeNotifier {
   bool? _accepted;
   String? _team;
   String? name;
+  String? email;
+  String? phoneNumber;
+  String? state;
   int current = 0;
+  List<Patient>? patients;
   List<Map> bottomNavBarItems = [{}];
 
   String? get id => _id;
@@ -47,17 +52,44 @@ class Account extends ChangeNotifier {
         bottomNavBarItems[current]['screen'] = PatientScreen();
       else
         bottomNavBarItems[current]['screen'] =
-            VolanteerProfileScreen(Volanteer());
+            VolanteerProfileScreen(Volanteer()
+              ..accepted = _accepted
+              ..email = email
+              ..id = id
+              ..name = name
+              ..patients = []
+              ..phone = phoneNumber
+              ..role = role
+              ..state = state
+              ..team = team,);
     } else if (ne == 2) {
       if (_role == 'مسؤول دكاترة')
         bottomNavBarItems[current]['screen'] =
-            VolanteerProfileScreen(Volanteer());
+            VolanteerProfileScreen(Volanteer()
+              ..accepted = _accepted
+              ..email = email
+              ..id = id
+              ..name = name
+              ..patients = []
+              ..phone = phoneNumber
+              ..role = role
+              ..state = state
+              ..team = team,);
       else {
         bottomNavBarItems[current]['screen'] = VolScreen();
       }
     } else if (ne == 3) {
       bottomNavBarItems[current]['screen'] =
-          VolanteerProfileScreen(Volanteer());
+          VolanteerProfileScreen(Volanteer()
+              ..accepted = _accepted
+              ..email = email
+              ..id = id
+              ..name = name
+              ..patients = []
+              ..phone = phoneNumber
+              ..role = role
+              ..state = state
+              ..team = team,);
     }
 
     notifyListeners();
@@ -73,6 +105,18 @@ class Account extends ChangeNotifier {
 
   void setAccepted(bool accepted) {
     _accepted = accepted;
+  }
+
+  setEmail(String val) {
+    email = val;
+  }
+
+  setPhone(String val) {
+    phoneNumber = val;
+  }
+
+  setState(String val) {
+    state = val;
   }
 
   void setRole(String r) {
@@ -97,7 +141,18 @@ class Account extends ChangeNotifier {
         {
           'icon': Icons.person,
           'label': 'المتطوعين',
-          'screen': VolanteerProfileScreen(Volanteer()),
+          'screen': VolanteerProfileScreen(
+            Volanteer()
+              ..accepted = _accepted
+              ..email = email
+              ..id = id
+              ..name = name
+              ..patients = []
+              ..phone = phoneNumber
+              ..role = role
+              ..state = state
+              ..team = team,
+          ),
         }
         // {
         //   'icon': Icons.account_circle_outlined,
