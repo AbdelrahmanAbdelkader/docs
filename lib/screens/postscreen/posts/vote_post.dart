@@ -5,13 +5,11 @@ class VotePost extends StatefulWidget {
   const VotePost({
     Key? key,
     required this.votes,
-    required this.totalVotes,
     required this.volName,
     required this.date,
     required this.text,
   }) : super(key: key);
   final List<Map> votes;
-  final int totalVotes;
   final String volName;
   final DateTime date;
   final String text;
@@ -21,6 +19,24 @@ class VotePost extends StatefulWidget {
 
 class _VotePostState extends State<VotePost> {
   bool selected = false;
+  num total = 0;
+  void setTotal() {
+    total = 0;
+    widget.votes.forEach(
+      (element) {
+        setState(() {
+          total += element['quantity'];
+        });
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    setTotal();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -51,31 +67,41 @@ class _VotePostState extends State<VotePost> {
               child: Row(
                 children: [
                   Expanded(
-                    flex: 1,
-                    child: Text(
-                      e['voteName'],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Colors.green,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Expanded(
                     flex: 4,
                     child: Stack(
                       children: [
+                        Positioned(
+                          right: 0,
+                          child: Container(
+                            height: size.height * .06,
+                            child: Center(
+                              child: Text(
+                                e['voteName'],
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.green,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ),
                         Row(
                           children: [
                             Expanded(
                               flex: e['quantity'],
                               child: Container(
-                                color: Colors.green.withOpacity(.3),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(15),
+                                      bottomRight: Radius.circular(15)),
+                                  color: Colors.green.withOpacity(.3),
+                                ),
                                 height: size.height * .06,
                               ),
                             ),
                             Expanded(
-                              flex: (widget.totalVotes - e['quantity'] as int),
+                              flex: (total - e['quantity'] as int),
                               child: Container(
                                 color: Colors.white,
                               ),
@@ -100,12 +126,29 @@ class _VotePostState extends State<VotePost> {
                                     ),
                               onPressed: () {
                                 setState(() {
+                                  widget.votes.forEach((element) {
+                                    if (element['selected'] && element != e) {
+                                      element['selected'] = false;
+                                      element['quantity']--;
+                                      
+                                      print(total);
+                                    }
+                                  });
                                   e['selected'] = !e['selected'];
                                   if (e['selected'] == true)
                                     e['quantity']++;
                                   else
                                     e['quantity']--;
                                 });
+                                total = 0;
+                                widget.votes.forEach(
+                                  (element) {
+                                    setState(() {
+                                      total += element['quantity'];
+                                    });
+                                  },
+                                );
+                                print(total);
                               },
                             ),
                           ),

@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:sample/provider/doc.dart';
 import 'package:sample/provider/patients.dart';
 
@@ -8,11 +9,27 @@ class Docs extends ChangeNotifier {
   List<Doc> doctors = [];
   List<Doc> searchedDoctors = [];
   Future<void> refresh(
-      Function fun, Function(List<Map>) setCurrentDoctors) async {
+    Function fun,
+    BuildContext context,
+    Function(List<Map>) setCurrentDoctors,
+  ) async {
     final database = FirebaseDatabase.instance;
     doctors = [];
-    DataSnapshot dataSnap = await database.ref().child("doctors").get();
-    if (dataSnap.exists) {
+    DataSnapshot? dataSnap;
+    try {
+      dataSnap = await database.ref().child("doctors").get();
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => Dialog(
+          child: Container(
+            height: 200,
+            child: Center(child: Text('معلش غيرك اشطر')),
+          ),
+        ),
+      );
+    }
+    if (dataSnap!.exists) {
       Map data = dataSnap.value as Map;
       _data = {...data};
       _data.forEach((key, value) {

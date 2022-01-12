@@ -76,6 +76,7 @@ class PostsScreen extends StatelessWidget {
     final account = Provider.of<Account>(context);
     return Scaffold(
       appBar: AppBar(
+        title: Text('نتائج الغلطة :('),
         actions: [
           AppBarButton(
             onPressed: () {
@@ -148,7 +149,6 @@ class PostsScreen extends StatelessWidget {
                         : (posts[i]['type'] == 'pole')
                             ? VotePost(
                                 votes: posts[i]['votes'],
-                                totalVotes: total,
                                 volName: 'محمود الهادي',
                                 date: posts[i]['date'],
                                 text: posts[i]['text'],

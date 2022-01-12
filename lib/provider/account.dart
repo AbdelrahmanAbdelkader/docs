@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sample/helpers/docicon.dart';
 import 'package:sample/model/post.dart';
+import 'package:sample/provider/patient.dart';
 import 'package:sample/provider/volanteer.dart';
 import 'package:sample/screens/docscreen/getDoctorsData.dart';
 import 'package:sample/screens/patientscreen/patientScreen.dart';
@@ -16,8 +17,12 @@ class Account extends ChangeNotifier {
   bool? _accepted;
   String? _team;
   String? name;
+  String? email;
+  String? phoneNumber;
+  String? state;
   int current = 0;
-  List<Map> bottomNavBarItems = [];
+  List<Patient>? patients;
+  List<Map> bottomNavBarItems = [{}];
 
   String? get id => _id;
   String get role => _role;
@@ -54,19 +59,48 @@ class Account extends ChangeNotifier {
       if (_role == 'مسؤول دكاترة' || _role == 'متطوع غني')
         bottomNavBarItems[current]['screen'] = GetPostsScreen();
       else
-        bottomNavBarItems[current]['screen'] =
-            VolanteerProfileScreen(Volanteer());
+        bottomNavBarItems[current]['screen'] = VolanteerProfileScreen(
+          Volanteer()
+            ..accepted = _accepted
+            ..email = email
+            ..id = id
+            ..name = name
+            ..patients = []
+            ..phone = phoneNumber
+            ..role = role
+            ..state = state
+            ..team = team,
+        );
     } else if (ne == 3) {
       if (_role == 'مسؤول دكاترة')
-        bottomNavBarItems[current]['screen'] =
-            VolanteerProfileScreen(Volanteer());
+        bottomNavBarItems[current]['screen'] = VolanteerProfileScreen(
+          Volanteer()
+            ..accepted = _accepted
+            ..email = email
+            ..id = id
+            ..name = name
+            ..patients = []
+            ..phone = phoneNumber
+            ..role = role
+            ..state = state
+            ..team = team,
+        );
       else {
         bottomNavBarItems[current]['screen'] = VolScreen();
       }
     } else
-      bottomNavBarItems[current]['screen'] =
-          VolanteerProfileScreen(Volanteer());
-
+      bottomNavBarItems[current]['screen'] = VolanteerProfileScreen(
+        Volanteer()
+          ..accepted = _accepted
+          ..email = email
+          ..id = id
+          ..name = name
+          ..patients = []
+          ..phone = phoneNumber
+          ..role = role
+          ..state = state
+          ..team = team,
+      );
     notifyListeners();
   }
 
@@ -80,6 +114,18 @@ class Account extends ChangeNotifier {
 
   void setAccepted(bool accepted) {
     _accepted = accepted;
+  }
+
+  setEmail(String val) {
+    email = val;
+  }
+
+  setPhone(String val) {
+    phoneNumber = val;
+  }
+
+  setState(String val) {
+    state = val;
   }
 
   void setRole(String r) {
@@ -116,40 +162,18 @@ class Account extends ChangeNotifier {
     bottomNavBarItems.add({
       'icon': Icons.person,
       'label': 'الأكونت',
-      'screen': VolanteerProfileScreen(Volanteer()),
+      'screen': VolanteerProfileScreen(
+        Volanteer()
+          ..accepted = _accepted
+          ..email = email
+          ..id = id
+          ..name = name
+          ..patients = []
+          ..phone = phoneNumber
+          ..role = role
+          ..state = state
+          ..team = team,
+      ),
     });
-  }
-
-  void uploadPost({
-    String? title,
-    required PostType type,
-    required DateTime deadLine,
-    List<String>? votesItems,
-  }) {
-    final database = FirebaseFirestore.instance;
-    if (type == PostType.VotingPost) {
-      int i = 1;
-      database.collection('posts').add({
-        'type': 'vote',
-        'title': title,
-        'votesItems': Map.fromIterable(
-          votesItems as List,
-          key: (e) {
-            return i;
-          },
-          value: (e) {
-            i++;
-            return e;
-          },
-        ),
-        'deadLine': deadLine.toString(),
-      });
-    } else if (type == PostType.NormalPost) {
-      database.collection('posts').add({
-        'type': 'vote',
-        'title': title,
-        'deadLine': deadLine.toString(),
-      });
-    }
   }
 }

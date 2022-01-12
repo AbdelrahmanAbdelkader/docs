@@ -34,7 +34,7 @@ class NormalPost extends StatelessWidget {
                 color: Colors.grey[400],
               ),
             ),
-            Text('$text fsafagmfsdakfaslkgsadkgvdlhakgfdalhlkgdklasgj;dsa;jgjod;sapogvdzxovld;fuadiopgiodshvbidzjgvoidgshfoiasfjsp;dfop',textWidthBasis: TextWidthBasis.longestLine,),
+            Text('$text',textWidthBasis: TextWidthBasis.longestLine,),
             (images != null)
                 ? (images!.length == 1)
                     ? PostImage(

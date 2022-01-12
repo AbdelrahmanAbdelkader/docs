@@ -26,7 +26,10 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
   final voteKey = Key('voteKey');
 
   Future<void> save(BuildContext context, String id, String volName) async {
-    if (postsAddFormKey.currentState!.validate()) {
+    if (postsAddFormKey.currentState!.validate() && postTypeValue != null ||
+        (postsAddFormKey.currentState!.validate() &&
+            postTypeValue == 'تصويت' &&
+            votes.length < 2)) {
       // postsAddFormKey.currentState!.save();
       final database = FirebaseFirestore.instance;
       final store = FirebaseStorage.instance;

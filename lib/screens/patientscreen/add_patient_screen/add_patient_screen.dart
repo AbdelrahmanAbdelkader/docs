@@ -49,17 +49,24 @@ class AddPatientPage extends StatelessWidget {
 
   final Key latestKey = const Key('latestKey');
 
+  List<String> images = [
+    'assets/1.png',
+    'assets/2.png',
+    'assets/3.png',
+    'assets/4.png',
+  ];
+
   @override
   Widget build(BuildContext context) {
     final account = Provider.of<Account>(context);
     final patientsProvider = Provider.of<PatientsProv>(context, listen: false);
     final doctorsProvider = Provider.of<Docs>(context, listen: false);
-
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(),
       body: FutureBuilder(
         future: doctorsProvider.refresh(
-            account.setCurrent, patientsProvider.setCurrentDoctors),
+            account.setCurrent, context, patientsProvider.setCurrentDoctors),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting)
             return Center(
@@ -77,38 +84,6 @@ class AddPatientPage extends StatelessWidget {
                   patientProvider.date = DateTime.now().toIso8601String();
                   final database = FirebaseDatabase.instance.ref();
                   fkey.currentState!.save();
-                  // print(account.id);
-                  // print(patientProvider.volName);
-                  // print(patientProvider.name);
-                  // print(patientProvider.docId);
-                  // print(patientProvider.doctor);
-                  // print(patientProvider.illnessType);
-                  // print(Map.fromIterable(
-                  //   patientProvider.illnesses,
-                  //   key: (e) => e['id'],
-                  //   value: (e) =>
-                  //       {'المرض': e['المرض'], 'القيمة': e['القيمة']},
-                  // ));
-                  // print(patientProvider.address);
-                  // print(patientProvider.phone);
-                  // print(patientProvider.source);
-                  // print(Map.fromIterable(
-                  //   patientProvider.latests,
-                  //   key: (e) {
-                  //     return e['id'];
-                  //   },
-                  //   value: (e) {
-                  //     print(e['date']);
-                  //     if (e['date'] == null)
-                  //       e['date'] = DateTime.now().toIso8601String();
-                  //     return {
-                  //       'date': e['date'],
-                  //       'title': e['title'],
-                  //     };
-                  //   },
-                  // ));
-                  // print(patientProvider.state);
-                  // print(patientProvider.date);
                   final ref = database
                       .child('patients')
                       .child(account.team as String)
@@ -262,112 +237,51 @@ class AddPatientPage extends StatelessWidget {
                         save: (v) => patientProvider.setLatest(v),
                         multiline: true,
                       ),
+                      (images.length == 0)
+                          ? GestureDetector(
+                              onTap: () {
+                                //دخل الصور و حطها في [images]
+                              },
+                              child: Container(
+                                color: Colors.grey[200],
+                                margin: EdgeInsets.only(top: 20),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: size.width * .4,
+                                    vertical: size.height * .1),
+                                child: Icon(
+                                  Icons.add_a_photo,
+                                  color: Colors.green,
+                                  size: 36,
+                                ),
+                              ),
+                            )
+                          : GridView.builder(
+                              itemCount: images.length,
+                              shrinkWrap: true,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3),
+                              itemBuilder: (BuildContext context, int index) =>
+                                  Container(
+                                child: Image.asset(
+                                  images[index],
+                                ),
+                              ),
+                            ),
+                      (images.length > 0)
+                          ? IconButton(
+                              icon: Icon(
+                                Icons.add_a_photo,
+                                color: Colors.green,
+                              ),
+                              onPressed: () {
+                                //نفس اللي فوق زود بيها الصور
+                              },
+                            )
+                          : Container(),
                       ElevatedButton(
                           onPressed: save, child: const Text('save')),
                     ],
-                    // return Form(
-                    // key: fkey,
-                    // child: SingleChildScrollView(
-                    //   child: Column(
-                    //     children: [
-                    //       AddPatientTextField(
-                    //         label: 'الاسم',
-                    //         controller: patientNameController,
-                    //         textInputAction: TextInputAction.next,
-                    //         tKey: patientNameKey,
-                    //         save: (v) {
-                    //           newPatient['name'] = v;
-                    //   },
-                    //   validate: (String v) {
-                    //     if (v.length < 4) return 'ادخل اسم صحيح';
-                    //   },
-                    //   multiline: false,
-                    // ),
-                    // AddPatientTextField(
-                    //   label: 'الرقم القومي',
-                    //   controller: nationalIdController,
-                    //   textInputAction: TextInputAction.next,
-                    //   tKey: nationalIdKey,
-                    //   save: (v) {
-                    //     newPatient['nationalId'] = v;
-                    //   },
-                    //   validate: (String v) {
-                    //     if (v.length != 14)
-                    //       return 'ادخل رقم قومي صحيح';
-                    //   },
-                    //   multiline: false,
-                    // ),
-                    // AddPatientTextField(
-                    //   label: 'رقم التلفون',
-                    //   controller: patientPhoneController,
-                    //   textInputAction: TextInputAction.next,
-                    //   tKey: patientNumKey,
-                    //   save: (v) {
-                    //     newPatient['phoneNum'] = v;
-                    //   },
-                    //   validate: (String v) {
-                    //     if (v.length != 10 && v.length != 11)
-                    //       return 'ادخل رقم صحيح';
-                    //   },
-                    //   multiline: false,
-                    // ),
-                    // StateDropDownButton(
-                    //   label: 'اختر المركز',
-                    //   items: states,
-                    // ),
-                    // AddPatientTextField(
-                    //   label: 'العنوان',
-                    //   controller: patientAdressController,
-                    //   textInputAction: TextInputAction.next,
-                    //   tKey: patientAdressKey,
-                    //   multiline: false,
-                    //   save: (v) {
-                    //     newPatient['adress'] = v;
-                    //   },
-                    //   validate: (String v) {
-                    //     if (v.length < 4) return 'ادخل عنوان مناسب';
-                    //   },
-                    // ),
-                    // AddPatientTextField(
-                    //   label: 'اسم السورس',
-                    //   controller: sourceController,
-                    //   textInputAction: TextInputAction.next,
-                    //   tKey: sourceKey,
-                    //   multiline: false,
-                    //   save: (v) => newPatient['source'] = v,
-                    //   validate: (v) {
-                    //     if (v.length < 4) return 'ادخل اسم صحيح';
-                    //   },
-                    // ),
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    //   child: Row(
-                    //     children: [
-                    //       Expanded(
-                    //         flex: 1,
-                    //         child: PatientDropDown(
-                    //           text: 'اختر الطبيب المتابع',
-                    //         ),
-                    //       )
-                    //     ],
-                    //   ),
-                    // ),
-                    // IllnessList(
-                    //     illnessController: illnessController,
-                    //     illnessValueController: illnessValueController),
-                    // AddPatientTextField(
-                    //   label: 'اخر ما وصلناله',
-                    //   controller: latestController,
-                    //   textInputAction: TextInputAction.newline,
-                    //   tKey: latestKey,
-                    //   validate: (v) {},
-                    //   save: (v) => newPatient['latest'] = {
-                    //     DateFormat('Hms').format(DateTime.now()): {
-                    //       'text': v,
-                    //       'date': DateTime.now().toString(),
-                    //     }
-                    //   },
-                    //   multiline: true,
                   ),
                 ),
               );

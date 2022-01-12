@@ -14,7 +14,7 @@ class PatientList extends StatelessWidget {
     final proveTrue = Provider.of<PatientsProv>(context);
     final account = Provider.of<Account>(context);
     return FutureBuilder(
-      future: proveFalse.refresh(account.team as String, account.role),
+      future: proveFalse.refresh(account.team as String, account.role,context),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());

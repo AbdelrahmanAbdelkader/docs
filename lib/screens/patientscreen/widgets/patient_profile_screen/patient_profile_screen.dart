@@ -8,9 +8,10 @@ import 'package:sample/provider/patient.dart';
 import 'package:sample/provider/patients.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/patient_screen_doctors_dropdownbutton.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/state_dropdownbutton.dart';
-import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/dropDownDialogProfPatientScreen.dart';
+import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/dropdown_dialog_prof_patient_screen.dart';
+import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/images_list.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/patient_profile_listtile.dart';
-import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/textFieldDialogProfPatientScreen.dart';
+import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/text_field_dialog_prof_patient_screen.dart';
 import 'package:sample/screens/widgets/custom_text_field.dart';
 
 //need to clean
@@ -27,6 +28,12 @@ class PatientProfileScreen extends StatelessWidget {
   TextEditingController dialogPhoneController = TextEditingController();
   TextEditingController dialogSourceController = TextEditingController();
   TextEditingController dialogIllnessController = TextEditingController();
+  List<String> images = [
+    'assets/1.png',
+    'assets/2.png',
+    'assets/3.png',
+    'assets/4.png',
+  ];
   @override
   Widget build(BuildContext context) {
     final patient = Provider.of<Patient>(context);
@@ -65,16 +72,22 @@ class PatientProfileScreen extends StatelessWidget {
                     onTap: () {},
                   ),
                   PopupMenuItem(
+                    child: Divider(),
+                  ),
+                  PopupMenuItem(
                     child: Row(
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Icon(
                             Icons.delete,
-                            color: Colors.green,
+                            color: Colors.red,
                           ),
                         ),
-                        Text('ازل الحالة بالكامل ؟'),
+                        Text(
+                          'ازل الحالة بالكامل ؟',
+                          style: TextStyle(color: Colors.red),
+                        ),
                       ],
                     ),
                     onTap: () {},
@@ -506,6 +519,7 @@ class PatientProfileScreen extends StatelessWidget {
               ),
             ),
           ),
+          (images.length > 0) ? ImagesList(images: images) : Container(),
         ],
       ),
     );

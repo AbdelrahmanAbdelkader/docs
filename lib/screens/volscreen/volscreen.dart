@@ -34,7 +34,7 @@ class VolScreen extends StatelessWidget {
                     fit: BoxFit.fill,
                   ))),
           FutureBuilder(
-              future: prove.refresh(account.role),
+              future: prove.refresh(account.role,context),
               builder: (context, snap) {
                 if (snap.connectionState == ConnectionState.waiting)
                   return Center(

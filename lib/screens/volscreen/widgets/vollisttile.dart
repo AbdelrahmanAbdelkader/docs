@@ -32,8 +32,8 @@ class VolListTile extends StatelessWidget {
         tileColor:
             (volanteer.accepted as bool) ? Colors.blue[300] : Colors.red[300],
         leading: IconButton(
-          onPressed: () {
-            FirebaseDatabase.instance
+          onPressed: () async {
+            await FirebaseDatabase.instance
                 .ref()
                 .child("activation")
                 .child(volanteer.id as String)
