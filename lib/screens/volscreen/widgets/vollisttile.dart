@@ -37,7 +37,7 @@ class VolListTile extends StatelessWidget {
                 .ref()
                 .child("activation")
                 .child(volanteer.id as String)
-                .set({"accepted": !(volanteer.accepted as bool)});
+                .update({"accepted": !(volanteer.accepted as bool)});
             account.setCurrent(account.current);
           },
           icon: (volanteer.accepted as bool)

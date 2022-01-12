@@ -5,6 +5,8 @@ import 'package:sample/model/post.dart';
 import 'package:sample/provider/volanteer.dart';
 import 'package:sample/screens/docscreen/getDoctorsData.dart';
 import 'package:sample/screens/patientscreen/patientScreen.dart';
+import 'package:sample/screens/postscreen/getPostsScreen.dart';
+import 'package:sample/screens/postscreen/posts_screen.dart';
 import 'package:sample/screens/volscreen/volscreen.dart';
 import 'package:sample/screens/volscreen/widgets/volprofile/volprofilescreen.dart';
 
@@ -47,10 +49,10 @@ class Account extends ChangeNotifier {
       if (_role == 'متطوع غني' || _role == 'مسؤول دكاترة')
         bottomNavBarItems[current]['screen'] = PatientScreen();
       else
-        bottomNavBarItems[current]['screen'] = Container();
+        bottomNavBarItems[current]['screen'] = GetPostsScreen();
     } else if (ne == 2) {
       if (_role == 'مسؤول دكاترة' || _role == 'متطوع غني')
-        bottomNavBarItems[current]['screen'] = Container();
+        bottomNavBarItems[current]['screen'] = GetPostsScreen();
       else
         bottomNavBarItems[current]['screen'] =
             VolanteerProfileScreen(Volanteer());
@@ -100,7 +102,7 @@ class Account extends ChangeNotifier {
       {
         'icon': Icons.card_giftcard,
         'label': 'البوستات',
-        'screen': Container(),
+        'screen': GetPostsScreen(),
       },
     );
     if (r == 'متطوع غني')
