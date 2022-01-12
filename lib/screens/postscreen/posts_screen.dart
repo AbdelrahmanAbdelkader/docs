@@ -15,7 +15,7 @@ class PostsScreen extends StatelessWidget {
       'votes': [
         {
           'voteName': 'موافق',
-          'quantity':3,
+          'quantity': 3,
           'selected': false,
         },
         {
@@ -64,12 +64,12 @@ class PostsScreen extends StatelessWidget {
       'type': 'important',
     },
   ];
-  
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Colors.green[50],
       appBar: AppBar(
         title: Text('نتائج الغلطة :('),
         actions: [
@@ -113,6 +113,8 @@ class PostsScreen extends StatelessWidget {
                           ? Container(
                               width: size.width * .5,
                               child: NormalPost(
+                                important:
+                                    posts[i]['type'] =='important',
                                 date: posts[i]['date'],
                                 text: posts[i]['text'],
                                 volName: posts[i]['volName'],
@@ -133,6 +135,8 @@ class PostsScreen extends StatelessWidget {
                     itemBuilder: (ctx, i) => (posts[i]['type'] == 'normal' ||
                             posts[i]['type'] == 'important')
                         ? NormalPost(
+                            important:
+                                posts[i]['type'] == 'important',
                             date: posts[i]['date'],
                             text: posts[i]['text'],
                             volName: posts[i]['volName'],
