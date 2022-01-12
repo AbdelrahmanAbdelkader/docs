@@ -1,4 +1,10 @@
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:sample/provider/account.dart';
 import 'package:sample/screens/widgets/custom_text_field.dart';
 
 class PostsAddScreen extends StatefulWidget {
@@ -19,18 +25,51 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
 
   final voteKey = Key('voteKey');
 
-  void save(BuildContext context) {
+  Future<void> save(BuildContext context, String id, String volName) async {
     if (postsAddFormKey.currentState!.validate() && postTypeValue != null ||
         (postsAddFormKey.currentState!.validate() &&
             postTypeValue == 'تصويت' &&
             votes.length < 2)) {
-      postsAddFormKey.currentState!.save();
+      // postsAddFormKey.currentState!.save();
+      final database = FirebaseFirestore.instance;
+      final store = FirebaseStorage.instance;
+      List<String> imagesId = [];
+      files.forEach((element) {
+        final fileId = DateTime.now().toString();
+        imagesId.add('${id}_$fileId');
+        store.ref('posts/${id}_$fileId').putFile(element as File);
+      });
+      await database.collection('posts').add({
+        'votes': (postTypeValue == 'تصويت') ? votes : [],
+        'volName': volName,
+        'date': DateTime.now().toString(),
+        'images': imagesId,
+        'type': postTypeValue,
+        'title': textController.text,
+        'deadLine': DateTime.now().add(Duration(days: 3)).toString(),
+      });
       Navigator.pop(context);
     }
   }
 
+  Future pickImage(bool galery) async {
+    List? images;
+
+    if (galery)
+      images = await ImagePicker().pickMultiImage();
+    else
+      images = [await ImagePicker().pickImage(source: ImageSource.camera)];
+    if (images != null)
+      images.forEach((element) {
+        if (element != null) files.add(File((element as XFile).path));
+      });
+    setState(() {});
+    print(files);
+  }
+
   List postType = ['عادي', 'هام', 'تصويت'];
 
+  List files = [];
   List votes = [];
   String? postTypeValue;
 
@@ -38,6 +77,7 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
   Widget build(BuildContext context) {
     //ناقص هنا تضيف السيف فانكشن
     //و ال statemanagment
+    final account = Provider.of<Account>(context, listen: false);
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(),
@@ -105,17 +145,59 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
                       )
                     : Text('اضف تصويت'),
                 (postTypeValue != 'تصويت')
-                    ? Container(
-                        decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(15)),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: size.width * .5,
-                            vertical: size.height * .1),
-                        child: Icon(
-                          Icons.camera_alt,
-                          size: 36,
-                        ),
+                    ? GestureDetector(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => Dialog(
+                                    child: Column(
+                                      children: [
+                                        Card(
+                                          child: IconButton(
+                                            onPressed: () async {
+                                              await pickImage(true);
+                                              Navigator.of(context).pop();
+                                            },
+                                            icon: Icon(Icons.image),
+                                          ),
+                                        ),
+                                        Card(
+                                          child: IconButton(
+                                            onPressed: () async {
+                                              await pickImage(false);
+                                              Navigator.of(context).pop();
+                                            },
+                                            icon: Icon(Icons.camera),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ));
+                        },
+                        child: (files.isEmpty)
+                            ? Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[300],
+                                    borderRadius: BorderRadius.circular(15)),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: size.width * .5,
+                                    vertical: size.height * .1),
+                                child: Icon(
+                                  Icons.camera_alt,
+                                  size: 36,
+                                ),
+                              )
+                            : Container(
+                                height: size.height * .2,
+                                child: GridView.count(
+                                    crossAxisCount: 3,
+                                    children: files
+                                        .map((e) => Image.file(
+                                              e,
+                                              fit: BoxFit.cover,
+                                            ))
+                                        .toList()),
+                              ),
                       )
                     : Column(
                         children: [
@@ -166,8 +248,8 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
                                     tKey: voteKey,
                                     save: () {},
                                     validate: (v) {
-                                      if ((v as String).isEmpty)
-                                        return 'ادخل نص من فضلك';
+                                      // if ((v as String).isEmpty)
+                                      //   return 'ادخل نص من فضلك';
                                     },
                                     multiline: false),
                               ),
@@ -196,7 +278,8 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
-                        onPressed: () => save(context),
+                        onPressed: () => save(context, account.id as String,
+                            account.name as String),
                         child: Text('اضف المنشور'),
                       ),
                     ],

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sample/provider/account.dart';
 import 'package:sample/screens/postscreen/posts/normal_post.dart';
 import 'package:sample/screens/postscreen/posts/vote_post.dart';
 import 'package:sample/screens/postscreen/postsaddscreen/posts_add_screen.dart';
 import 'package:sample/screens/widgets/app_bar_button.dart';
 
 class PostsScreen extends StatelessWidget {
+<<<<<<< HEAD
   PostsScreen({Key? key}) : super(key: key);
   List<Map<String, dynamic>> posts = [
     {
@@ -64,10 +67,75 @@ class PostsScreen extends StatelessWidget {
       'type': 'important',
     },
   ];
+=======
+  PostsScreen(this.posts, {Key? key}) : super(key: key);
+  final List<Map> posts;
+  // List<Map<String, dynamic>> posts = [
+  //   {
+  //     'date': DateTime.now(),
+  //     'text': 'عاش يا شباب',
+  //     'volName': 'محمود الهادي',
+  //     'images': [
+  //       'assets/1.png',
+  //       'assets/2.png',
+  //     ],
+  //     'type': 'important'
+  //   },
+  //   {
+  //     'date': DateTime.now(),
+  //     'text': 'عاش يا شباب',
+  //     'volName': 'محمود الهادي',
+  //     'images': [],
+  //     'type': 'important',
+  //   },
+  //   {
+  //     'date': DateTime.now(),
+  //     'text': 'عاش يا شباب',
+  //     'volName': 'محمود الهادي',
+  //     'images': [
+  //       'assets/1.png',
+  //       'assets/4.png',
+  //       'assets/3.png',
+  //     ],
+  //     'type': 'important',
+  //   },
+  //   {
+  //     'volName': 'محمود الهادي',
+  //     'date': DateTime.now(),
+  //     'text': 'موافقين ؟',
+  //     'type': 'pole',
+  //     'votes': [
+  //       {
+  //         'voteName': 'موافق',
+  //         'quantity': 30,
+  //         'selected': false,
+  //       },
+  //       {
+  //         'voteName': 'مش موافق',
+  //         'quantity': 70,
+  //         'selected': true,
+  //       },
+  //     ]
+  //   },
+  // ];
+  int get total {
+    num theTotal = 0;
+    posts.forEach(
+      (element) {
+        if (element['type'] == 'pole')
+          (element['votes'] as List).forEach((element) {
+            theTotal += element['quantity'];
+          });
+      },
+    );
+    return theTotal.toInt();
+  }
+>>>>>>> bc118755e7dc710392960a0f4b1200c719f11fe8
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final account = Provider.of<Account>(context);
     return Scaffold(
       backgroundColor: Colors.green[50],
       appBar: AppBar(
@@ -78,7 +146,8 @@ class PostsScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (ctx) => PostsAddScreen(),
+                  builder: (ctx) => ChangeNotifierProvider.value(
+                      value: account, child: PostsAddScreen()),
                 ),
               );
             },

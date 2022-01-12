@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sample/helpers/docicon.dart';
+import 'package:sample/model/post.dart';
 import 'package:sample/provider/patient.dart';
 import 'package:sample/provider/volanteer.dart';
-import 'package:sample/screens/docscreen/doc_page.dart';
 import 'package:sample/screens/docscreen/getDoctorsData.dart';
 import 'package:sample/screens/patientscreen/patientScreen.dart';
+import 'package:sample/screens/postscreen/getPostsScreen.dart';
+import 'package:sample/screens/postscreen/posts_screen.dart';
 import 'package:sample/screens/volscreen/volscreen.dart';
 import 'package:sample/screens/volscreen/widgets/volprofile/volprofilescreen.dart';
 
@@ -29,16 +32,16 @@ class Account extends ChangeNotifier {
     name = val;
   }
 
-  void printData() {
-    print('acount data');
-    print(_id);
-    print(_role);
-    print(_accepted);
-    print(_team);
-    print(name);
-    print(current);
-    print(bottomNavBarItems);
-  }
+  // void printData() {
+  //   print('acount data');
+  //   print(_id);
+  //   print(_role);
+  //   print(_accepted);
+  //   print(_team);
+  //   print(name);
+  //   print(current);
+  //   print(bottomNavBarItems);
+  // }
 
   void setCurrent(int ne) {
     current = ne;
@@ -51,47 +54,53 @@ class Account extends ChangeNotifier {
       if (_role == 'متطوع غني' || _role == 'مسؤول دكاترة')
         bottomNavBarItems[current]['screen'] = PatientScreen();
       else
-        bottomNavBarItems[current]['screen'] =
-            VolanteerProfileScreen(Volanteer()
-              ..accepted = _accepted
-              ..email = email
-              ..id = id
-              ..name = name
-              ..patients = []
-              ..phone = phoneNumber
-              ..role = role
-              ..state = state
-              ..team = team,);
+        bottomNavBarItems[current]['screen'] = GetPostsScreen();
     } else if (ne == 2) {
+      if (_role == 'مسؤول دكاترة' || _role == 'متطوع غني')
+        bottomNavBarItems[current]['screen'] = GetPostsScreen();
+      else
+        bottomNavBarItems[current]['screen'] = VolanteerProfileScreen(
+          Volanteer()
+            ..accepted = _accepted
+            ..email = email
+            ..id = id
+            ..name = name
+            ..patients = []
+            ..phone = phoneNumber
+            ..role = role
+            ..state = state
+            ..team = team,
+        );
+    } else if (ne == 3) {
       if (_role == 'مسؤول دكاترة')
-        bottomNavBarItems[current]['screen'] =
-            VolanteerProfileScreen(Volanteer()
-              ..accepted = _accepted
-              ..email = email
-              ..id = id
-              ..name = name
-              ..patients = []
-              ..phone = phoneNumber
-              ..role = role
-              ..state = state
-              ..team = team,);
+        bottomNavBarItems[current]['screen'] = VolanteerProfileScreen(
+          Volanteer()
+            ..accepted = _accepted
+            ..email = email
+            ..id = id
+            ..name = name
+            ..patients = []
+            ..phone = phoneNumber
+            ..role = role
+            ..state = state
+            ..team = team,
+        );
       else {
         bottomNavBarItems[current]['screen'] = VolScreen();
       }
-    } else if (ne == 3) {
-      bottomNavBarItems[current]['screen'] =
-          VolanteerProfileScreen(Volanteer()
-              ..accepted = _accepted
-              ..email = email
-              ..id = id
-              ..name = name
-              ..patients = []
-              ..phone = phoneNumber
-              ..role = role
-              ..state = state
-              ..team = team,);
-    }
-
+    } else
+      bottomNavBarItems[current]['screen'] = VolanteerProfileScreen(
+        Volanteer()
+          ..accepted = _accepted
+          ..email = email
+          ..id = id
+          ..name = name
+          ..patients = []
+          ..phone = phoneNumber
+          ..role = role
+          ..state = state
+          ..team = team,
+      );
     notifyListeners();
   }
 
@@ -121,89 +130,50 @@ class Account extends ChangeNotifier {
 
   void setRole(String r) {
     _role = r;
-    if (r == 'متطوع غني') {
-      bottomNavBarItems = [
-        {
-          'icon': DocIcons.doctor,
-          'label': 'الدكاترة',
-          'screen': GetDoctorsData(),
-        },
-        {
-          'icon': Icons.notes,
-          'label': 'أبحاث',
-          'screen': PatientScreen(),
-        },
+    bottomNavBarItems = [];
+    if (r == 'متطوع غني' || r == 'مسؤول دكاترة')
+      bottomNavBarItems.add({
+        'icon': DocIcons.doctor,
+        'label': 'الدكاترة',
+        'screen': GetDoctorsData(),
+      });
+    bottomNavBarItems.add(
+      {
+        'icon': Icons.notes,
+        'label': 'أبحاث',
+        'screen': PatientScreen(),
+      },
+    );
+    bottomNavBarItems.add(
+      {
+        'icon': Icons.card_giftcard,
+        'label': 'البوستات',
+        'screen': GetPostsScreen(),
+      },
+    );
+    if (r == 'متطوع غني')
+      bottomNavBarItems.add(
         {
           'icon': Icons.person,
           'label': 'المتطوعين',
           'screen': VolScreen(),
         },
-        {
-          'icon': Icons.person,
-          'label': 'المتطوعين',
-          'screen': VolanteerProfileScreen(
-            Volanteer()
-              ..accepted = _accepted
-              ..email = email
-              ..id = id
-              ..name = name
-              ..patients = []
-              ..phone = phoneNumber
-              ..role = role
-              ..state = state
-              ..team = team,
-          ),
-        }
-        // {
-        //   'icon': Icons.account_circle_outlined,
-        //   'label': 'الأكونت',
-        //   'screen': VolanteerProfileScreen(),
-        // },
-      ];
-    } else if (r == 'متطوع فقير') {
-      bottomNavBarItems = [
-        {
-          'icon': Icons.notes,
-          'label': 'أبحاث',
-          'screen': PatientScreen(),
-        },
-        {
-          'icon': Icons.account_circle_outlined,
-          'label': 'الأكونت',
-          'screen': VolanteerProfileScreen(Volanteer()),
-        },
-      ];
-    } else if (r == 'مسؤول أبحاث') {
-      bottomNavBarItems = [
-        {
-          'icon': Icons.notes,
-          'label': 'أبحاث',
-          'screen': PatientScreen(),
-        },
-        {
-          'icon': Icons.account_circle_outlined,
-          'label': 'الأكونت',
-          'screen': VolanteerProfileScreen(Volanteer()),
-        },
-      ];
-    } else if (r == 'مسؤول دكاترة') {
-      bottomNavBarItems = [
-        {
-          'icon': DocIcons.doctor,
-          'label': 'الدكاترة',
-          'screen': GetDoctorsData(),
-        },
-        {
-          'icon': Icons.notes,
-          'label': 'أبحاث',
-          'screen': PatientScreen(),
-        },
-        {
-          'icon': Icons.account_circle_outlined,
-          'label': 'الأكونت',
-          'screen': VolanteerProfileScreen(Volanteer()),
-        },
-      ];
-    }
+      );
+    bottomNavBarItems.add({
+      'icon': Icons.person,
+      'label': 'الأكونت',
+      'screen': VolanteerProfileScreen(
+        Volanteer()
+          ..accepted = _accepted
+          ..email = email
+          ..id = id
+          ..name = name
+          ..patients = []
+          ..phone = phoneNumber
+          ..role = role
+          ..state = state
+          ..team = team,
+      ),
+    });
   }
 }
