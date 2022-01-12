@@ -41,34 +41,38 @@ class DropDownDialog extends Dialog {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(6.0),
-                  child: Builder(builder: (context) {
-                    final account =
-                        Provider.of<Account>(context, listen: false);
-                    final patient =
-                        Provider.of<Patient>(context, listen: false);
-                    return TextButton(
+                  child: Builder(
+                    builder: (context) {
+                      final account =
+                          Provider.of<Account>(context, listen: false);
+                      final patient =
+                          Provider.of<Patient>(context, listen: false);
+                      return TextButton(
                         onPressed: () async {
                           await FirebaseDatabase.instance
                               .ref()
                               .child('patients')
                               .child(account.team as String)
                               .child(patient.nationalId as String)
-                              .update((changes != 'docName')
-                                  ? {
-                                      changes: (changes == 'state')
-                                          ? patient.state
-                                          : patient.illnessType,
-                                    }
-                                  : {
-                                      'docName': patient.doctor,
-                                      'docId': patient.docId,
-                                    });
+                              .update(
+                                (changes != 'docName')
+                                    ? {
+                                        changes: (changes == 'state')
+                                            ? patient.state
+                                            : patient.illnessType,
+                                      }
+                                    : {
+                                        'docName': patient.doctor,
+                                        'docId': patient.docId,
+                                      },
+                              );
                           Navigator.of(context).pop();
-
                           account.setCurrent(account.current);
                         },
-                        child: Text('save'));
-                  }),
+                        child: Text('save'),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
