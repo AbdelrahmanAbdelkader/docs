@@ -14,6 +14,7 @@ class Doc extends ChangeNotifier {
   String? val;
 
   void setCommuicate(bool s) {
+    print('setCommuicate');
     value = s;
     notifyListeners();
   }
@@ -39,6 +40,7 @@ class Doc extends ChangeNotifier {
       TextEditingController docPhoneController,
       TextEditingController docEmailController,
       TextEditingController hintController) {
+    print('getTextFields');
     docNameController.text = name;
     docPhoneController.text = phone;
     docEmailController.text = email;

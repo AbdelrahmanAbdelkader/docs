@@ -20,7 +20,7 @@ class VotePost extends StatefulWidget {
 }
 
 class _VotePostState extends State<VotePost> {
-  bool selected = false;
+  //bool selected = false;
   num total = 0;
   void setTotal() {
     total = 0;
@@ -132,34 +132,7 @@ class _VotePostState extends State<VotePost> {
                                           Icons.check_box_outline_blank,
                                           color: Colors.green,
                                         ),
-                                  onPressed: () {
-                                    setState(() {
-                                      total = 0;
-                                      widget.votes.forEach((element) {
-                                        if (element['selected'] &&
-                                            element != e) {
-                                          element['selected'] = false;
-                                          element['quantity']--;
-
-                                          print(total);
-                                        }
-                                      });
-                                      e['selected'] = !e['selected'];
-                                      if (e['selected'] == true)
-                                        e['quantity']++;
-                                      else
-                                        e['quantity']--;
-                                    });
-                                    total = 0;
-                                    widget.votes.forEach(
-                                      (element) {
-                                        setState(() {
-                                          total += element['quantity'];
-                                        });
-                                      },
-                                    );
-                                    print(total);
-                                  },
+                                  onPressed: () {},
                                 ),
                               ),
                             ),

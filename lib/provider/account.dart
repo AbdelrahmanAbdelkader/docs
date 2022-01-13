@@ -44,6 +44,8 @@ class Account extends ChangeNotifier {
   // }
 
   void setCurrent(int ne) {
+    print('setCurent');
+    print('sure');
     current = ne;
     if (ne == 0) {
       if (_role == 'متطوع غني' || _role == 'مسؤول دكاترة')

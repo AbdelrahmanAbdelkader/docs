@@ -15,10 +15,11 @@ class CheckAcception extends StatelessWidget {
   );
   @override
   Widget build(BuildContext context) {
+    print('checkAcceptionOpened');
     final account = Provider.of<Account>(context, listen: false);
     account.setId(FirebaseAuth.instance.currentUser!.uid);
     final auth = FirebaseAuth.instance;
-    final size = MediaQuery.of(context).size;
+    // final size = MediaQuery.of(context).size;
     return Container(
       color: Colors.white,
       child: FutureBuilder(
@@ -32,7 +33,6 @@ class CheckAcception extends StatelessWidget {
             if (snaps.connectionState == ConnectionState.waiting)
               return indicator;
             if (snaps.hasData) {
-              print(((snaps.data as DataSnapshot).value as Map)['state']);
               account.setPhone(
                   ((snaps.data as DataSnapshot).value as Map)['phone']);
               account.setName(
@@ -88,7 +88,7 @@ class CheckAcception extends StatelessWidget {
             return Center(
               child: Dialog(
                 child: Container(
-                  height: size.height * .2,
+                  //height: size.height * .2,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [

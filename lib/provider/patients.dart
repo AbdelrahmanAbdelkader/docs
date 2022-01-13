@@ -36,7 +36,7 @@ class PatientsProv extends ChangeNotifier {
       ..address = newPatient['adress']
       ..phone = newPatient['phone']
       ..source = newPatient['source']
-      ..availableForGuests=newPatient['availableForGuests']
+      ..availableForGuests = newPatient['availableForGuests']
       ..latests = [
         if (newPatient['latests'] != null)
           ...(newPatient['latests'] as Map).keys.map((e) => {
@@ -76,14 +76,14 @@ class PatientsProv extends ChangeNotifier {
             .get();
       } catch (e) {
         showDialog(
-        context: context,
-        builder: (context) => Dialog(
-          child: Container(
-            height: 200,
-            child: Center(child: Text('sorry bro')),
+          context: context,
+          builder: (context) => Dialog(
+            child: Container(
+              height: 200,
+              child: Center(child: Text('sorry bro')),
+            ),
           ),
-        ),
-      );
+        );
       }
     else
       ref2 = null;
@@ -137,6 +137,7 @@ class PatientsProv extends ChangeNotifier {
   }
 
   void setCurrentDoctors(List<Map> doctors) {
+    print('setCurrentDoctor');
     _currentDoctors = doctors;
     notifyListeners();
   }

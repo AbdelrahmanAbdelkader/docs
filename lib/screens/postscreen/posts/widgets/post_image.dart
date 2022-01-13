@@ -17,18 +17,6 @@ class PostImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
-    return Container(
-      margin: EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        border: Border.all(width: 1, color: Colors.greenAccent),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: ClipRRect(
-          borderRadius: BorderRadius.circular(15),
-          child: Image.asset(imagePath)),
-    );
-=======
     return FutureBuilder(
         future: getImage(),
         builder: (context, snapshot) {
@@ -46,6 +34,5 @@ class PostImage extends StatelessWidget {
             );
           return Text('no image with that url');
         });
->>>>>>> 74962575d8855b553ced22f5e7a2fdba76076498
   }
 }
