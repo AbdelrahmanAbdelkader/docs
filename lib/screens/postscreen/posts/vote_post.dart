@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:sample/provider/account.dart';
 
 class VotePost extends StatefulWidget {
   const VotePost({
@@ -9,7 +11,7 @@ class VotePost extends StatefulWidget {
     required this.date,
     required this.text,
   }) : super(key: key);
-  final List<Map> votes;
+  final List votes;
   final String volName;
   final DateTime date;
   final String text;
@@ -40,6 +42,7 @@ class _VotePostState extends State<VotePost> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final account = Provider.of<Account>(context);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -118,7 +121,9 @@ class _VotePostState extends State<VotePost> {
                                 child: IconButton(
                                   splashRadius: 1.0,
                                   iconSize: 16,
-                                  icon: (e['selected'])
+                                  icon: (e['selected'] != null &&
+                                          (e['selected'] as List)
+                                              .contains(account.id))
                                       ? Icon(
                                           Icons.check_box,
                                           color: Colors.green,
