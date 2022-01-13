@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
       ),
-      home: PostsScreen(),
+      home: Splash(),
     );
   }
 }

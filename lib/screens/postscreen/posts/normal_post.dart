@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sample/screens/postscreen/posts/widgets/post_image.dart';
@@ -16,6 +20,7 @@ class NormalPost extends StatelessWidget {
   final String text;
   final bool important;
   List? images;
+
   @override
   Widget build(BuildContext context) {
     print(important);
@@ -126,21 +131,23 @@ class NormalPost extends StatelessWidget {
                                     )
                                   : Container()
                   : Container(),
-              (!important)?Row(
-                children: [
-                  Expanded(
-                      child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text('comment'),
-                  )),
-                  VerticalDivider(),
-                  Expanded(
-                      child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text('read'),
-                  )),
-                ],
-              ):Container(),
+              (!important)
+                  ? Row(
+                      children: [
+                        Expanded(
+                            child: ElevatedButton(
+                          onPressed: () {},
+                          child: Text('comment'),
+                        )),
+                        VerticalDivider(),
+                        Expanded(
+                            child: ElevatedButton(
+                          onPressed: () {},
+                          child: Text('read'),
+                        )),
+                      ],
+                    )
+                  : Container(),
             ],
           ),
         ),

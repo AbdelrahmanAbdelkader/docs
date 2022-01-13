@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,30 +26,38 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
 
   final voteKey = Key('voteKey');
 
-  Future<void> save(BuildContext context, String id, String volName) async {
+  Future<void> save(
+      BuildContext context, String id, String volName, Account account) async {
     if (postsAddFormKey.currentState!.validate() && postTypeValue != null ||
         (postsAddFormKey.currentState!.validate() &&
             postTypeValue == 'تصويت' &&
             votes.length < 2)) {
       // postsAddFormKey.currentState!.save();
-      final database = FirebaseFirestore.instance;
+      final database = FirebaseDatabase.instance;
       final store = FirebaseStorage.instance;
       List<String> imagesId = [];
-      files.forEach((element) {
+      files.forEach((element) async {
         final fileId = DateTime.now().toString();
         imagesId.add('${id}_$fileId');
-        store.ref('posts/${id}_$fileId').putFile(element as File);
+        await store.ref('posts/${id}_$fileId').putFile(element as File);
       });
-      await database.collection('posts').add({
+      final ref = database.ref().child('posts').push();
+      print(ref.path);
+      await database.ref().child(ref.path).update({
         'votes': (postTypeValue == 'تصويت') ? votes : [],
         'volName': volName,
         'date': DateTime.now().toString(),
         'images': imagesId,
-        'type': postTypeValue,
-        'title': textController.text,
+        'type': (postTypeValue == 'عادي')
+            ? 'normal'
+            : (postTypeValue == 'هام')
+                ? 'important'
+                : 'pole',
+        'text': textController.text,
         'deadLine': DateTime.now().add(Duration(days: 3)).toString(),
       });
       Navigator.pop(context);
+      account.setCurrent(account.current);
     }
   }
 
@@ -96,6 +105,7 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: DropdownButton(
+                        onTap: () => FocusScope.of(context).unfocus(),
                         isExpanded: true,
                         value: postTypeValue,
                         hint: Text('نوع المنشور ؟'),
@@ -147,6 +157,7 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
                 (postTypeValue != 'تصويت')
                     ? GestureDetector(
                         onTap: () {
+                          FocusScope.of(context).unfocus();
                           showDialog(
                               context: context,
                               builder: (context) => Dialog(
@@ -215,7 +226,7 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
                               child: Row(
                                 children: [
                                   Text(
-                                    e,
+                                    e['voteName'],
                                     style: TextStyle(
                                         color: Colors.green,
                                         fontSize: 18,
@@ -262,7 +273,11 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
                                 onPressed: () {
                                   setState(() {
                                     if (voteController.text.isNotEmpty) {
-                                      votes.add(voteController.text);
+                                      votes.add({
+                                        'voteName': voteController.text,
+                                        'quantity': 0,
+                                        'selected': [],
+                                      });
                                       voteController.clear();
                                     }
                                   });
@@ -279,7 +294,7 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
                     children: [
                       ElevatedButton(
                         onPressed: () => save(context, account.id as String,
-                            account.name as String),
+                            account.name as String, account),
                         child: Text('اضف المنشور'),
                       ),
                     ],
