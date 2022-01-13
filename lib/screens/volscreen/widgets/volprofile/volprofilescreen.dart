@@ -37,38 +37,41 @@ class VolanteerProfileScreen extends StatelessWidget {
               }
             });
             return SafeArea(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  InformationTile(
-                      information: volanteer.name as String, label: 'الاسم:'),
-                  InformationTile(
-                      information: volanteer.phone as String,
-                      label: 'رقم المحمول:'),
-                  InformationTile(
-                      information: volanteer.email as String, label: 'الايميل'),
-                  SizedBox(
-                    height: (_currentUserPatients == [])
-                        ? size.height * .3
-                        : size.height * .04,
-                  ),
-                  Text(
-                    'الحالات',
-                    textAlign: TextAlign.start,
-                  ),
-                  (_currentUserPatients == [])
-                      ? const Text('لم يتم رفع حالات')
-                      : ListView.builder(
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) =>
-                              ChangeNotifierProvider<Patient>.value(
-                            value: _currentUserPatients[index],
-                            child: PatientListTile(),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    InformationTile(
+                        information: volanteer.name as String, label: 'الاسم:'),
+                    InformationTile(
+                        information: volanteer.phone as String,
+                        label: 'رقم المحمول:'),
+                    InformationTile(
+                        information: volanteer.email as String,
+                        label: 'الايميل'),
+                    SizedBox(
+                      height: (_currentUserPatients == [])
+                          ? size.height * .3
+                          : size.height * .04,
+                    ),
+                    Text(
+                      'الحالات',
+                      textAlign: TextAlign.start,
+                    ),
+                    (_currentUserPatients == [])
+                        ? const Text('لم يتم رفع حالات')
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) =>
+                                ChangeNotifierProvider<Patient>.value(
+                              value: _currentUserPatients[index],
+                              child: PatientListTile(),
+                            ),
+                            itemCount: _currentUserPatients.length,
                           ),
-                          itemCount: _currentUserPatients.length,
-                        ),
-                ],
+                  ],
+                ),
               ),
             );
           }),
