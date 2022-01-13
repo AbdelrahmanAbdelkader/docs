@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/account.dart';
 import 'package:sample/screens/widgets/custom_text_field.dart';
+import 'package:sizer/sizer.dart';
 
 class PostsAddScreen extends StatefulWidget {
   PostsAddScreen({Key? key}) : super(key: key);
@@ -87,7 +88,7 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
     //ناقص هنا تضيف السيف فانكشن
     //و ال statemanagment
     final account = Provider.of<Account>(context, listen: false);
-    final size = MediaQuery.of(context).size;
+    //final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -191,8 +192,7 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
                                     color: Colors.grey[300],
                                     borderRadius: BorderRadius.circular(15)),
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: size.width * .5,
-                                    vertical: size.height * .1),
+                                    horizontal: 50.w, vertical: 10.h),
                                 child: Icon(
                                   Icons.camera_alt,
                                   size: 36,
@@ -228,7 +228,7 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
                                               padding: EdgeInsets.all(4),
                                               child: Icon(
                                                 Icons.cancel_outlined,
-                                                size: size.height * .02,
+                                                size: 2.h,
                                                 color: Colors.white,
                                               ),
                                             ),
