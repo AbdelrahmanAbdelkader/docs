@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/account.dart';
+import 'package:sample/screens/postscreen/posts/important_post.dart';
 import 'package:sample/screens/postscreen/posts/normal_post.dart';
 import 'package:sample/screens/postscreen/posts/vote_post.dart';
 import 'package:sample/screens/postscreen/postsaddscreen/posts_add_screen.dart';
@@ -76,8 +78,7 @@ class PostsScreen extends StatelessWidget {
                                   if (snapshot.data!.snapshot.value != null)
                                     return Container(
                                       width: size.width * .5,
-                                      child: NormalPost(
-                                        important: data['type'] == 'important',
+                                      child: ImportantPost(
                                         date: DateTime.parse(data['date']),
                                         text: data['text'],
                                         volName: data['volName'],
@@ -115,13 +116,13 @@ class PostsScreen extends StatelessWidget {
                                 Map data = snapshot.data!.snapshot.value as Map;
                                 if (snapshot.data!.snapshot.value != null)
                                   return NormalPost(
-                                    important: data['type'] == 'important',
                                     date: DateTime.parse(data['date']),
                                     text: data['text'],
                                     volName: data['volName'],
                                     images: ((data['images'] as List).isEmpty)
                                         ? null
                                         : data['images'],
+                                    comments: [],
                                   );
                               }
                               return Text('حدث خطأ في عرض ذلك البوست');

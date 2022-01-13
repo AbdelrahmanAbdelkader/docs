@@ -97,7 +97,7 @@ class CheckAcception extends StatelessWidget {
                           onPressed: () {
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
-                                    builder: (context) => CheckAcception()));
+                                    builder: (context) => Splash()));
                           },
                           child: Text('try again'))
                     ],

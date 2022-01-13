@@ -198,16 +198,54 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
                                   size: 36,
                                 ),
                               )
-                            : Container(
-                                height: size.height * .2,
-                                child: GridView.count(
-                                    crossAxisCount: 3,
-                                    children: files
-                                        .map((e) => Image.file(
-                                              e,
-                                              fit: BoxFit.cover,
-                                            ))
-                                        .toList()),
+                            : GridView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: files.length,
+                                itemBuilder: (ctx, i) => LayoutBuilder(
+                                    builder: (context, constrain) {
+                                  return Stack(
+                                    children: [
+                                      Container(
+                                        height: constrain.maxHeight,
+                                        width: constrain.maxWidth,
+                                        child: Image.file(
+                                          files[i],
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 0,
+                                        right: 0,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: GestureDetector(
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.black54,
+                                              ),
+                                              padding: EdgeInsets.all(4),
+                                              child: Icon(
+                                                Icons.cancel_outlined,
+                                                size: size.height * .02,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            onTap: () {
+                                              setState(() {
+                                                files.remove(files[i]);
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3),
                               ),
                       )
                     : Column(
