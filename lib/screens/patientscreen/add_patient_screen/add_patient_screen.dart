@@ -98,6 +98,7 @@ class AddPatientPage extends StatelessWidget {
                     'docName': patientProvider.doctor,
                     'illnessType': patientProvider.illnessType,
                     'illness': patientProvider.illness,
+                    'availableForGuests':false,
                     'costs': Map.fromIterable(
                       patientProvider.costs,
                       key: (e) => e['id'],
@@ -256,11 +257,13 @@ class AddPatientPage extends StatelessWidget {
                               ),
                             )
                           : GridView.builder(
+                              physics: NeverScrollableScrollPhysics(),
                               itemCount: images.length,
                               shrinkWrap: true,
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3),
+                                crossAxisCount: 3,
+                              ),
                               itemBuilder: (BuildContext context, int index) =>
                                   Container(
                                 child: Image.asset(

@@ -44,7 +44,7 @@ class GetPostsScreen extends StatelessWidget {
           );
         return FutureBuilder(
             future: downloadImages(snapdata.data!.docs),
-            builder: (cont, snap) => PostsScreen([]));
+            builder: (cont, snap) => PostsScreen());
       },
     );
   }

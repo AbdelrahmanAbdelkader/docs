@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/account.dart';
+import 'package:sample/screens/postscreen/posts/important_post.dart';
 import 'package:sample/screens/postscreen/posts/normal_post.dart';
 import 'package:sample/screens/postscreen/posts/vote_post.dart';
 import 'package:sample/screens/postscreen/postsaddscreen/posts_add_screen.dart';
 import 'package:sample/screens/widgets/app_bar_button.dart';
 
 class PostsScreen extends StatelessWidget {
-<<<<<<< HEAD
   PostsScreen({Key? key}) : super(key: key);
   List<Map<String, dynamic>> posts = [
     {
@@ -46,7 +47,7 @@ class PostsScreen extends StatelessWidget {
         'assets/1.png',
         'assets/2.png',
       ],
-      'type': 'important'
+      'type': 'normal'
     },
     {
       'date': DateTime.now(),
@@ -67,70 +68,25 @@ class PostsScreen extends StatelessWidget {
       'type': 'important',
     },
   ];
-=======
-  PostsScreen(this.posts, {Key? key}) : super(key: key);
-  final List<Map> posts;
-  // List<Map<String, dynamic>> posts = [
-  //   {
-  //     'date': DateTime.now(),
-  //     'text': 'عاش يا شباب',
-  //     'volName': 'محمود الهادي',
-  //     'images': [
-  //       'assets/1.png',
-  //       'assets/2.png',
-  //     ],
-  //     'type': 'important'
-  //   },
-  //   {
-  //     'date': DateTime.now(),
-  //     'text': 'عاش يا شباب',
-  //     'volName': 'محمود الهادي',
-  //     'images': [],
-  //     'type': 'important',
-  //   },
-  //   {
-  //     'date': DateTime.now(),
-  //     'text': 'عاش يا شباب',
-  //     'volName': 'محمود الهادي',
-  //     'images': [
-  //       'assets/1.png',
-  //       'assets/4.png',
-  //       'assets/3.png',
-  //     ],
-  //     'type': 'important',
-  //   },
-  //   {
-  //     'volName': 'محمود الهادي',
-  //     'date': DateTime.now(),
-  //     'text': 'موافقين ؟',
-  //     'type': 'pole',
-  //     'votes': [
-  //       {
-  //         'voteName': 'موافق',
-  //         'quantity': 30,
-  //         'selected': false,
-  //       },
-  //       {
-  //         'voteName': 'مش موافق',
-  //         'quantity': 70,
-  //         'selected': true,
-  //       },
-  //     ]
-  //   },
-  // ];
-  int get total {
-    num theTotal = 0;
-    posts.forEach(
-      (element) {
-        if (element['type'] == 'pole')
-          (element['votes'] as List).forEach((element) {
-            theTotal += element['quantity'];
-          });
-      },
-    );
-    return theTotal.toInt();
-  }
->>>>>>> bc118755e7dc710392960a0f4b1200c719f11fe8
+  List<Map> comments = [
+    {
+      'name': 'محمود الهادي',
+      'date': DateFormat('dd/MM  hh:mm').format(DateTime.now()),
+      'content': 'تمام اشطا',
+    },{
+      'name': 'محمود الهادي',
+      'date': DateFormat('dd/MM  hh:mm').format(DateTime.now()),
+      'content': 'تمام اشطا',
+    },{
+      'name': 'محمود الهادي',
+      'date': DateFormat('dd/MM  hh:mm').format(DateTime.now()),
+      'content': 'تمام اشطا',
+    },{
+      'name': 'محمود الهادي',
+      'date': DateFormat('dd/MM  hh:mm').format(DateTime.now()),
+      'content': 'تمام اشطا',
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -181,9 +137,7 @@ class PostsScreen extends StatelessWidget {
                       itemBuilder: (ctx, i) => (posts[i]['type'] == 'important')
                           ? Container(
                               width: size.width * .5,
-                              child: NormalPost(
-                                important:
-                                    posts[i]['type'] =='important',
+                              child: ImportantPost(
                                 date: posts[i]['date'],
                                 text: posts[i]['text'],
                                 volName: posts[i]['volName'],
@@ -204,8 +158,7 @@ class PostsScreen extends StatelessWidget {
                     itemBuilder: (ctx, i) => (posts[i]['type'] == 'normal' ||
                             posts[i]['type'] == 'important')
                         ? NormalPost(
-                            important:
-                                posts[i]['type'] == 'important',
+                            comments: comments,
                             date: posts[i]['date'],
                             text: posts[i]['text'],
                             volName: posts[i]['volName'],

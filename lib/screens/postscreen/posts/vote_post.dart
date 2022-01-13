@@ -129,8 +129,10 @@ class _VotePostState extends State<VotePost> {
                                         ),
                                   onPressed: () {
                                     setState(() {
+                                      total = 0;
                                       widget.votes.forEach((element) {
-                                        if (element['selected'] && element != e) {
+                                        if (element['selected'] &&
+                                            element != e) {
                                           element['selected'] = false;
                                           element['quantity']--;
 

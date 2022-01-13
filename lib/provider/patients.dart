@@ -36,6 +36,7 @@ class PatientsProv extends ChangeNotifier {
       ..address = newPatient['adress']
       ..phone = newPatient['phone']
       ..source = newPatient['source']
+      ..availableForGuests=newPatient['availableForGuests']
       ..latests = [
         if (newPatient['latests'] != null)
           ...(newPatient['latests'] as Map).keys.map((e) => {

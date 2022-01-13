@@ -41,6 +41,7 @@ class ImagesList extends StatelessWidget {
         Container(
           width: size.width,
           child: GridView.builder(
+            physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             gridDelegate:
                 SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),

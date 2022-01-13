@@ -10,9 +10,9 @@ import 'package:sample/screens/patientscreen/add_patient_screen/widgets/patient_
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/state_dropdownbutton.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/dropdown_dialog_prof_patient_screen.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/images_list.dart';
+import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/need.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/patient_profile_listtile.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/text_field_dialog_prof_patient_screen.dart';
-import 'package:sample/screens/widgets/custom_text_field.dart';
 
 //need to clean
 class PatientProfileScreen extends StatelessWidget {
@@ -69,7 +69,17 @@ class PatientProfileScreen extends StatelessWidget {
                         Text('اضف الحالة لصفحة الزوار ؟'),
                       ],
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      FirebaseDatabase.instance
+                          .ref()
+                          .child('patients')
+                          .child(patient.team as String)
+                          .child(patient.nationalId as String)
+                          .update({
+                        'availableForGuests':
+                            (patient.availableForGuests as bool) ? true : false
+                      });
+                    },
                   ),
                   PopupMenuItem(
                     child: Divider(),
@@ -90,7 +100,16 @@ class PatientProfileScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      FirebaseDatabase.instance
+                          .ref()
+                          .child('patients')
+                          .child(patient.team as String)
+                          .child(patient.nationalId as String)
+                          .remove();
+                      Navigator.pop(context);
+                      account.setCurrent(account.current);
+                    },
                   ),
                 ]),
         actions: [
@@ -301,25 +320,38 @@ class PatientProfileScreen extends StatelessWidget {
                           typeChanges: 'تغيير نوع المرض',
                           dropDownButton: Builder(builder: (context) {
                             final patient = Provider.of<Patient>(context);
-                            return DropdownButton(
-                              underline: Container(),
-                              isExpanded: true,
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                            return Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                side: BorderSide(
+                                  width: 1,
+                                  color: Colors.greenAccent,
+                                ),
                               ),
-                              hint: Text(
-                                'تخصص المرض',
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: DropdownButton(
+                                  borderRadius: BorderRadius.circular(15),
+                                  underline: Container(),
+                                  isExpanded: true,
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  hint: Text(
+                                    'تخصص المرض',
+                                  ),
+                                  value: patient.illnessType,
+                                  items: speciality
+                                      .map((e) => DropdownMenuItem(
+                                          child: Text(e), value: e))
+                                      .toList(),
+                                  onChanged: (v) {
+                                    patient.setillnessType(v as String);
+                                  },
+                                ),
                               ),
-                              value: patient.illnessType,
-                              items: speciality
-                                  .map((e) => DropdownMenuItem(
-                                      child: Text(e), value: e))
-                                  .toList(),
-                              onChanged: (v) {
-                                patient.setillnessType(v as String);
-                              },
                             );
                           }),
                           changes: 'illnessType',
@@ -331,7 +363,7 @@ class PatientProfileScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'التكاليف',
+                'الاحتياجات',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -343,44 +375,115 @@ class PatientProfileScreen extends StatelessWidget {
                   account.role == 'متطوع غني' ||
                   account.role == 'مسؤول أبحاث')
                 IconButton(
+                    color: Colors.white,
                     onPressed: () {
                       showDialog(
                           context: context,
                           builder: (ctx) => Dialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15)),
                                 child: Column(
+                                  mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text('أدخل تكليف للحالة :-'),
-                                    Text(patient.name as String),
-                                    TextField(
-                                      controller: dialogCostController,
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0, vertical: 16),
+                                      child: Text(
+                                        'الاحتياج :-',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.green,
+                                          fontSize: 18,
+                                        ),
+                                      ),
                                     ),
-                                    TextField(
-                                      controller: dialogCostValueController,
+                                    //Text(patient.name as String),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                            width: 1,
+                                            color: Colors.greenAccent,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: TextField(
+                                            controller: dialogCostController,
+                                            decoration: InputDecoration(
+                                              hintText: 'الاسم',
+                                              border: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                              focusedErrorBorder:
+                                                  InputBorder.none,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                    TextButton(
-                                        onPressed: () async {
-                                          await FirebaseDatabase.instance
-                                              .ref()
-                                              .child('patients')
-                                              .child(account.team as String)
-                                              .child(
-                                                  patient.nationalId as String)
-                                              .child('costs')
-                                              .child(
-                                                  '${(DateTime.now().second)}:${(DateTime.now().millisecond)}')
-                                              .set({
-                                            'التكليف':
-                                                dialogCostController.text,
-                                            'القيمة':
-                                                dialogCostValueController.text,
-                                          });
-                                          Navigator.of(ctx).pop();
-                                          // dialogCostController.clear();
-                                          Navigator.of(context).pop();
-                                          account.setCurrent(account.current);
-                                        },
-                                        child: Text('save')),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                            width: 1,
+                                            color: Colors.greenAccent,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: TextField(
+                                            controller:
+                                                dialogCostValueController,
+                                            decoration: InputDecoration(
+                                              hintText: 'التكلفة',
+                                              border: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                              focusedErrorBorder:
+                                                  InputBorder.none,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: TextButton(
+                                          onPressed: () async {
+                                            await FirebaseDatabase.instance
+                                                .ref()
+                                                .child('patients')
+                                                .child(account.team as String)
+                                                .child(patient.nationalId
+                                                    as String)
+                                                .child('costs')
+                                                .child(
+                                                    '${(DateTime.now().second)}:${(DateTime.now().millisecond)}')
+                                                .set({
+                                              'التكليف':
+                                                  dialogCostController.text,
+                                              'القيمة':
+                                                  dialogCostValueController
+                                                      .text,
+                                            });
+                                            Navigator.of(ctx).pop();
+                                            account.setCurrent(account.current);
+                                            // dialogCostController.clear();
+                                          },
+                                          child: Text('save')),
+                                    ),
                                   ],
                                 ),
                               ));
@@ -398,38 +501,31 @@ class PatientProfileScreen extends StatelessWidget {
                   color: Colors.blue.shade300,
                 ),
               ),
-              child: Column(
-                children: List.generate(
-                  patient.costs.length,
-                  (index) => Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(children: [
-                      Expanded(
-                          child: Text(
-                        patient.costs[index]['التكليف'],
-                        style: TextStyle(
-                            color: Colors.green,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
-                      )),
-                      Text(
-                        patient.costs[index]['القيمة'],
-                        style: TextStyle(
-                            color: Colors.green,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
+              child: Builder(builder: (context) {
+                num total = 0;
+                patient.costs.forEach((need) {
+                  total += int.parse(need['القيمة']);
+                });
+                return Column(
+                  children: [
+                    ...List.generate(
+                      patient.costs.length,
+                      (index) => Need(
+                        needName: patient.costs[index]['التكليف'],
+                        needCost: patient.costs[index]['القيمة'],
                       ),
-                    ]),
-                  ),
-                ),
-              ),
+                    ),
+                    Need(needName: 'التوتال', needCost: total.toString())
+                  ],
+                );
+              }),
             ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'latest',
+                'اخر ما وصلناله',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -441,17 +537,53 @@ class PatientProfileScreen extends StatelessWidget {
                   account.role == 'متطوع غني' ||
                   account.role == 'مسؤول أبحاث')
                 IconButton(
+                    color: Colors.white,
                     onPressed: () {
                       showDialog(
                           context: context,
                           builder: (ctx) => Dialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
                                 child: Column(
+                                  mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text('أدخل أخر ما وصلته مع الحالة :-'),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0, vertical: 16),
+                                      child: Text(
+                                        'أدخل أخر ما وصلته مع الحالة :-',
+                                        style: TextStyle(
+                                            color: Colors.green, fontSize: 16),
+                                      ),
+                                    ),
                                     Text(patient.name as String),
-                                    TextField(
-                                      controller: dialogLatestController,
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                            width: 1,
+                                            color: Colors.greenAccent,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        child: TextField(
+                                          controller: dialogLatestController,
+                                          decoration: InputDecoration(
+                                            hintText: 'اخر ما وصلناله',
+                                            border: InputBorder.none,
+                                            errorBorder: InputBorder.none,
+                                            enabledBorder: InputBorder.none,
+                                            focusedBorder: InputBorder.none,
+                                            disabledBorder: InputBorder.none,
+                                            focusedErrorBorder:
+                                                InputBorder.none,
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                     TextButton(
                                         onPressed: () async {
