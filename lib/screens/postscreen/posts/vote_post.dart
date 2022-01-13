@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/account.dart';
+import 'package:sizer/sizer.dart';
 
 class VotePost extends StatefulWidget {
   const VotePost({
@@ -41,7 +42,6 @@ class _VotePostState extends State<VotePost> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final account = Provider.of<Account>(context);
     return Card(
       child: Padding(
@@ -79,7 +79,7 @@ class _VotePostState extends State<VotePost> {
                             Positioned(
                               right: 0,
                               child: Container(
-                                height: size.height * .06,
+                                height: 6.h,
                                 child: Center(
                                   child: Text(
                                     e['voteName'],
@@ -103,7 +103,7 @@ class _VotePostState extends State<VotePost> {
                                           bottomRight: Radius.circular(15)),
                                       color: Colors.green.withOpacity(.3),
                                     ),
-                                    height: size.height * .06,
+                                    height: 6.h,
                                   ),
                                 ),
                                 Expanded(

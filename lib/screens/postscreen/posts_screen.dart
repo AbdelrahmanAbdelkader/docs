@@ -9,14 +9,14 @@ import 'package:sample/screens/postscreen/posts/normal_post.dart';
 import 'package:sample/screens/postscreen/posts/vote_post.dart';
 import 'package:sample/screens/postscreen/postsaddscreen/posts_add_screen.dart';
 import 'package:sample/screens/widgets/app_bar_button.dart';
-
+import 'package:sizer/sizer.dart';
 class PostsScreen extends StatelessWidget {
   PostsScreen(this.posts, {Key? key}) : super(key: key);
   final List<Map<String, dynamic>> posts;
   @override
   Widget build(BuildContext context) {
     print(posts);
-    final size = MediaQuery.of(context).size;
+  
     final account = Provider.of<Account>(context);
     return Scaffold(
       backgroundColor: Colors.green[50],
@@ -41,7 +41,7 @@ class PostsScreen extends StatelessWidget {
           Positioned(
             bottom: 0,
             child: Container(
-              width: size.width,
+              width: 100.w,
               child: Image.asset(
                 'assets/background.png',
                 fit: BoxFit.fill,
@@ -49,13 +49,13 @@ class PostsScreen extends StatelessWidget {
             ),
           ),
           Container(
-            width: size.width,
+            width: 100.w,
             child: Column(
               children: [
                 Expanded(
                   flex: 2,
                   child: Container(
-                    width: size.width,
+                    width: 100.w,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
@@ -70,14 +70,21 @@ class PostsScreen extends StatelessWidget {
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting)
-                                  return Center(
-                                      child: CircularProgressIndicator());
+                                  return Center(child: LayoutBuilder(
+                                      builder: (context, constrain) {
+                                    return Container(
+                                        height: 50.w,
+                                        width: 50.w,
+                                        child: Center(
+                                            child:
+                                                CircularProgressIndicator()));
+                                  }));
                                 if (snapshot.data != null) {
                                   Map data =
                                       snapshot.data!.snapshot.value as Map;
                                   if (snapshot.data!.snapshot.value != null)
                                     return Container(
-                                      width: size.width * .5,
+                                      width: 50.w,
                                       child: ImportantPost(
                                         date: DateTime.parse(data['date']),
                                         text: data['text'],
@@ -111,7 +118,13 @@ class PostsScreen extends StatelessWidget {
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting)
-                                return CircularProgressIndicator();
+                                return Container(
+                                  height: 20.h,
+                                  width: 20.h,
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
                               if (snapshot.data != null) {
                                 Map data = snapshot.data!.snapshot.value as Map;
                                 if (snapshot.data!.snapshot.value != null)
@@ -137,7 +150,14 @@ class PostsScreen extends StatelessWidget {
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState ==
                                       ConnectionState.waiting)
-                                    return CircularProgressIndicator();
+                                    return Container(
+                                      height: 20.h,
+                                      width: 20.h,
+                                      child: Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    );
+                                  ;
                                   if (snapshot.data != null) {
                                     Map data =
                                         snapshot.data!.snapshot.value as Map;

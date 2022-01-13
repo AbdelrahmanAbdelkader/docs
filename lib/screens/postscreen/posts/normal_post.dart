@@ -1,11 +1,9 @@
-import 'dart:io';
-
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sample/screens/postscreen/posts/widgets/comment.dart';
+import 'package:sample/screens/postscreen/posts/widgets/comment_text_field.dart';
 import 'package:sample/screens/postscreen/posts/widgets/post_image.dart';
+import 'package:sizer/sizer.dart';
 
 class NormalPost extends StatelessWidget {
   NormalPost({
@@ -24,7 +22,6 @@ class NormalPost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Card(
       child: SingleChildScrollView(
         child: Column(
@@ -125,7 +122,7 @@ class NormalPost extends StatelessWidget {
                         : Container(),
                     Divider(),
                     Container(
-                      height: size.height * .05,
+                      height: 5.h,
                       child: Row(
                         children: [
                           Expanded(
@@ -141,7 +138,7 @@ class NormalPost extends StatelessWidget {
                                 children: [
                                   Text('كومنت'),
                                   SizedBox(
-                                    width: size.width * .05,
+                                    width: 5.w,
                                   ),
                                   Icon(Icons.message),
                                 ],
@@ -165,7 +162,7 @@ class NormalPost extends StatelessWidget {
                                 Icon(Icons.star_border),
                                 //:Icon(Icons.star),
                                 SizedBox(
-                                  width: size.width * .05,
+                                  width: 5.w,
                                 ),
                                 Text('قرأت'),
                               ],
@@ -203,6 +200,7 @@ class NormalPost extends StatelessWidget {
                 ),
               ),
             ),
+            CommentTextField(),
           ],
         ),
       ),
