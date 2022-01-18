@@ -15,7 +15,6 @@ class CheckAcception extends StatelessWidget {
   );
   @override
   Widget build(BuildContext context) {
-    print('checkAcceptionOpened');
     final account = Provider.of<Account>(context, listen: false);
     account.setId(FirebaseAuth.instance.currentUser!.uid);
     final auth = FirebaseAuth.instance;
@@ -29,7 +28,6 @@ class CheckAcception extends StatelessWidget {
               .child(account.id as String)
               .get(),
           builder: (context, snaps) {
-            //print(snaps.hasData);
             if (snaps.connectionState == ConnectionState.waiting)
               return indicator;
             if (snaps.hasData) {
@@ -41,7 +39,7 @@ class CheckAcception extends StatelessWidget {
                   ((snaps.data as DataSnapshot).value as Map)['email']);
               account.setState(
                   ((snaps.data as DataSnapshot).value as Map)['state']);
-              //account.printData();
+
               return StreamBuilder(
                 stream: FirebaseDatabase.instance
                     .ref()

@@ -42,7 +42,7 @@ class Volanteers extends ChangeNotifier {
   // }
   Future<void> refresh(String role, BuildContext context) async {
     _vols = [];
-    print('e');
+
     if (role == 'متطوع غني') {
       DataSnapshot? users;
       DataSnapshot? activations;
@@ -60,7 +60,7 @@ class Volanteers extends ChangeNotifier {
           ),
         );
       }
-      print('f');
+
       try {
         activations = await database.ref().child('activation').get();
       } catch (e) {
@@ -75,7 +75,6 @@ class Volanteers extends ChangeNotifier {
         );
       }
       if (users!.exists) {
-        print('s');
         final List<Map> data;
         DataSnapshot? patients;
         try {
@@ -91,7 +90,7 @@ class Volanteers extends ChangeNotifier {
             ),
           );
         }
-        print('z');
+
         data = List.generate((users.value as Map).length, (index) {
           Map userDetail = (users!.value as Map).values.elementAt(index);
           String userId = (users.value as Map).keys.elementAt(index);
@@ -121,8 +120,7 @@ class Volanteers extends ChangeNotifier {
             });
           }
           pts.removeWhere((element) => element == {});
-          print('cc');
-          print(_vols);
+
           return {
             'name': userDetail['userName'],
             'phone': userDetail['phone'],

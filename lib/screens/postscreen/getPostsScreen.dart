@@ -30,8 +30,6 @@ class GetPostsScreen extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           else {
-            // print('snapdata');
-            // print(snap.data);
             return PostsScreen(snap.data as List<Map<String, dynamic>>);
           }
         });

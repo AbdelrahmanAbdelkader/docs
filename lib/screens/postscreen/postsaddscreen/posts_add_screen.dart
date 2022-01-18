@@ -43,7 +43,7 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
         await store.ref('posts/${id}_$fileId').putFile(element as File);
       });
       final ref = database.ref().child('posts').push();
-      print(ref.path);
+
       await database.ref().child(ref.path).update({
         'votes': (postTypeValue == 'تصويت') ? votes : [],
         'volName': volName,
@@ -74,7 +74,6 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
         if (element != null) files.add(File((element as XFile).path));
       });
     setState(() {});
-    print(files);
   }
 
   List postType = ['عادي', 'هام', 'تصويت'];

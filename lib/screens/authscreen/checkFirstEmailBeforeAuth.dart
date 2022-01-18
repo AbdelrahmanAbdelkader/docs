@@ -16,9 +16,8 @@ class CheckFirstEmailBeforeAuth extends StatelessWidget {
           .catchError((error) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(error)));
-        print(error);
       });
-      print(checked);
+
       return checked;
     }
 

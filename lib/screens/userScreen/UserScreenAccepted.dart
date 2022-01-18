@@ -27,7 +27,6 @@ class UserScreen extends StatelessWidget {
             ),
             currentIndex: account.current,
             onTap: (v) {
-              print('is here');
               account.setCurrent(v);
             },
           ));

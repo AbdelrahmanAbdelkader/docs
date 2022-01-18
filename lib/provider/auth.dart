@@ -11,35 +11,30 @@ class Auth extends ChangeNotifier {
 
   String? userTeamDropDownBottonValue;
   setUserTeamDropDownBottonValue(String v) {
-    print('setTeam');
     userTeamDropDownBottonValue = v;
     notifyListeners();
   }
 
   String? roleDropDownBottonValue;
   setRoleDropDownBottonValue(String v) {
-    print('setRole');
     roleDropDownBottonValue = v;
     notifyListeners();
   }
 
   String? stateDropDownBottonValue;
   setstateDropDownBottonValue(String v) {
-    print('setstate');
     stateDropDownBottonValue = v;
     notifyListeners();
   }
 
   bool signIn = true;
   changeSigning() {
-    print('setsignup');
     signIn = !signIn;
     notifyListeners();
   }
 
   bool triedToValidate = false;
   toggleTriedToValidate() {
-    print('settrytovalidate');
     triedToValidate = true;
     notifyListeners();
   }

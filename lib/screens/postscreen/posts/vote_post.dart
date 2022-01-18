@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -5,17 +8,19 @@ import 'package:sample/provider/account.dart';
 import 'package:sizer/sizer.dart';
 
 class VotePost extends StatefulWidget {
-  const VotePost({
-    Key? key,
-    required this.votes,
-    required this.volName,
-    required this.date,
-    required this.text,
-  }) : super(key: key);
+  const VotePost(
+      {Key? key,
+      required this.votes,
+      required this.volName,
+      required this.date,
+      required this.text,
+      required this.postId})
+      : super(key: key);
   final List votes;
   final String volName;
   final DateTime date;
   final String text;
+  final String postId;
   @override
   State<VotePost> createState() => _VotePostState();
 }
@@ -132,7 +137,35 @@ class _VotePostState extends State<VotePost> {
                                           Icons.check_box_outline_blank,
                                           color: Colors.green,
                                         ),
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    bool newTap = true;
+                                    if (e['selected'] != null) {
+                                      if ((e['selected'] as List)
+                                          .contains(account.id)) newTap = false;
+                                    }
+                                    if (newTap) {
+                                      widget.votes.forEach((element) {
+                                        if (element['selected'] != null)
+                                          element['selected'] =
+                                              List.from(element['selected'])
+                                                ..remove(account.id);
+                                        // .remove(account.id);
+                                      });
+                                      if (e['quantity'] == 0) {
+                                        e['selected'] = [account.id];
+                                      } else
+                                        (e['selected'] as List).add(account.id);
+                                      e['quantity']++;
+
+                                      await FirebaseDatabase.instance
+                                          .ref()
+                                          .child('posts')
+                                          .child(widget.postId)
+                                          .child('votes')
+                                          .set(widget.votes);
+                                      print('ss');
+                                    }
+                                  },
                                 ),
                               ),
                             ),

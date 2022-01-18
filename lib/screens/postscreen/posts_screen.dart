@@ -10,13 +10,12 @@ import 'package:sample/screens/postscreen/posts/vote_post.dart';
 import 'package:sample/screens/postscreen/postsaddscreen/posts_add_screen.dart';
 import 'package:sample/screens/widgets/app_bar_button.dart';
 import 'package:sizer/sizer.dart';
+
 class PostsScreen extends StatelessWidget {
   PostsScreen(this.posts, {Key? key}) : super(key: key);
   final List<Map<String, dynamic>> posts;
   @override
   Widget build(BuildContext context) {
-    print(posts);
-  
     final account = Provider.of<Account>(context);
     return Scaffold(
       backgroundColor: Colors.green[50],
@@ -129,13 +128,14 @@ class PostsScreen extends StatelessWidget {
                                 Map data = snapshot.data!.snapshot.value as Map;
                                 if (snapshot.data!.snapshot.value != null)
                                   return NormalPost(
+                                    postId: posts[i]['key'],
                                     date: DateTime.parse(data['date']),
                                     text: data['text'],
                                     volName: data['volName'],
                                     images: ((data['images'] as List).isEmpty)
                                         ? null
                                         : data['images'],
-                                    comments: [],
+                                    comments: CommentsType.undetail,
                                   );
                               }
                               return Text('حدث خطأ في عرض ذلك البوست');
@@ -157,7 +157,6 @@ class PostsScreen extends StatelessWidget {
                                         child: CircularProgressIndicator(),
                                       ),
                                     );
-                                  ;
                                   if (snapshot.data != null) {
                                     Map data =
                                         snapshot.data!.snapshot.value as Map;
@@ -167,6 +166,7 @@ class PostsScreen extends StatelessWidget {
                                         volName: data['volName'],
                                         date: DateTime.parse(data['date']),
                                         text: data['text'],
+                                        postId: posts[i]['key'],
                                       );
                                   }
                                   return Text('حدث خطأ في عرض ذلك البوست');

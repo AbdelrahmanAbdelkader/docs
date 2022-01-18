@@ -51,13 +51,13 @@ class AddDoctor extends StatelessWidget {
   Widget build(BuildContext context) {
     void save(Doc prove) {
       prove.triedToValidate = true;
-      print(prove.Id);
+
       bool validate = keys.currentState!.validate();
       if (validate) {
         // prove.type = prove.val as String;
         keys.currentState!.save();
         DatabaseReference ref;
-        print(prove.Id);
+
         if (prove.Id == null) {
           ref = database.ref().child('doctors').push();
         } else
@@ -71,7 +71,7 @@ class AddDoctor extends StatelessWidget {
             "name": prove.name,
             "petients": prove.patients.asMap(),
           });
-        Navigator.of(context).pop();
+          Navigator.of(context).pop();
         } catch (error) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(

@@ -137,7 +137,6 @@ class PatientsProv extends ChangeNotifier {
   }
 
   void setCurrentDoctors(List<Map> doctors) {
-    print('setCurrentDoctor');
     _currentDoctors = doctors;
     notifyListeners();
   }

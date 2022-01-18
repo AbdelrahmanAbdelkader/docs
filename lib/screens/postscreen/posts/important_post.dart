@@ -45,6 +45,7 @@ class ImportantPost extends StatelessWidget {
               (images != null)
                   ? (images!.length == 1)
                       ? PostImage(
+                          key: UniqueKey(),
                           imagePath: images![0],
                         )
                       : (images!.length == 2)
@@ -53,6 +54,7 @@ class ImportantPost extends StatelessWidget {
                                   .map((e) => Expanded(
                                         flex: 1,
                                         child: PostImage(
+                                          key: UniqueKey(),
                                           imagePath: e,
                                         ),
                                       ))
@@ -64,6 +66,7 @@ class ImportantPost extends StatelessWidget {
                                     Expanded(
                                         flex: 2,
                                         child: PostImage(
+                                          key: UniqueKey(),
                                           imagePath: images![0],
                                         )),
                                     Expanded(
@@ -71,9 +74,11 @@ class ImportantPost extends StatelessWidget {
                                       child: Column(
                                         children: [
                                           PostImage(
+                                            key: UniqueKey(),
                                             imagePath: images![1],
                                           ),
                                           PostImage(
+                                            key: UniqueKey(),
                                             imagePath: images![2],
                                           )
                                         ],

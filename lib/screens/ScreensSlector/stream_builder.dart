@@ -18,7 +18,6 @@ class MainStream extends StatelessWidget {
   late final Stream<User?> stream;
   @override
   Widget build(BuildContext context) {
-    print('all has been changed');
     stream = FirebaseAuth.instance.userChanges();
     return StreamBuilder<User?>(
       stream: stream,

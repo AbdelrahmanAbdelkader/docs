@@ -13,7 +13,6 @@ class Docs extends ChangeNotifier {
     BuildContext context,
     Function(List<Map>) setCurrentDoctors,
   ) async {
-    print('refreshDoctors');
     final database = FirebaseDatabase.instance;
     doctors = [];
     DataSnapshot? dataSnap;
@@ -53,7 +52,6 @@ class Docs extends ChangeNotifier {
   }
 
   void search(String searchFor, String? byname) {
-    print('search');
     searchedDoctors = [];
     doctors.forEach(
       (element) {
