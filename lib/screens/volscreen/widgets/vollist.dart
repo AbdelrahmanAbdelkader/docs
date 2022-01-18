@@ -42,7 +42,7 @@ class _VolListState extends State<VolList> {
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
-                  'ادخل اسم الحالة او الفريق او رقم الهاتف',
+                  'ادخل اسم المتطوع او الفريق او رقم الهاتف',
                   style: TextStyle(
                     color: Colors.green,
                     fontSize: 18,
