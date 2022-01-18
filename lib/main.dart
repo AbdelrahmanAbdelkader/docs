@@ -35,7 +35,9 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
             textButtonTheme: TextButtonThemeData(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.green[50]),
+                backgroundColor: MaterialStateProperty.all(
+                  Colors.green[50],
+                ),
               ),
             ),
             textTheme: TextTheme(

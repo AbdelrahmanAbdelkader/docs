@@ -77,8 +77,10 @@ class PatientProfileScreen extends StatelessWidget {
                           .child(patient.nationalId as String)
                           .update({
                         'availableForGuests':
-                            (patient.availableForGuests as bool) ? true : false
+                            !(patient.availableForGuests as bool),
                       });
+                      Navigator.pop(context);
+                      account.setCurrent(account.current);
                     },
                   ),
                   PopupMenuItem(

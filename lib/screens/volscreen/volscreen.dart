@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sample/provider/account.dart';
 import 'package:sample/provider/volanteers.dart';
 import 'package:sample/screens/volscreen/widgets/vollist.dart';
+import 'package:sizer/sizer.dart';
 
 class VolScreen extends StatelessWidget {
   const VolScreen({Key? key}) : super(key: key);
@@ -12,7 +13,6 @@ class VolScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final prove = Provider.of<Volanteers>(context, listen: false);
     final account = Provider.of<Account>(context);
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text('المتطوعين'),
@@ -28,13 +28,13 @@ class VolScreen extends StatelessWidget {
           Positioned(
               bottom: 0,
               child: Container(
-                  width: size.width,
+                  width: 100.w,
                   child: Image.asset(
                     'assets/background.png',
                     fit: BoxFit.fill,
                   ))),
           FutureBuilder(
-              future: prove.refresh(account.role,context),
+              future: prove.refresh(account.role, context),
               builder: (context, snap) {
                 if (snap.connectionState == ConnectionState.waiting)
                   return Center(

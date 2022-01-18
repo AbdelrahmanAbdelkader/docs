@@ -1,13 +1,17 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/account.dart';
 import 'package:sample/screens/postscreen/posts/widgets/comment.dart';
 import 'package:sample/screens/postscreen/posts/widgets/comment_text_field.dart';
+import 'package:sample/screens/postscreen/posts/widgets/getAllcomments.dart';
+import 'package:sample/screens/postscreen/posts/widgets/last_post_image.dart';
 import 'package:sample/screens/postscreen/posts/widgets/post_image.dart';
 import 'package:sizer/sizer.dart';
 
@@ -36,6 +40,7 @@ class NormalPost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final account = Provider.of<Account>(context);
+
     return Card(
       child: SingleChildScrollView(
         child: Column(
@@ -112,29 +117,27 @@ class NormalPost extends StatelessWidget {
                                         ? Row(
                                             children: [
                                               Expanded(
-                                                child: Container(
-                                                  child:
-                                                      Image.asset(images![0]),
-                                                ),
-                                              ),
+                                                  flex: 2,
+                                                  child: PostImage(
+                                                    imagePath: images![0],
+                                                    key: UniqueKey(),
+                                                  )),
                                               Expanded(
+                                                flex: 1,
                                                 child: Column(
                                                   children: [
-                                                    Expanded(
-                                                      child: Container(
-                                                        child: Image.asset(
-                                                            images![1]),
-                                                      ),
+                                                    PostImage(
+                                                      imagePath: images![1],
+                                                      key: UniqueKey(),
                                                     ),
-                                                    Expanded(
-                                                      child: Container(
-                                                        child: Image.asset(
-                                                            images![2]),
-                                                      ),
-                                                    ),
+                                                    LastPostImage(
+                                                      important: false,
+                                                      images: images,
+                                                      imagePath: images![2],
+                                                    )
                                                   ],
                                                 ),
-                                              ),
+                                              )
                                             ],
                                           )
                                         : Container()
@@ -156,12 +159,15 @@ class NormalPost extends StatelessWidget {
                                     builder: (ctx) =>
                                         ChangeNotifierProvider.value(
                                           value: account,
-                                          child: NormalPost(
-                                            comments: CommentsType.detail,
-                                            postId: postId,
-                                            date: date,
-                                            text: text,
-                                            volName: text,
+                                          child: Scaffold(
+                                            appBar: AppBar(),
+                                            body: NormalPost(
+                                              comments: CommentsType.detail,
+                                              postId: postId,
+                                              date: date,
+                                              text: text,
+                                              volName: text,
+                                            ),
                                           ),
                                         )));
                               },
@@ -258,41 +264,23 @@ class NormalPost extends StatelessWidget {
                     .onValue,
                 builder: (context, snapshot) {
                   if (snapshot.data != null) {
-                    final Map data = snapshot.data!.snapshot.value as Map;
-                    for (int i = 0; i < data.length; i++) {
-                      for (int y = i + 1; y < data.length; y++) {
-                        if (DateTime.parse((data[i]['date'] as String)).isAfter(
-                            DateTime.parse((data[y]['date'] as String)))) {
-                          Map temp = data[i];
-                          data[i] = data[y];
-                          data[y] = temp;
-                        }
-                      }
+                    Map data = snapshot.data!.snapshot.value as Map;
+
+                    if (snapshot.data!.snapshot.value != null) {
+                      var dataSorted = data.keys.toList()
+                        ..sort((k1, k2) => DateTime.parse(data[k2]['date'])
+                            .compareTo(DateTime.parse(data[k1]['date'])));
+                      data = Map.fromIterable(dataSorted,
+                          key: (e) => e, value: (e) => data[e]);
+                      print(data);
+                      return GetAllComments(postId, comments, data);
                     }
-                    return ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      reverse: true,
-                      itemCount: data.length,
-                      itemBuilder: (ctx, i) => Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[100],
-                          borderRadius: BorderRadius.only(
-                            bottomRight: Radius.circular(5),
-                            bottomLeft: Radius.circular(5),
-                          ),
-                        ),
-                        child: Comment(
-                          latest: i == min(data.length - 1, 2),
-                          comment: data[i],
-                        ),
-                      ),
-                    );
                   }
                   return Container();
                 }),
-            CommentTextField(postId),
+            CommentTextField(
+              postId,
+            ),
           ],
         ),
       ),

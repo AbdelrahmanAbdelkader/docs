@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/images_edit_dialog.dart';
-
+import 'package:sizer/sizer.dart';
 class ImagesList extends StatelessWidget {
   const ImagesList({
     Key? key,
@@ -11,7 +11,6 @@ class ImagesList extends StatelessWidget {
   final List<String> images;
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return Column(
       children: [
         Row(
@@ -39,7 +38,7 @@ class ImagesList extends StatelessWidget {
           ],
         ),
         Container(
-          width: size.width,
+          width: 100.w,
           child: GridView.builder(
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,

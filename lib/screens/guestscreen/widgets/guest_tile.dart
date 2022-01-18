@@ -1,29 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/need.dart';
 
 class GuestTile extends StatelessWidget {
-  const GuestTile({
-    Key? key,
-    required this.illness,
-    required this.needs,
-  }) : super(key: key);
-  final String illness;
-  final Map<String, int> needs;
+  const GuestTile({Key? key, required this.guestPatients}) : super(key: key);
+  final Map guestPatients;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: creating(),
-    );
-  }
-  List<Widget> creating(){
-  List<Widget> created=[];
-  for (var i = 0; i < needs.length; i++) {
-    created.add(Row(
-      children: [
-        Text('${needs.keys.elementAt(i)} :'),
-        Text('${needs[i]}'),
-      ],
+    return Card(
+        child: ListView.builder(
+      shrinkWrap: true,
+      itemCount: guestPatients.length,
+      itemBuilder: (ctx, i) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ...(guestPatients[i]['costs'] as List)
+              .map(
+                (e) => Need(
+                  needName: e['التكليف'],
+                  needCost: e['القيمة'],
+                ),
+              )
+              .toList(),
+        ],
+      ),
     ));
   }
-    return created;
-}
 }

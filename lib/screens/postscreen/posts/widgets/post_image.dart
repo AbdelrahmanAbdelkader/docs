@@ -35,7 +35,6 @@ class PostImage extends StatelessWidget {
             return Container(
               margin: EdgeInsets.all(5),
               decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.greenAccent),
                 borderRadius: BorderRadius.circular(15),
               ),
               child: ClipRRect(

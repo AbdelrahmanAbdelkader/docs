@@ -1,7 +1,5 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/account.dart';
 import 'package:sample/screens/postscreen/posts/important_post.dart';
@@ -49,13 +47,14 @@ class PostsScreen extends StatelessWidget {
           ),
           Container(
             width: 100.w,
-            child: Column(
+            child: ListView(
               children: [
-                Expanded(
-                  flex: 2,
+                Container(
+                  height: 20.h,
                   child: Container(
                     width: 100.w,
                     child: ListView.builder(
+                      cacheExtent: 10,
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
                       itemCount: posts.length,
@@ -101,78 +100,77 @@ class PostsScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                Expanded(
-                  flex: 5,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: posts.length,
-                    itemBuilder: (ctx, i) => (posts[i]['type'] == 'normal' ||
-                            posts[i]['type'] == 'important')
-                        ? StreamBuilder<DatabaseEvent>(
-                            stream: FirebaseDatabase.instance
-                                .ref()
-                                .child('posts')
-                                .child(posts[i]['key'])
-                                .onValue,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting)
-                                return Container(
-                                  height: 20.h,
-                                  width: 20.h,
-                                  child: Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
+                ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: posts.length,
+                  itemBuilder: (ctx, i) => (posts[i]['type'] == 'normal' ||
+                          posts[i]['type'] == 'important')
+                      ? StreamBuilder<DatabaseEvent>(
+                          stream: FirebaseDatabase.instance
+                              .ref()
+                              .child('posts')
+                              .child(posts[i]['key'])
+                              .onValue,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting)
+                              return Container(
+                                height: 20.h,
+                                width: 20.h,
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            if (snapshot.data != null) {
+                              Map data = snapshot.data!.snapshot.value as Map;
+                              if (snapshot.data!.snapshot.value != null)
+                                return NormalPost(
+                                  date: DateTime.parse(data['date']),
+                                  text: data['text'],
+                                  volName: data['volName'],
+                                  images: ((data['images'] as List).isEmpty)
+                                      ? null
+                                      : data['images'],
+                                  comments: CommentsType.undetail,
+                                  postId: posts[i]['key'],
                                 );
-                              if (snapshot.data != null) {
-                                Map data = snapshot.data!.snapshot.value as Map;
-                                if (snapshot.data!.snapshot.value != null)
-                                  return NormalPost(
-                                    postId: posts[i]['key'],
-                                    date: DateTime.parse(data['date']),
-                                    text: data['text'],
-                                    volName: data['volName'],
-                                    images: ((data['images'] as List).isEmpty)
-                                        ? null
-                                        : data['images'],
-                                    comments: CommentsType.undetail,
+                            }
+                            return Text('حدث خطأ في عرض ذلك البوست');
+                          })
+                      : (posts[i]['type'] == 'pole')
+                          ? StreamBuilder<DatabaseEvent>(
+                              stream: FirebaseDatabase.instance
+                                  .ref()
+                                  .child('posts')
+                                  .child(posts[i]['key'])
+                                  .onValue,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting)
+                                  return Container(
+                                    height: 20.h,
+                                    width: 20.h,
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
                                   );
-                              }
-                              return Text('حدث خطأ في عرض ذلك البوست');
-                            })
-                        : (posts[i]['type'] == 'pole')
-                            ? StreamBuilder<DatabaseEvent>(
-                                stream: FirebaseDatabase.instance
-                                    .ref()
-                                    .child('posts')
-                                    .child(posts[i]['key'])
-                                    .onValue,
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting)
-                                    return Container(
-                                      height: 20.h,
-                                      width: 20.h,
-                                      child: Center(
-                                        child: CircularProgressIndicator(),
-                                      ),
+
+                                if (snapshot.data != null) {
+                                  Map data =
+                                      snapshot.data!.snapshot.value as Map;
+                                  if (snapshot.data!.snapshot.value != null)
+                                    return VotePost(
+                                      votes: data['votes'],
+                                      volName: data['volName'],
+                                      date: DateTime.parse(data['date']),
+                                      text: data['text'],
+                                      postId: posts[i]['key'],
                                     );
-                                  if (snapshot.data != null) {
-                                    Map data =
-                                        snapshot.data!.snapshot.value as Map;
-                                    if (snapshot.data!.snapshot.value != null)
-                                      return VotePost(
-                                        votes: data['votes'],
-                                        volName: data['volName'],
-                                        date: DateTime.parse(data['date']),
-                                        text: data['text'],
-                                        postId: posts[i]['key'],
-                                      );
-                                  }
-                                  return Text('حدث خطأ في عرض ذلك البوست');
-                                })
-                            : Container(),
-                  ),
+                                }
+                                return Text('حدث خطأ في عرض ذلك البوست');
+                              })
+                          : Container(),
                 ),
               ],
             ),

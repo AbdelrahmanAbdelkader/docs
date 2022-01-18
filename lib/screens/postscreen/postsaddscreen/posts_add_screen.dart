@@ -87,7 +87,6 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
     //ناقص هنا تضيف السيف فانكشن
     //و ال statemanagment
     final account = Provider.of<Account>(context, listen: false);
-    //final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(),
       body: Padding(

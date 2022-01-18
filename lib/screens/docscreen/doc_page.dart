@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sample/provider/doc.dart';
 import 'package:sample/provider/docs.dart';
 import 'package:sample/screens/widgets/app_bar_button.dart';
-
+import 'package:sizer/sizer.dart';
 import 'package:sample/screens/docscreen/getAddDocProvited.dart';
 import 'widgets/doc_sample.dart';
 
@@ -23,7 +23,6 @@ class _DocListState extends State<DocList> {
   Widget build(BuildContext context) {
     final prove = Provider.of<Docs>(context, listen: false);
     final proveTrue = Provider.of<Docs>(context);
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text((search) ? 'البحث' : 'الدكاترة'),
@@ -61,7 +60,7 @@ class _DocListState extends State<DocList> {
               ],
       ),
       body: Container(
-        height: size.height,
+        height: 100.h,
         child: Stack(
           children: [
             Positioned(
@@ -69,7 +68,7 @@ class _DocListState extends State<DocList> {
               child: Image.asset(
                 'assets/background.png',
                 fit: BoxFit.fill,
-                width: size.width,
+                width: 100.w,
               ),
             ),
             LayoutBuilder(builder: (context, cons) {

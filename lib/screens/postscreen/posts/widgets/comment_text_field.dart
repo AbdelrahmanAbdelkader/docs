@@ -50,17 +50,13 @@ class CommentTextField extends StatelessWidget {
                   .child('comment')
                   .child(postId)
                   .push();
-              FirebaseDatabase.instance
-                  .ref()
-                  .child('posts')
-                  .child('comment')
-                  .child(postId)
-                  .child(ref.path)
-                  .set({
+              FirebaseDatabase.instance.ref().child(ref.path).set({
                 'date': DateTime.now().toString(),
                 'name': account.name,
                 'content': commentTextFieldController.text,
               });
+              commentTextFieldController.clear();
+              FocusScope.of(context).unfocus();
             },
           ),
         ),

@@ -7,6 +7,7 @@ import 'package:sample/provider/patients.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_list.dart';
 import '../widgets/app_bar_button.dart';
 import 'add_patient_screen/add_patient_screen.dart';
+import 'package:sizer/sizer.dart';
 
 class PatientScreen extends StatefulWidget {
   const PatientScreen({Key? key}) : super(key: key);
@@ -19,7 +20,6 @@ class _PatientScreenState extends State<PatientScreen> {
   @override
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text('الحالات'),
@@ -58,7 +58,7 @@ class _PatientScreenState extends State<PatientScreen> {
             child: Image.asset(
               'assets/background.png',
               fit: BoxFit.fill,
-              width: size.width,
+              width: 100.w,
             ),
           ),
           PatientList(),
