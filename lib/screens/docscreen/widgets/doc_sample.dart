@@ -42,7 +42,6 @@ class _DocSampleState extends State<DocSample> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),
       child: Stack(
@@ -50,7 +49,6 @@ class _DocSampleState extends State<DocSample> {
           
           AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            //height: (toggled) ? size.height * .25 : size.height * .18,
             curve: Curves.bounceOut,
             margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
             padding: const EdgeInsets.symmetric(horizontal: 10),

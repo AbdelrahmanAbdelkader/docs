@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
 import 'package:sample/provider/auth.dart';
 import 'package:sample/screens/widgets/custom_text_field.dart';
+import 'package:sizer/sizer.dart';
 
 class AuthScreen extends StatelessWidget {
   AuthScreen(this.thereAreUsers, {Key? key}) : super(key: key);
@@ -61,7 +62,6 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<Auth>(context);
-    final size = MediaQuery.of(context).size;
     if (once) {
       role = (!thereAreUsers)
           ? ['متطوع غني']
@@ -79,13 +79,13 @@ class AuthScreen extends StatelessWidget {
           Positioned(
               bottom: 0,
               child: Container(
-                  width: size.width,
+                  width: 100.w,
                   child: Image.asset(
                     'assets/background.png',
                     fit: BoxFit.fill,
                   ))),
           SizedBox(
-            height: size.height,
+            height: 100.h,
             child: Form(
               key: authFormKey,
               child: SingleChildScrollView(
@@ -95,14 +95,14 @@ class AuthScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SizedBox(
-                          height: size.height * .1,
+                          height: 10.h,
                         ),
                         SizedBox(
                           child: Image.asset('assets/logo.jpg'),
-                          height: size.height * .2,
+                          height: 20.h,
                         ),
                         SizedBox(
-                          height: size.height * .075,
+                          height: 7.5.h,
                         ),
                         if (!auth.signIn)
                           AddPatientTextField(

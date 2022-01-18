@@ -5,6 +5,7 @@ import 'package:sample/provider/patients.dart';
 import 'package:sample/provider/volanteer.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_list_tile.dart';
 import 'package:sample/screens/volscreen/widgets/volprofile/widgets/information_tile.dart';
+import 'package:sizer/sizer.dart';
 
 class VolanteerProfileScreen extends StatelessWidget {
   VolanteerProfileScreen(
@@ -17,7 +18,6 @@ class VolanteerProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Patient> _currentUserPatients = [];
     final patients = Provider.of<PatientsProv>(context);
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -52,8 +52,8 @@ class VolanteerProfileScreen extends StatelessWidget {
                         label: 'الايميل'),
                     SizedBox(
                       height: (_currentUserPatients == [])
-                          ? size.height * .3
-                          : size.height * .04,
+                          ? 30.h
+                          : 4.h,
                     ),
                     Text(
                       'الحالات',

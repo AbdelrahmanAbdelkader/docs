@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
 import 'package:sample/provider/doc.dart';
 import 'package:sample/screens/widgets/custom_text_field.dart';
+import 'package:sizer/sizer.dart';
 
 // ignore: must_be_immutable
 class AddDoctor extends StatelessWidget {
@@ -71,7 +72,7 @@ class AddDoctor extends StatelessWidget {
             "name": prove.name,
             "petients": prove.patients.asMap(),
           });
-        Navigator.of(context).pop();
+          Navigator.of(context).pop();
         } catch (error) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
@@ -88,7 +89,6 @@ class AddDoctor extends StatelessWidget {
       }
     }
 
-    Size size = MediaQuery.of(context).size;
     //final staticProve = Provider.of<Doc>(context, listen: false);
     if (once) {
       fitchLastData(prove);
@@ -120,7 +120,7 @@ class AddDoctor extends StatelessWidget {
                   Row(
                     children: [
                       SizedBox(
-                          width: size.width * .8,
+                          width: 80.w,
                           child: AddPatientTextField(
                               textInputAction: TextInputAction.next,
                               textInputType: TextInputType.phone,
@@ -195,7 +195,7 @@ class AddDoctor extends StatelessWidget {
                     child: const Text('save'),
                     style: ButtonStyle(
                       fixedSize: MaterialStateProperty.all(
-                        Size.fromWidth(size.width * .8),
+                        Size.fromWidth(80.w),
                       ),
                     ),
                   ),

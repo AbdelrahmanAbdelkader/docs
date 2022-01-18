@@ -11,6 +11,7 @@ import 'package:sample/screens/patientscreen/add_patient_screen/widgets/illnessl
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/state_dropdownbutton.dart';
 import 'package:sample/screens/widgets/custom_text_field.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/patient_screen_doctors_dropdownbutton.dart';
+import 'package:sizer/sizer.dart';
 
 // ignore: must_be_immutable
 class AddPatientPage extends StatelessWidget {
@@ -61,7 +62,6 @@ class AddPatientPage extends StatelessWidget {
     final account = Provider.of<Account>(context);
     final patientsProvider = Provider.of<PatientsProv>(context, listen: false);
     final doctorsProvider = Provider.of<Docs>(context, listen: false);
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(),
       body: FutureBuilder(
@@ -98,7 +98,7 @@ class AddPatientPage extends StatelessWidget {
                     'docName': patientProvider.doctor,
                     'illnessType': patientProvider.illnessType,
                     'illness': patientProvider.illness,
-                    'availableForGuests':false,
+                    'availableForGuests': false,
                     'costs': Map.fromIterable(
                       patientProvider.costs,
                       key: (e) => e['id'],
@@ -247,8 +247,8 @@ class AddPatientPage extends StatelessWidget {
                                 color: Colors.grey[200],
                                 margin: EdgeInsets.only(top: 20),
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: size.width * .4,
-                                    vertical: size.height * .1),
+                                    horizontal: 40.w,
+                                    vertical: 10.h),
                                 child: Icon(
                                   Icons.add_a_photo,
                                   color: Colors.green,

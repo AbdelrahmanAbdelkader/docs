@@ -19,7 +19,6 @@ class CheckAcception extends StatelessWidget {
     final account = Provider.of<Account>(context, listen: false);
     account.setId(FirebaseAuth.instance.currentUser!.uid);
     final auth = FirebaseAuth.instance;
-    // final size = MediaQuery.of(context).size;
     return Container(
       color: Colors.white,
       child: FutureBuilder(
@@ -88,7 +87,6 @@ class CheckAcception extends StatelessWidget {
             return Center(
               child: Dialog(
                 child: Container(
-                  //height: size.height * .2,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [

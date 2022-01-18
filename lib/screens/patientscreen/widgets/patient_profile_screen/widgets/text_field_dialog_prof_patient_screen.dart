@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sample/provider/account.dart';
 import 'package:sample/provider/patient.dart';
 import 'package:sample/screens/widgets/custom_text_field.dart';
+import 'package:sizer/sizer.dart';
 
 class TextFieldDialog extends Dialog {
   TextFieldDialog({
@@ -16,9 +17,8 @@ class TextFieldDialog extends Dialog {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           child: Builder(
             builder: (context) {
-              final size = MediaQuery.of(context).size;
               return Container(
-                height: size.height * .4,
+                height: 40.h,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -34,7 +34,7 @@ class TextFieldDialog extends Dialog {
                         ],
                       ),
                       SizedBox(
-                        height: size.height * .02,
+                        height: 2.h,
                       ),
                       Card(
                         shape: RoundedRectangleBorder(
@@ -42,7 +42,8 @@ class TextFieldDialog extends Dialog {
                             side: BorderSide(
                                 color: Colors.greenAccent, width: 1)),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal:8.0,vertical: 13),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 13),
                           child: Row(
                             children: [
                               const Text(

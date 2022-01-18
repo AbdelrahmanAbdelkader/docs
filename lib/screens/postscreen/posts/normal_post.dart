@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sample/screens/postscreen/posts/widgets/comment.dart';
 import 'package:sample/screens/postscreen/posts/widgets/comment_text_field.dart';
+import 'package:sample/screens/postscreen/posts/widgets/last_post_image.dart';
 import 'package:sample/screens/postscreen/posts/widgets/post_image.dart';
 import 'package:sizer/sizer.dart';
 
@@ -93,29 +94,25 @@ class NormalPost extends StatelessWidget {
                                         ? Row(
                                             children: [
                                               Expanded(
-                                                child: Container(
-                                                  child:
-                                                      Image.asset(images![0]),
-                                                ),
-                                              ),
+                                                  flex: 2,
+                                                  child: PostImage(
+                                                    imagePath: images![0],
+                                                  )),
                                               Expanded(
+                                                flex: 1,
                                                 child: Column(
                                                   children: [
-                                                    Expanded(
-                                                      child: Container(
-                                                        child: Image.asset(
-                                                            images![1]),
-                                                      ),
+                                                    PostImage(
+                                                      imagePath: images![1],
                                                     ),
-                                                    Expanded(
-                                                      child: Container(
-                                                        child: Image.asset(
-                                                            images![2]),
-                                                      ),
-                                                    ),
+                                                    LastPostImage(
+                                                      important: false,
+                                                      images: images,
+                                                      imagePath: images![2],
+                                                    )
                                                   ],
                                                 ),
-                                              ),
+                                              )
                                             ],
                                           )
                                         : Container()
