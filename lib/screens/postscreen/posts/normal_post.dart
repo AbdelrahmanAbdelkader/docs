@@ -263,7 +263,7 @@ class NormalPost extends StatelessWidget {
                     .child(postId)
                     .onValue,
                 builder: (context, snapshot) {
-                  if (snapshot.data != null) {
+                  if (snapshot.data != null&&snapshot.data!.snapshot.value!=null) {
                     Map data = snapshot.data!.snapshot.value as Map;
 
                     if (snapshot.data!.snapshot.value != null) {
