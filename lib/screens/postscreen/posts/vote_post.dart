@@ -7,13 +7,15 @@ import 'package:provider/provider.dart';
 import 'package:sample/provider/account.dart';
 import 'package:sizer/sizer.dart';
 
-class VotePost extends StatefulWidget {
+class VotePost extends StatelessWidget {
   const VotePost(
       {Key? key,
       required this.votes,
       required this.volName,
       required this.date,
       required this.text,
+      required this.votsNameLists,
+      required this.accountId,
       required this.postId})
       : super(key: key);
   final List votes;
@@ -21,51 +23,84 @@ class VotePost extends StatefulWidget {
   final DateTime date;
   final String text;
   final String postId;
-  @override
-  State<VotePost> createState() => _VotePostState();
-}
-
-class _VotePostState extends State<VotePost> {
+  final Map votsNameLists;
+  final String accountId;
   //bool selected = false;
-  num total = 0;
-  void setTotal() {
-    total = 0;
-    widget.votes.forEach(
-      (element) {
-        setState(() {
-          total += element['quantity'];
-        });
-      },
-    );
-  }
+  // num total = 0;
+  // void setTotal() {
+  //   total = 0;
+  //   widget.votes.forEach(
+  //     (element) {
+  //       setState(() {
+  //         total += element['quantity'];
+  //       });
+  //     },
+  //   );
+  // }
 
-  @override
-  void initState() {
-    setTotal();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   setTotal();
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
+    final total = votsNameLists.length;
     final account = Provider.of<Account>(context);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            widget.volName,
-            style: TextStyle(
-              color: Colors.green,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
+          Row(
+            children: [
+              Text(
+                volName,
+                style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              ),
+              Spacer(),
+              if (account.id == accountId)
+                IconButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                                title: Text('are you sure'),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.of(ctx).pop();
+                                      },
+                                      child: Text('No!')),
+                                  TextButton(
+                                      onPressed: () async {
+                                        await FirebaseDatabase.instance
+                                            .ref()
+                                            .child('posts')
+                                            .child(postId)
+                                            .set(null);
+                                        Navigator.of(ctx).pop();
+                                        account.setCurrent(account.current);
+                                      },
+                                      child: Text('yes')),
+                                ],
+                              ));
+                    },
+                    icon: Icon(
+                      Icons.transit_enterexit,
+                      color: Colors.red,
+                    ))
+            ],
           ),
           Text(
-            DateFormat('hh:mm  dd/MM/yyyy').format(widget.date),
+            DateFormat('hh:mm  dd/MM/yyyy').format(date),
             style: TextStyle(color: Colors.grey[400]),
           ),
-          Text(widget.text),
-          ...widget.votes
+          Text(text),
+          ...votes
               .map(
                 (e) => Container(
                   decoration: BoxDecoration(
@@ -87,7 +122,7 @@ class _VotePostState extends State<VotePost> {
                                 height: 6.h,
                                 child: Center(
                                   child: Text(
-                                    e['voteName'],
+                                    e,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: Colors.green,
@@ -100,7 +135,9 @@ class _VotePostState extends State<VotePost> {
                             Row(
                               children: [
                                 Expanded(
-                                  flex: e['quantity'],
+                                  flex: votsNameLists.values
+                                      .where((element) => element == e)
+                                      .length,
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.only(
@@ -112,7 +149,10 @@ class _VotePostState extends State<VotePost> {
                                   ),
                                 ),
                                 Expanded(
-                                  flex: (total - e['quantity'] as int),
+                                  flex: (total -
+                                      votsNameLists.values
+                                          .where((element) => element == e)
+                                          .length),
                                   child: Container(
                                     color: Colors.white,
                                   ),
@@ -126,45 +166,25 @@ class _VotePostState extends State<VotePost> {
                                 child: IconButton(
                                   splashRadius: 1.0,
                                   iconSize: 16,
-                                  icon: (e['selected'] != null &&
-                                          (e['selected'] as List)
-                                              .contains(account.id))
-                                      ? Icon(
-                                          Icons.check_box,
-                                          color: Colors.green,
-                                        )
-                                      : Icon(
-                                          Icons.check_box_outline_blank,
-                                          color: Colors.green,
-                                        ),
+                                  icon:
+                                      (votsNameLists.containsKey(account.id) &&
+                                              votsNameLists[account.id] == e)
+                                          ? Icon(
+                                              Icons.check_box,
+                                              color: Colors.green,
+                                            )
+                                          : Icon(
+                                              Icons.check_box_outline_blank,
+                                              color: Colors.green,
+                                            ),
                                   onPressed: () async {
-                                    bool newTap = true;
-                                    if (e['selected'] != null) {
-                                      if ((e['selected'] as List)
-                                          .contains(account.id)) newTap = false;
-                                    }
-                                    if (newTap) {
-                                      widget.votes.forEach((element) {
-                                        if (element['selected'] != null)
-                                          element['selected'] =
-                                              List.from(element['selected'])
-                                                ..remove(account.id);
-                                        // .remove(account.id);
-                                      });
-                                      if (e['quantity'] == 0) {
-                                        e['selected'] = [account.id];
-                                      } else
-                                        (e['selected'] as List).add(account.id);
-                                      e['quantity']++;
-
-                                      await FirebaseDatabase.instance
-                                          .ref()
-                                          .child('posts')
-                                          .child(widget.postId)
-                                          .child('votes')
-                                          .set(widget.votes);
-                                      print('ss');
-                                    }
+                                    await FirebaseDatabase.instance
+                                        .ref()
+                                        .child('posts')
+                                        .child(postId)
+                                        .child('votes')
+                                        .child('selected')
+                                        .update({account.id as String: e});
                                   },
                                 ),
                               ),

@@ -13,8 +13,10 @@ class GetPostsScreen extends StatelessWidget {
     final posts = await FirebaseDatabase.instance.ref().child('posts').get();
 
     if (posts.value != null) {
+      print(posts.value);
       (posts.value as Map).forEach((key, value) {
-        data.add({'key': key, 'type': value['type']});
+        if (key == 'seen' || key == 'comment') return;
+        data.add({'key': key, ...value});
       });
     }
     return data;

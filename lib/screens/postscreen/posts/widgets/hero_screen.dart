@@ -6,6 +6,7 @@ class HeroScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Hero(
         tag: tag,
         child: Image.network(tag),

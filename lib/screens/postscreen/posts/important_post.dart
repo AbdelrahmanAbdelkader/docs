@@ -110,7 +110,7 @@ class ImportantPost extends StatelessWidget {
                                               LastPostImage(
                                                 important: true,
                                                 imagePath: images![2],
-                                                images: images,
+                                                images: images as List,
                                               )
                                             ],
                                           ),
