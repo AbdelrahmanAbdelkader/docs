@@ -53,16 +53,16 @@ class ImportantPost extends StatelessWidget {
                         )
                       : (images!.length == 2)
                           ? Row(
-                              children: images!
-                                  .map((e) => Expanded(
-                                        flex: 1,
-                                        child: PostImage(
-                                          images: images as List,
-                                          key: UniqueKey(),
-                                          imagePath: e,
-                                        ),
-                                      ))
-                                  .toList(),
+                              children: images!.map((e) {
+                                return Expanded(
+                                  flex: 1,
+                                  child: PostImage(
+                                    images: images as List,
+                                    key: UniqueKey(),
+                                    imagePath: e,
+                                  ),
+                                );
+                              }).toList(),
                             )
                           : (images!.length == 3)
                               ? Row(

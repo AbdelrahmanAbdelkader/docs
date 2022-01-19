@@ -36,6 +36,34 @@ class LastPostImage extends StatelessWidget {
                   child: CircularProgressIndicator(
                     color: Colors.green,
                   ),
+<<<<<<< HEAD
+                );
+              if (snapshot.data != null)
+                return Container(
+                  margin: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => Dialog(
+                            child: GridView.builder(
+                              shrinkWrap: true,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3),
+                              itemCount: images!.length,
+                              itemBuilder: (ctx, i) => PostImage(
+                                images:images as List,
+                                
+                                imagePath: images![i],
+                                key: UniqueKey(),
+                              ),
+=======
                 ),
               );
             if (snapshot.data != null)
@@ -117,6 +145,7 @@ class LastPostImage extends StatelessWidget {
                                   ? loadingProgress.cumulativeBytesLoaded /
                                       loadingProgress.expectedTotalBytes!
                                   : null,
+>>>>>>> 10b17fdb067c95bfc442075f150150fb720f752b
                             ),
                           ),
                         );

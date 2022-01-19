@@ -157,6 +157,150 @@ class _AddPatientPageState extends State<AddPatientPage> {
               //   patientProvider.stateNotvalidated();
             }
 
+<<<<<<< HEAD
+              return Form(
+                key: fkey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      AddPatientTextField(
+                        label: 'الاسم',
+                        controller: patientNameController,
+                        tKey: patientNameKey,
+                        textInputAction: TextInputAction.next,
+                        save: (v) {
+                          patientProvider.name = v;
+                        },
+                        validate: (String v) {
+                          if (v.length < 4) return 'ادخل اسم صحيح';
+                        },
+                        multiline: false,
+                      ),
+                      AddPatientTextField(
+                        label: 'الرقم القومي',
+                        controller: nationalIdController,
+                        textInputAction: TextInputAction.next,
+                        tKey: nationalIdKey,
+                        save: (v) {
+                          patientProvider.nationalId = v;
+                        },
+                        validate: (String v) {
+                          if (v.length != 14) return 'ادخل رقم قومي صحيح';
+                        },
+                        multiline: false,
+                      ),
+                      AddPatientTextField(
+                        label: 'رقم التلفون',
+                        controller: patientPhoneController,
+                        textInputAction: TextInputAction.next,
+                        tKey: patientNumKey,
+                        save: (v) {
+                          patientProvider.phone = v;
+                        },
+                        validate: (String v) {
+                          if (v.length != 10 && v.length != 11)
+                            return 'ادخل رقم صحيح';
+                        },
+                        multiline: false,
+                      ),
+                      StateDropDownButton(
+                        label: 'اختر المركز',
+                        items: states,
+                      ),
+                      AddPatientTextField(
+                        textInputAction: TextInputAction.next,
+                        label: 'العنوان',
+                        controller: patientAdressController,
+                        tKey: patientAdressKey,
+                        multiline: false,
+                        save: (v) {
+                          patientProvider.address = v;
+                        },
+                        validate: (String v) {
+                          if (v.length < 4) return 'ادخل عنوان مناسب';
+                        },
+                      ),
+                      // if (patientProvider.stateValidate == false)
+                      //   Text("أختار مركز من فضلك"),
+                      AddPatientTextField(
+                        textInputAction: TextInputAction.next,
+                        label: 'اسم السورس',
+                        controller: sourceController,
+                        tKey: sourceKey,
+                        multiline: false,
+                        save: (v) => patientProvider.source = v,
+                        validate: (v) {
+                          if (v.length < 4) return 'ادخل اسم صحيح';
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: PatientDropDown(
+                                text: 'اختر الطبيب المتابع',
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      AddPatientTextField(
+                        textInputAction: TextInputAction.next,
+                        label: 'المرض المصاحب للمريض',
+                        controller: illnessController,
+                        tKey: illnessKey,
+                        multiline: false,
+                        save: (v) => patientProvider.illness = v,
+                        validate: (String v) {
+                          if (v.length == 0) return 'ادخل المرض من فضلك';
+                        },
+                      ),
+                      IllnessList(
+                          costController: costController,
+                          costValueController: costValueController),
+                      AddPatientTextField(
+                        textInputAction: TextInputAction.next,
+                        label: 'اخر ما وصلناله',
+                        controller: latestController,
+                        tKey: latestKey,
+                        validate: (v) {},
+                        save: (v) => patientProvider.setLatest(v),
+                        multiline: true,
+                      ),
+                      (images.length == 0)
+                          ? GestureDetector(
+                              onTap: () {
+                                //دخل الصور و حطها في [images]
+                              },
+                              child: Container(
+                                color: Colors.grey[200],
+                                margin: EdgeInsets.only(top: 20),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 40.w, vertical: 10.h),
+                                child: Icon(
+                                  Icons.add_a_photo,
+                                  color: Colors.green,
+                                  size: 36,
+                                ),
+                              ),
+                            )
+                          : GridView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: images.length,
+                              shrinkWrap: true,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                              ),
+                              itemBuilder: (BuildContext context, int index) =>
+                                  Container(
+                                child: Image.asset(
+                                  images[index],
+                                ),
+                              ),
+=======
             return Form(
               key: fkey,
               child: SingleChildScrollView(
@@ -236,6 +380,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                             flex: 1,
                             child: PatientDropDown(
                               text: 'اختر الطبيب المتابع',
+>>>>>>> 10b17fdb067c95bfc442075f150150fb720f752b
                             ),
                           )
                         ],
