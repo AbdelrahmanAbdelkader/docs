@@ -99,6 +99,7 @@ class _DocListState extends State<DocList> {
                                                 searchedDoctors = prove.doctors
                                                     .where((element) {
                                                   return element.name
+                                                      .toLowerCase()
                                                       .contains(value);
                                                 }).toList();
                                               });

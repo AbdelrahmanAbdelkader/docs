@@ -23,6 +23,7 @@ class PatientDropDown extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
         child: DropdownButton(
+          onTap: () => FocusScope.of(context).unfocus(),
           isExpanded: true,
           hint: Text(
             text,

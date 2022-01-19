@@ -5,9 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:sample/screens/postscreen/posts/widgets/hero_screen.dart';
 
 class PostImage extends StatelessWidget {
-  const PostImage({required Key? key, required this.imagePath})
-      : super(key: key);
+  const PostImage({
+    required Key? key,
+    required this.imagePath,
+    required this.images,
+  }) : super(key: key);
   final String imagePath;
+  final List images;
   Future<String?> getImage() async {
     final file = FirebaseStorage.instance
         .ref()
@@ -44,8 +48,10 @@ class PostImage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            HeroScreen(tag: snapshot.data as String),
+                        builder: (context) => HeroScreen(
+                          tag: snapshot.data as String,
+                          images: images,
+                        ),
                       ),
                     );
                   },

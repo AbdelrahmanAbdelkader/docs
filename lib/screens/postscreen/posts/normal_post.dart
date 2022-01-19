@@ -76,11 +76,6 @@ class NormalPost extends StatelessWidget {
                                             title: Text('are you sure'),
                                             actions: [
                                               TextButton(
-                                                  onPressed: () {
-                                                    Navigator.of(ctx).pop();
-                                                  },
-                                                  child: Text('No!')),
-                                              TextButton(
                                                   onPressed: () async {
                                                     await FirebaseDatabase
                                                         .instance
@@ -116,6 +111,11 @@ class NormalPost extends StatelessWidget {
                                                         account.current);
                                                   },
                                                   child: Text('yes')),
+                                              TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(ctx).pop();
+                                                  },
+                                                  child: Text('No!')),
                                             ],
                                           ));
                                 },
@@ -140,6 +140,7 @@ class NormalPost extends StatelessWidget {
                               ? PostImage(
                                   key: UniqueKey(),
                                   imagePath: images![0],
+                                  images: images as List,
                                 )
                               : (images!.length == 2)
                                   ? Row(
@@ -147,6 +148,7 @@ class NormalPost extends StatelessWidget {
                                           .map((e) => Expanded(
                                                 flex: 1,
                                                 child: PostImage(
+                                                  images: images as List,
                                                   key: UniqueKey(),
                                                   imagePath: e,
                                                 ),
@@ -160,6 +162,7 @@ class NormalPost extends StatelessWidget {
                                                 flex: 2,
                                                 child: PostImage(
                                                   key: UniqueKey(),
+                                                  images: images as List,
                                                   imagePath: images![0],
                                                 )),
                                             Expanded(
@@ -167,10 +170,12 @@ class NormalPost extends StatelessWidget {
                                               child: Column(
                                                 children: [
                                                   PostImage(
+                                                    images: images as List,
                                                     key: UniqueKey(),
                                                     imagePath: images![1],
                                                   ),
                                                   PostImage(
+                                                    images: images as List,
                                                     key: UniqueKey(),
                                                     imagePath: images![2],
                                                   )
@@ -185,6 +190,7 @@ class NormalPost extends StatelessWidget {
                                                 Expanded(
                                                     flex: 2,
                                                     child: PostImage(
+                                                      images: images as List,
                                                       imagePath: images![0],
                                                       key: UniqueKey(),
                                                     )),
@@ -193,6 +199,7 @@ class NormalPost extends StatelessWidget {
                                                   child: Column(
                                                     children: [
                                                       PostImage(
+                                                        images: images as List,
                                                         imagePath: images![1],
                                                         key: UniqueKey(),
                                                       ),

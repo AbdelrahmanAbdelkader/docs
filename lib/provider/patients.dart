@@ -15,8 +15,12 @@ class PatientsProv extends ChangeNotifier {
   }
 
   void addPatient(Map newPatient) {
+    List mm = newPatient['images'] as List;
     _patients.add(Patient()
       ..team = newPatient['team']
+      ..images = (newPatient['images'] != null)
+          ? [...newPatient['images'] as List]
+          : []
       ..volId = newPatient['volanteerId']
       ..volName = newPatient['volanteerName']
       ..name = newPatient['patientName']

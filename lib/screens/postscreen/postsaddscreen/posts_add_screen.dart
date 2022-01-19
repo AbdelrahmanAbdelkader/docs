@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -59,7 +60,6 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
         'deadLine': DateTime.now().add(Duration(days: 7)).toString(),
         'acountId': account.id
       });
-
       Navigator.pop(context);
       account.setCurrent(account.current);
     }

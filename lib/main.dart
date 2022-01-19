@@ -41,21 +41,22 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
             textTheme: TextTheme(
-                headline1: TextStyle(
-                  color: Colors.green,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-                subtitle1: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-                headline2: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                )),
+              headline1: TextStyle(
+                color: Colors.green,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+              subtitle1: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+              headline2: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             primarySwatch: Colors.green,
             scaffoldBackgroundColor: Colors.white,
             bottomNavigationBarTheme: const BottomNavigationBarThemeData(
