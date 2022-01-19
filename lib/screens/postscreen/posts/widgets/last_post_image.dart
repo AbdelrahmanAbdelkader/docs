@@ -60,6 +60,7 @@ class LastPostImage extends StatelessWidget {
                               itemCount: images!.length,
                               itemBuilder: (ctx, i) => PostImage(
                                 images:images as List,
+                                
                                 imagePath: images![i],
                                 key: UniqueKey(),
                               ),

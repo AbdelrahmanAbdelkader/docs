@@ -142,6 +142,7 @@ class AddPatientPage extends StatelessWidget {
                         label: 'الاسم',
                         controller: patientNameController,
                         tKey: patientNameKey,
+                        textInputAction: TextInputAction.next,
                         save: (v) {
                           patientProvider.name = v;
                         },
@@ -166,6 +167,7 @@ class AddPatientPage extends StatelessWidget {
                       AddPatientTextField(
                         label: 'رقم التلفون',
                         controller: patientPhoneController,
+                        textInputAction: TextInputAction.next,
                         tKey: patientNumKey,
                         save: (v) {
                           patientProvider.phone = v;
@@ -181,6 +183,7 @@ class AddPatientPage extends StatelessWidget {
                         items: states,
                       ),
                       AddPatientTextField(
+                        textInputAction: TextInputAction.next,
                         label: 'العنوان',
                         controller: patientAdressController,
                         tKey: patientAdressKey,
@@ -195,6 +198,7 @@ class AddPatientPage extends StatelessWidget {
                       // if (patientProvider.stateValidate == false)
                       //   Text("أختار مركز من فضلك"),
                       AddPatientTextField(
+                        textInputAction: TextInputAction.next,
                         label: 'اسم السورس',
                         controller: sourceController,
                         tKey: sourceKey,
@@ -218,6 +222,7 @@ class AddPatientPage extends StatelessWidget {
                         ),
                       ),
                       AddPatientTextField(
+                        textInputAction: TextInputAction.next,
                         label: 'المرض المصاحب للمريض',
                         controller: illnessController,
                         tKey: illnessKey,
@@ -231,6 +236,7 @@ class AddPatientPage extends StatelessWidget {
                           costController: costController,
                           costValueController: costValueController),
                       AddPatientTextField(
+                        textInputAction: TextInputAction.next,
                         label: 'اخر ما وصلناله',
                         controller: latestController,
                         tKey: latestKey,
@@ -247,8 +253,7 @@ class AddPatientPage extends StatelessWidget {
                                 color: Colors.grey[200],
                                 margin: EdgeInsets.only(top: 20),
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: 40.w,
-                                    vertical: 10.h),
+                                    horizontal: 40.w, vertical: 10.h),
                                 child: Icon(
                                   Icons.add_a_photo,
                                   color: Colors.green,
