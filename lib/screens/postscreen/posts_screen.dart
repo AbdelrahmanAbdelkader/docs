@@ -115,10 +115,9 @@ class PostsScreen extends StatelessWidget {
                                           date: DateTime.parse(data['date']),
                                           text: data['text'],
                                           volName: data['volName'],
-                                          images:
-                                              ((data['images'] as List).isEmpty)
-                                                  ? null
-                                                  : data['images'],
+                                          images: (data['images'] == null)
+                                              ? null
+                                              : data['images'],
                                         ),
                                       );
                                   }
@@ -158,7 +157,7 @@ class PostsScreen extends StatelessWidget {
                                   date: DateTime.parse(data['date']),
                                   text: data['text'],
                                   volName: data['volName'],
-                                  images: ((data['images'] as List).isEmpty)
+                                  images: (data['images'] == null)
                                       ? null
                                       : data['images'],
                                   comments: CommentsType.undetail,
