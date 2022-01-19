@@ -29,59 +29,61 @@ class CheckAcception extends StatelessWidget {
           builder: (context, snaps) {
             if (snaps.connectionState == ConnectionState.waiting)
               return indicator;
-            if (snaps.hasData) {
-              account.setPhone(
-                  ((snaps.data as DataSnapshot).value as Map)['phone']);
-              account.setName(
-                  ((snaps.data as DataSnapshot).value as Map)['userName']);
-              account.setEmail(
-                  ((snaps.data as DataSnapshot).value as Map)['email']);
-              account.setState(
-                  ((snaps.data as DataSnapshot).value as Map)['state']);
+            if (snaps.data != null) {
+              if ((snaps.data as DataSnapshot).value != null) {
+                account.setPhone(
+                    ((snaps.data as DataSnapshot).value as Map)['phone']);
+                account.setName(
+                    ((snaps.data as DataSnapshot).value as Map)['userName']);
+                account.setEmail(
+                    ((snaps.data as DataSnapshot).value as Map)['email']);
+                account.setState(
+                    ((snaps.data as DataSnapshot).value as Map)['state']);
+                return StreamBuilder(
+                  stream: FirebaseDatabase.instance
+                      .ref()
+                      .child('activation')
+                      .child(account.id as String)
+                      .onValue,
+                  builder: (ct, snap) {
+                    if (snap.connectionState == ConnectionState.waiting)
+                      return indicator;
+                    if (snap.data != null) {
+                      if ((snap.data as DatabaseEvent).snapshot.exists) {
+                        Map data =
+                            (snap.data as DatabaseEvent).snapshot.value as Map;
 
-              return StreamBuilder(
-                stream: FirebaseDatabase.instance
-                    .ref()
-                    .child('activation')
-                    .child(account.id as String)
-                    .onValue,
-                builder: (ct, snap) {
-                  if (snap.connectionState == ConnectionState.waiting)
-                    return indicator;
-                  if (snap.data != null) {
-                    if ((snap.data as DatabaseEvent).snapshot.exists) {
-                      Map data =
-                          (snap.data as DatabaseEvent).snapshot.value as Map;
-
-                      (data['role'] != null)
-                          ? account.setRole(data['role'])
-                          : auth.signOut();
-                      (data['team'] != null)
-                          ? account.setTeam(data['team'])
-                          : auth.signOut();
-                      (data['accepted'] != null)
-                          ? account.setAccepted(data['accepted'])
-                          : auth.signOut();
-                      if (account.accepted as bool) {
-                        return UserScreen();
-                      } else {
-                        return GuestScreen(true);
+                        (data['role'] != null)
+                            ? account.setRole(data['role'])
+                            : auth.signOut();
+                        (data['team'] != null)
+                            ? account.setTeam(data['team'])
+                            : auth.signOut();
+                        (data['accepted'] != null)
+                            ? account.setAccepted(data['accepted'])
+                            : auth.signOut();
+                        if (account.accepted as bool) {
+                          return UserScreen();
+                        } else {
+                          return GuestScreen(true);
+                        }
                       }
                     }
-                  }
-                  return Container(
-                    child: Center(
-                      child: TextButton(
-                        onPressed: () {
-                          FirebaseAuth.instance.signOut();
-                        },
-                        child: Text("خروج"),
+                    return Container(
+                      child: Center(
+                        child: TextButton(
+                          onPressed: () {
+                            FirebaseAuth.instance.signOut();
+                          },
+                          child: Text("خروج"),
+                        ),
                       ),
-                    ),
-                  );
-                },
-              );
+                    );
+                  },
+                );
+              }
             }
+
             return Center(
               child: Dialog(
                 child: Container(
@@ -91,9 +93,7 @@ class CheckAcception extends StatelessWidget {
                       Text('network error'),
                       ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) => Splash()));
+                            FirebaseAuth.instance.signOut();
                           },
                           child: Text('try again'))
                     ],
