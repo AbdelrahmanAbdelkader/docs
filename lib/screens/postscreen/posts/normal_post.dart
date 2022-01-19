@@ -426,10 +426,9 @@ class NormalPost extends StatelessWidget {
                       .child(postId)
                       .onValue,
                   builder: (context, snapshot) {
-                    if (snapshot.data != null ||
-                        snapshot.data!.snapshot.value != null) {
-                      Map data = snapshot.data!.snapshot.value as Map;
+                    if (snapshot.data != null) {
                       if (snapshot.data!.snapshot.value != null) {
+                      Map data = snapshot.data!.snapshot.value as Map;
                         var dataSorted = data.keys.toList()
                           ..sort((k1, k2) => DateTime.parse(data[k2]['date'])
                               .compareTo(DateTime.parse(data[k1]['date'])));

@@ -115,7 +115,7 @@ class PostsScreen extends StatelessWidget {
                                           date: DateTime.parse(data['date']),
                                           text: data['text'],
                                           volName: data['volName'],
-                                          images: (data['images'] != null)
+                                          images: (data['images'] == null)
                                               ? null
                                               : data['images'],
                                         ),

@@ -65,6 +65,7 @@ class IllnessList extends StatelessWidget {
               flex: 2,
               child: IconButton(
                 onPressed: () {
+                  FocusScope.of(context).unfocus();
                   if (costValueController.text.isNotEmpty ||
                       costController.text.isNotEmpty)
                     patientProvider.addCost(

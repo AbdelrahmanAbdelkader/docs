@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -56,36 +57,6 @@ class PatientProfileScreen extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Icon(
-                            Icons.add,
-                            color: Colors.green,
-                          ),
-                        ),
-                        Text('اضف الحالة لصفحة الزوار ؟'),
-                      ],
-                    ),
-                    onTap: () {
-                      FirebaseDatabase.instance
-                          .ref()
-                          .child('patients')
-                          .child(patient.team as String)
-                          .child(patient.nationalId as String)
-                          .update({
-                        'availableForGuests':
-                            !(patient.availableForGuests as bool),
-                      });
-                      Navigator.pop(context);
-                      account.setCurrent(account.current);
-                    },
-                  ),
-                  PopupMenuItem(
-                    child: Divider(),
-                  ),
-                  PopupMenuItem(
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Icon(
                             Icons.delete,
                             color: Colors.red,
                           ),
@@ -102,7 +73,14 @@ class PatientProfileScreen extends StatelessWidget {
                           .child('patients')
                           .child(patient.team as String)
                           .child(patient.nationalId as String)
-                          .remove();
+                          .set(null);
+                      patient.images.forEach((element) {
+                        FirebaseStorage.instance
+                            .ref()
+                            .child('patients')
+                            .child(element)
+                            .delete();
+                      });
                       Navigator.pop(context);
                       account.setCurrent(account.current);
                     },
