@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -43,9 +44,10 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
         await store.ref('posts/${id}_$fileId').putFile(element as File);
       });
       final ref = database.ref().child('posts').push();
-
       await database.ref().child(ref.path).update({
-        'votes': (postTypeValue == 'تصويت') ? votes : [],
+        'votes': (postTypeValue == 'تصويت')
+            ? {'named': votes, 'selected': {}}
+            : null,
         'volName': volName,
         'date': DateTime.now().toString(),
         'images': imagesId,
@@ -55,7 +57,8 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
                 ? 'important'
                 : 'pole',
         'text': textController.text,
-        'deadLine': DateTime.now().add(Duration(days: 3)).toString(),
+        'deadLine': DateTime.now().add(Duration(days: 7)).toString(),
+        'acountId': account.id
       });
       Navigator.pop(context);
       account.setCurrent(account.current);
@@ -262,7 +265,7 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
                               child: Row(
                                 children: [
                                   Text(
-                                    e['voteName'],
+                                    e,
                                     style: TextStyle(
                                         color: Colors.green,
                                         fontSize: 18,
@@ -309,11 +312,9 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
                                 onPressed: () {
                                   setState(() {
                                     if (voteController.text.isNotEmpty) {
-                                      votes.add({
-                                        'voteName': voteController.text,
-                                        'quantity': 0,
-                                        'selected': [],
-                                      });
+                                      votes.add(
+                                        voteController.text,
+                                      );
                                       voteController.clear();
                                     }
                                   });

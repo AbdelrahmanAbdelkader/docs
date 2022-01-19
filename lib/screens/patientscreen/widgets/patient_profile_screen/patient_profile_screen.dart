@@ -28,12 +28,6 @@ class PatientProfileScreen extends StatelessWidget {
   TextEditingController dialogPhoneController = TextEditingController();
   TextEditingController dialogSourceController = TextEditingController();
   TextEditingController dialogIllnessController = TextEditingController();
-  List<String> images = [
-    'assets/1.png',
-    'assets/2.png',
-    'assets/3.png',
-    'assets/4.png',
-  ];
   @override
   Widget build(BuildContext context) {
     final patient = Provider.of<Patient>(context);
@@ -653,7 +647,7 @@ class PatientProfileScreen extends StatelessWidget {
               ),
             ),
           ),
-          (images.length > 0) ? ImagesList(images: images) : Container(),
+          ImagesList(),
         ],
       ),
     );

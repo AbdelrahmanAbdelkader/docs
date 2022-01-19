@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/account.dart';
+import 'package:sample/provider/patients.dart';
 import 'package:sample/provider/volanteer.dart';
 import 'package:sample/screens/volscreen/widgets/volprofile/volprofilescreen.dart';
 
@@ -13,6 +14,7 @@ class VolListTile extends StatelessWidget {
 
   Widget build(BuildContext context) {
     final account = Provider.of<Account>(context);
+    final patients = Provider.of<PatientsProv>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListTile(
@@ -23,8 +25,14 @@ class VolListTile extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => VolanteerProfileScreen(
-                volanteer,
+              builder: (context) => MultiProvider(
+                providers: [
+                  ChangeNotifierProvider.value(value: patients),
+                  ChangeNotifierProvider.value(value: account)
+                ],
+                child: VolanteerProfileScreen(
+                  volanteer,
+                ),
               ),
             ),
           );

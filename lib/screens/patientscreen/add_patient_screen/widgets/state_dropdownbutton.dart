@@ -28,6 +28,7 @@ class StateDropDownButton extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
           child: DropdownButton(
+            onTap: () => FocusScope.of(context).unfocus(),
             underline: Container(),
             isExpanded: true,
             style: TextStyle(

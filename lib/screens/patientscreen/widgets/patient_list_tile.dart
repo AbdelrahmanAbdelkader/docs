@@ -51,7 +51,7 @@ class PatientListTile extends StatelessWidget {
                 Expanded(
                   flex: 1,
                   child: Text(
-                    patient.state as String,
+                    patient.state != null ? patient.state as String : '',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.white,

@@ -36,7 +36,7 @@ class ImagesEditDialog extends StatelessWidget {
                     margin: EdgeInsets.all(4),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(5),
-                      child: Image.asset(
+                      child: Image.network(
                         images[index],
                       ),
                     ),
@@ -76,7 +76,9 @@ class ImagesEditDialog extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Divider(color: Colors.grey,),
+              child: Divider(
+                color: Colors.grey,
+              ),
             ),
             Container(
               margin: EdgeInsets.all(15),

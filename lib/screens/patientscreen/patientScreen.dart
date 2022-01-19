@@ -72,7 +72,11 @@ class _PatientScreenState extends State<PatientScreen> {
                         value: doctorsProvider,
                       ),
                     ],
-                    child: AddPatientPage(),
+                    child: ChangeNotifierProvider(
+                        create: (context) => Patient()
+                          ..volId = account.id
+                          ..volName = account.name,
+                        child: AddPatientPage()),
                   ),
                 ),
               );
@@ -119,7 +123,9 @@ class _PatientScreenState extends State<PatientScreen> {
                         onChanged: (value) {
                           setState(() {
                             searchedPatient = patients.where((element) {
-                              return element.name!.toLowerCase().contains(value) ||
+                              return element.name!
+                                      .toLowerCase()
+                                      .contains(value) ||
                                   element.nationalId!.contains(value) ||
                                   element.phone!.contains(value);
                             }).toList();

@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/account.dart';
@@ -15,6 +16,31 @@ class PostsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final account = Provider.of<Account>(context);
+    (posts).forEach((value) {
+      print(value);
+      if (DateTime.parse(value['deadLine']).isBefore(DateTime.now())) {
+        FirebaseDatabase.instance
+            .ref()
+            .child('posts')
+            .child(value['key'])
+            .set(null);
+        FirebaseDatabase.instance
+            .ref()
+            .child('posts')
+            .child('seen')
+            .child(value['key'])
+            .set(null);
+        FirebaseDatabase.instance
+            .ref()
+            .child('posts')
+            .child('comment')
+            .child(value['key'])
+            .set(null);
+        (value['images'] as List?)!.forEach((element) {
+          FirebaseStorage.instance.ref().child('posts').child(element).delete();
+        });
+      }
+    });
     return Scaffold(
       backgroundColor: Colors.green[50],
       appBar: AppBar(
@@ -49,57 +75,59 @@ class PostsScreen extends StatelessWidget {
             width: 100.w,
             child: ListView(
               children: [
-                Container(
-                  height: 20.h,
-                  child: Container(
-                    width: 100.w,
-                    child: ListView.builder(
-                      cacheExtent: 10,
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      itemCount: posts.length,
-                      itemBuilder: (ctx, i) => (posts[i]['type'] == 'important')
-                          ? StreamBuilder<DatabaseEvent>(
-                              stream: FirebaseDatabase.instance
-                                  .ref()
-                                  .child('posts')
-                                  .child(posts[i]['key'])
-                                  .onValue,
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting)
-                                  return Center(child: LayoutBuilder(
-                                      builder: (context, constrain) {
-                                    return Container(
-                                        height: 50.w,
+                if (posts.any((element) => element['type'] == 'important'))
+                  Container(
+                    height: 20.h,
+                    child: Container(
+                      width: 100.w,
+                      child: ListView.builder(
+                        cacheExtent: 10,
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        itemCount: posts.length,
+                        itemBuilder: (ctx, i) => (posts[i]['type'] ==
+                                'important')
+                            ? StreamBuilder<DatabaseEvent>(
+                                stream: FirebaseDatabase.instance
+                                    .ref()
+                                    .child('posts')
+                                    .child(posts[i]['key'])
+                                    .onValue,
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting)
+                                    return Center(child: LayoutBuilder(
+                                        builder: (context, constrain) {
+                                      return Container(
+                                          height: 50.w,
+                                          width: 50.w,
+                                          child: Center(
+                                              child:
+                                                  CircularProgressIndicator()));
+                                    }));
+                                  if (snapshot.data != null) {
+                                    Map data =
+                                        snapshot.data!.snapshot.value as Map;
+                                    if (snapshot.data!.snapshot.value != null)
+                                      return Container(
                                         width: 50.w,
-                                        child: Center(
-                                            child:
-                                                CircularProgressIndicator()));
-                                  }));
-                                if (snapshot.data != null) {
-                                  Map data =
-                                      snapshot.data!.snapshot.value as Map;
-                                  if (snapshot.data!.snapshot.value != null)
-                                    return Container(
-                                      width: 50.w,
-                                      child: ImportantPost(
-                                        date: DateTime.parse(data['date']),
-                                        text: data['text'],
-                                        volName: data['volName'],
-                                        images:
-                                            ((data['images'] as List).isEmpty)
-                                                ? null
-                                                : data['images'],
-                                      ),
-                                    );
-                                }
-                                return Container();
-                              })
-                          : Container(),
+                                        child: ImportantPost(
+                                          date: DateTime.parse(data['date']),
+                                          text: data['text'],
+                                          volName: data['volName'],
+                                          images:
+                                              ((data['images'] as List).isEmpty)
+                                                  ? null
+                                                  : data['images'],
+                                        ),
+                                      );
+                                  }
+                                  return Container();
+                                })
+                            : Container(),
+                      ),
                     ),
                   ),
-                ),
                 ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
@@ -126,6 +154,7 @@ class PostsScreen extends StatelessWidget {
                               Map data = snapshot.data!.snapshot.value as Map;
                               if (snapshot.data!.snapshot.value != null)
                                 return NormalPost(
+                                  accountId: data['acountId'],
                                   date: DateTime.parse(data['date']),
                                   text: data['text'],
                                   volName: data['volName'],
@@ -161,7 +190,12 @@ class PostsScreen extends StatelessWidget {
                                       snapshot.data!.snapshot.value as Map;
                                   if (snapshot.data!.snapshot.value != null)
                                     return VotePost(
-                                      votes: data['votes'],
+                                      accountId: data['acountId'],
+                                      votsNameLists:
+                                          (data['votes']['selected'] == null)
+                                              ? {}
+                                              : data['votes']['selected'],
+                                      votes: data['votes']['named'],
                                       volName: data['volName'],
                                       date: DateTime.parse(data['date']),
                                       text: data['text'],

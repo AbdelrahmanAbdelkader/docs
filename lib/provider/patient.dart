@@ -17,6 +17,7 @@ class Patient extends ChangeNotifier {
   String? date = '';
   String? state;
   String? illness = '';
+  List<String> images = [];
   bool? availableForGuests;
   List<Map> costs = [];
   // bool? stateValidate;

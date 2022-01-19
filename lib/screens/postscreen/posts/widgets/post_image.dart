@@ -79,7 +79,10 @@ class PostImage extends StatelessWidget {
                 ),
               ),
             );
-          return Text('no image with that url');
+          return Text(
+            'refresh again please!',
+            style: TextStyle(color: Colors.red),
+          );
         });
   }
 }
