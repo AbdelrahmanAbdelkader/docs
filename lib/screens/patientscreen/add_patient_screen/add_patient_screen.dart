@@ -104,7 +104,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                   final fileId = DateTime.now().toString();
                   imagesUrl.add('${id}_$fileId');
                   await FirebaseStorage.instance
-                      .ref('posts/${id}_$fileId')
+                      .ref('patients/${id}_$fileId')
                       .putFile(element);
                 });
                 final ref = database
