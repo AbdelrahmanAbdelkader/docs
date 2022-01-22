@@ -10,7 +10,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/account.dart';
 import 'package:sample/provider/normalPost.dart';
-import 'package:sample/screens/postscreen/posts/widgets/comment.dart';
 import 'package:sample/screens/postscreen/posts/widgets/comment_text_field.dart';
 import 'package:sample/screens/postscreen/posts/widgets/getAllcomments.dart';
 import 'package:sample/screens/postscreen/posts/widgets/last_post_image.dart';
@@ -424,8 +423,8 @@ class NormalPost extends StatelessWidget {
                       .onValue,
                   builder: (context, snapshot) {
                     if (snapshot.data != null) {
-                      Map data = snapshot.data!.snapshot.value as Map;
                       if (snapshot.data!.snapshot.value != null) {
+                        Map data = snapshot.data!.snapshot.value as Map;
                         var dataSorted = data.keys.toList()
                           ..sort((k1, k2) => DateTime.parse(data[k2]['date'])
                               .compareTo(DateTime.parse(data[k1]['date'])));
