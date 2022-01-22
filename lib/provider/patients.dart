@@ -15,6 +15,46 @@ class PatientsProv extends ChangeNotifier {
   }
 
   void addPatient(Map newPatient) {
+<<<<<<< HEAD
+=======
+    print('ss');
+    print(Patient()
+      // ..team = newPatient['team']
+    //   ..images = (newPatient['images'] != null)
+    //       ? [...newPatient['images'] as List]
+    //       : []
+    //   ..volId = newPatient['volanteerId']
+    //   ..volName = newPatient['volanteerName']
+    //   ..name = newPatient['patientName']
+    //   ..nationalId = newPatient['nationaId']
+    //   ..docId = newPatient['docId']
+    //   ..doctor = newPatient['docName']
+    //   ..illnessType = newPatient['illnessType']
+    //   ..illness = newPatient['illness']
+    //   ..costs = [
+    //     if ((newPatient['costs']) != null)
+    //       ...(newPatient['costs'] as Map).keys.map((e) => {
+    //             'id': e,
+    //             'التكليف': newPatient['costs'][e]['التكليف'],
+    //             'القيمة': newPatient['costs'][e]['القيمة'],
+    //           })
+    //   ]
+    //   ..address = newPatient['adress']
+    //   ..phone = newPatient['phone']
+    //   ..source = newPatient['source']
+    //   ..availableForGuests = newPatient['availableForGuests']
+    //   ..latests = [
+    //     if (newPatient['latests'] != null)
+    //       ...(newPatient['latests'] as Map).keys.map((e) => {
+    //             'id': e,
+    //             'date': newPatient['latests'][e]['date'],
+    //             'title': newPatient['latests'][e]['title'],
+    //           })
+    //   ]
+    //   ..state = newPatient['state']
+    //   ..date = newPatient['date']
+    );
+>>>>>>> 9a3b3dc8589a0e75df195b2d7d38784c186c8b61
     _patients.add(Patient()
       ..team = newPatient['team']
       ..images = (newPatient['images'] != null)
@@ -49,7 +89,8 @@ class PatientsProv extends ChangeNotifier {
               })
       ]
       ..state = newPatient['state']
-      ..date = newPatient['date']);
+      ..date = newPatient['date']
+    );
   }
 
   Future<void> refresh(String team, String role, BuildContext context) async {
@@ -91,11 +132,14 @@ class PatientsProv extends ChangeNotifier {
     else
       ref2 = null;
     if (ref.exists) {
+
       (ref.value as Map).values.forEach((element) {
+        print(element);
         addPatient(element);
       });
     }
     if (ref2!.exists) {
+   
       (ref2.value as Map).values.forEach((element) {
         addPatient(element);
       });

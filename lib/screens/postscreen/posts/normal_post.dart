@@ -215,90 +215,93 @@ class NormalPost extends StatelessWidget {
                                           : Container()
                           : Container(),
                       StreamBuilder<DatabaseEvent>(
-                          stream: FirebaseDatabase.instance
-                              .ref()
-                              .child('posts')
-                              .child('seen')
-                              .child(postId)
-                              .onValue,
-                          builder: (context, snap) {
-                            if (snap.data != null) {
-                              if (snap.data!.snapshot.value != null) {
-                                int numSeen = 0;
-                                (snap.data!.snapshot.value as Map).forEach(
-                                  (key, value) => (value) ? numSeen++ : null,
-                                );
-                                return TextButton(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(numSeen.toString()),
-                                      Icon(Icons.star),
-                                    ],
-                                  ),
-                                  onPressed: () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => Scaffold(
-                                                  appBar: AppBar(),
-                                                  body:
-                                                      FutureBuilder<
-                                                              DataSnapshot>(
-                                                          future:
-                                                              FirebaseDatabase
-                                                                  .instance
-                                                                  .ref()
-                                                                  .child(
-                                                                      'users')
-                                                                  .get(),
-                                                          builder: (context,
-                                                              snapshot) {
-                                                            if (snapshot
-                                                                    .connectionState ==
-                                                                ConnectionState
-                                                                    .waiting)
-                                                              return Center(
-                                                                child:
-                                                                    CircularProgressIndicator(),
-                                                              );
-                                                            if (snapshot.data !=
-                                                                null) if (snapshot
-                                                                    .data!
-                                                                    .value !=
-                                                                null)
-                                                              return SingleChildScrollView(
-                                                                child: Column(
-                                                                  children: (snap
-                                                                              .data!
-                                                                              .snapshot
-                                                                              .value
-                                                                          as Map)
-                                                                      .keys
-                                                                      .toList()
-                                                                      .where((element) => (snap
+                        stream: FirebaseDatabase.instance
+                            .ref()
+                            .child('posts')
+                            .child('seen')
+                            .child(postId)
+                            .onValue,
+                        builder: (context, snap) {
+                          if (snap.data != null) {
+                            if (snap.data!.snapshot.value != null) {
+                              int numSeen = 0;
+                              (snap.data!.snapshot.value as Map).forEach(
+                                (key, value) => (value) ? numSeen++ : null,
+                              );
+                              return TextButton(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(numSeen.toString()),
+                                    Icon(Icons.star),
+                                  ],
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => Scaffold(
+                                        appBar: AppBar(),
+                                        body: FutureBuilder<DataSnapshot>(
+                                          future: FirebaseDatabase.instance
+                                              .ref()
+                                              .child('users')
+                                              .get(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting)
+                                              return Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              );
+                                            if (snapshot.data !=
+                                                null) if (snapshot
+                                                    .data!.value !=
+                                                null)
+                                              return SingleChildScrollView(
+                                                child: Column(
+                                                  children: (snap.data!.snapshot
+                                                          .value as Map)
+                                                      .keys
+                                                      .toList()
+                                                      .where((element) => (snap
+                                                                  .data!
+                                                                  .snapshot
+                                                                  .value
+                                                              as Map)[element]
+                                                          as bool)
+                                                      .toList()
+                                                      .map((e) => Row(
+                                                            children: [
+                                                              Text((snapshot
                                                                           .data!
-                                                                          .snapshot
-                                                                          .value as Map)[element] as bool)
-                                                                      .toList()
-                                                                      .map((e) => Row(
-                                                                            children: [
-                                                                              Text((snapshot.data!.value as Map)[e]['userName']),
-                                                                              Spacer(),
-                                                                              Text((snapshot.data!.value as Map)[e]['phone']),
-                                                                            ],
-                                                                          ))
-                                                                      .toList(),
-                                                                ),
-                                                              );
-                                                            return Container();
-                                                          }),
-                                                )));
-                                  },
-                                );
-                              }
+                                                                          .value
+                                                                      as Map)[e]
+                                                                  ['userName']),
+                                                              Spacer(),
+                                                              Text(
+                                                                (snapshot.data!
+                                                                            .value
+                                                                        as Map)[
+                                                                    e]['phone'],
+                                                              ),
+                                                            ],
+                                                          ))
+                                                      .toList(),
+                                                ),
+                                              );
+                                            return Container();
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
                             }
-                            return Container();
-                          }),
+                          }
+                          return Container();
+                        },
+                      ),
                       Divider(),
                       Container(
                         height: 5.h,
@@ -424,7 +427,11 @@ class NormalPost extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (snapshot.data != null) {
                       if (snapshot.data!.snapshot.value != null) {
+<<<<<<< HEAD
                         Map data = snapshot.data!.snapshot.value as Map;
+=======
+                      Map data = snapshot.data!.snapshot.value as Map;
+>>>>>>> 9a3b3dc8589a0e75df195b2d7d38784c186c8b61
                         var dataSorted = data.keys.toList()
                           ..sort((k1, k2) => DateTime.parse(data[k2]['date'])
                               .compareTo(DateTime.parse(data[k1]['date'])));
