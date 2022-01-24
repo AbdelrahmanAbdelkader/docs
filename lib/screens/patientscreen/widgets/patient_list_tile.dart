@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sample/helpers/data_lists.dart';
 import 'package:sample/provider/account.dart';
 import 'package:sample/provider/patient.dart';
 import 'package:sample/provider/patients.dart';
@@ -30,7 +31,7 @@ class PatientListTile extends StatelessWidget {
                     )
                     .inDays <
                 30)
-            ? Colors.teal.withOpacity(.5)
+            ? ColorsKeys[teamByColor[patient.team]]
             : Colors.deepOrange.withOpacity(.3),
         child: GestureDetector(
           child: Padding(

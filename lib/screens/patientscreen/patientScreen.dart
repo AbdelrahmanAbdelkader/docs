@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/provider/account.dart';
@@ -25,6 +24,7 @@ class _PatientScreenState extends State<PatientScreen> {
   @override
   Widget build(BuildContext context) {
     final patients = Provider.of<PatientsProv>(context, listen: false).patients;
+    print(patients.length);
     return Scaffold(
       appBar: AppBar(
         title: const Text('الحالات'),
@@ -37,11 +37,6 @@ class _PatientScreenState extends State<PatientScreen> {
                   search = false;
                 });
               },
-            ),
-          if (!search)
-            IconButton(
-              onPressed: () => FirebaseAuth.instance.signOut(),
-              icon: Icon(Icons.logout),
             ),
           if (!search)
             IconButton(

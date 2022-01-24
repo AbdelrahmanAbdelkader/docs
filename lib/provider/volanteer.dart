@@ -10,4 +10,5 @@ class Volanteer {
   bool? accepted;
   String? state;
   String? role;
+  String? classification;
 }

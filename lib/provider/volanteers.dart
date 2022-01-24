@@ -1,49 +1,17 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:sample/helpers/data_lists.dart';
+import 'package:sample/provider/account.dart';
 import 'package:sample/provider/volanteer.dart';
 
 class Volanteers extends ChangeNotifier {
-  List<Volanteer> _vols = [
-    // {
-    //   'name': 'mahmoud',
-    //   'phone': '01027900425',
-    //   'state': 'بنها',
-    //   'id': '1',
-    // },
-    // {
-    //   'name': 'mahmoud',
-    //   'phone': '01027900425',
-    //   'state': 'بنها',
-    //   'id': '2',
-    // },
-    // {
-    //   'name': 'mahmoud',
-    //   'phone': '01027900425',
-    //   'state': 'بنها',
-    //   'id': '3',
-    // },
-    // {
-    //   'name': 'mahmoud',
-    //   'phone': '01027900425',
-    //   'state': 'بنها',
-    //   'id': '4',
-    // }
-  ];
+  List<Volanteer> _vols = [];
   List<Volanteer> get vols => _vols;
-  // void takeData(Map data,bool pharm) {
-  //   data.keys.forEach((key) {
-  //     (data[key] as Map).forEach((id, value) {
-
-  //       addVol(value);
-  //     });
-  //     return;
-  //   });
-  // }
-  Future<void> refresh(String role, BuildContext context) async {
-    _vols = [];
-
-    if (role == 'متطوع غني') {
+  bool clicked = true;
+  Future<void> refresh(BuildContext context, Account account) async {
+    if (clicked) {
+      clicked = false;
+      _vols = [];
       DataSnapshot? users;
       DataSnapshot? activations;
       final database = FirebaseDatabase.instance;
@@ -55,7 +23,7 @@ class Volanteers extends ChangeNotifier {
           builder: (context) => Dialog(
             child: Container(
               height: 200,
-              child: Center(child: Text('معلش غيرك اشطر')),
+              child: Center(child: Text('حدث خطأ يمكنك متابعة مسؤول الملف')),
             ),
           ),
         );
@@ -69,12 +37,18 @@ class Volanteers extends ChangeNotifier {
           builder: (context) => Dialog(
             child: Container(
               height: 200,
-              child: Center(child: Text('معلش غيرك اشطر')),
+              child: Center(child: Text('حدث خطأ يمكنك متابعة مسؤول الملف')),
             ),
           ),
         );
       }
-      if (users!.exists) {
+      final dataTeamColorRefresh =
+          await FirebaseDatabase.instance.ref().child('teams').get();
+      if (dataTeamColorRefresh.value != null)
+        teamByColor = dataTeamColorRefresh.value as Map;
+      else
+        teamByColor = {'مطلق': 'grey'};
+      if (users!.value != null) {
         final List<Map> data;
         DataSnapshot? patients;
         try {
@@ -85,7 +59,7 @@ class Volanteers extends ChangeNotifier {
             builder: (context) => Dialog(
               child: Container(
                 height: 200,
-                child: Center(child: Text('معلش غيرك اشطر')),
+                child: Center(child: Text('حدث خطأ الرجاء ابلاغ مسؤول الملف')),
               ),
             ),
           );
@@ -94,25 +68,20 @@ class Volanteers extends ChangeNotifier {
         data = List.generate((users.value as Map).length, (index) {
           Map userDetail = (users!.value as Map).values.elementAt(index);
           String userId = (users.value as Map).keys.elementAt(index);
-          String team = (activations!.value
-              as Map)[(users.value as Map).keys.elementAt(index)]['team'];
-          String role = (activations.value
-              as Map)[(users.value as Map).keys.elementAt(index)]['role'];
-          bool accepted = (activations.value
+          String team = (users.value as Map).values.elementAt(index)['team'];
+          String role = (users.value as Map).values.elementAt(index)['role'];
+          bool accepted = (activations!.value
               as Map)[(users.value as Map).keys.elementAt(index)]['accepted'];
           List<Map> pts = [];
-          if (patients!.exists) if ((patients.value as Map)[team] != null) {
-            pts = List.generate(((patients.value as Map)[team] as Map).length,
-                (index) {
-              if (((patients!.value as Map)[team] as Map)
+          if (patients!.value != null) {
+            pts = List.generate((patients.value as Map).length, (index) {
+              if ((patients!.value as Map)
                       .values
                       .elementAt(index)['volanteerId'] ==
                   userId)
                 return {
-                  'patientId': ((patients.value as Map)[team] as Map)
-                      .keys
-                      .elementAt(index),
-                  'patientName': ((patients.value as Map)[team] as Map)
+                  'patientId': (patients.value as Map).keys.elementAt(index),
+                  'patientName': (patients.value as Map)
                       .values
                       .elementAt(index)['patientName']
                 };
@@ -125,6 +94,7 @@ class Volanteers extends ChangeNotifier {
             'name': userDetail['userName'],
             'phone': userDetail['phone'],
             'state': userDetail['state'],
+            'classification': userDetail['classification'],
             'id': userId,
             'email': userDetail['email'],
             'team': team,
@@ -139,6 +109,7 @@ class Volanteers extends ChangeNotifier {
             ..state = element['state']
             ..phone = element['phone']
             ..id = element['id']
+            ..classification = element['classification']
             ..email = element['email']
             ..team = element['team']
             ..accepted = element['accepted']
@@ -146,6 +117,7 @@ class Volanteers extends ChangeNotifier {
             ..patients = element['patients']);
         });
       }
+      clicked = true;
     }
   }
 

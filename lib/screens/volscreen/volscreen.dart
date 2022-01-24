@@ -13,35 +13,35 @@ class VolScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final prove = Provider.of<Volanteers>(context, listen: false);
     final account = Provider.of<Account>(context);
+    print('ss');
     return Scaffold(
       appBar: AppBar(
         title: const Text('المتطوعين'),
-        actions: [
-          IconButton(
-            onPressed: () => FirebaseAuth.instance.signOut(),
-            icon: Icon(Icons.logout),
-          )
-        ],
       ),
       body: Stack(
         children: [
           Positioned(
-              bottom: 0,
-              child: Container(
-                  width: 100.w,
-                  child: Image.asset(
-                    'assets/background.png',
-                    fit: BoxFit.fill,
-                  ))),
-          FutureBuilder(
-              future: prove.refresh(account.role, context),
-              builder: (context, snap) {
-                if (snap.connectionState == ConnectionState.waiting)
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                return const VolList();
-              }),
+            bottom: 0,
+            child: Container(
+              width: 100.w,
+              child: Image.asset(
+                'assets/background.png',
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+          Container(
+            width: 100.w,
+            child: FutureBuilder(
+                future: prove.refresh(context, account),
+                builder: (context, snap) {
+                  if (snap.connectionState == ConnectionState.waiting)
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  return const VolList();
+                }),
+          ),
         ],
       ),
     );

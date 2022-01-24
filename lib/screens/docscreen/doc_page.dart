@@ -38,10 +38,6 @@ class _DocListState extends State<DocList> {
               ]
             : [
                 IconButton(
-                  onPressed: () => FirebaseAuth.instance.signOut(),
-                  icon: Icon(Icons.logout),
-                ),
-                IconButton(
                     onPressed: () {
                       setState(() {
                         search = true;

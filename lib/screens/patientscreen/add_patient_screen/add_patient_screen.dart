@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
 import 'package:sample/provider/account.dart';
@@ -84,8 +83,8 @@ class _AddPatientPageState extends State<AddPatientPage> {
     return Scaffold(
       appBar: AppBar(),
       body: FutureBuilder(
-        future: doctorsProvider.refresh(
-            account.setCurrent, context, patientsProvider.setCurrentDoctors),
+        future: doctorsProvider.refresh(account.setCurrent, context,
+            patientsProvider.setCurrentDoctors, account),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting)
             return Center(
@@ -107,13 +106,18 @@ class _AddPatientPageState extends State<AddPatientPage> {
                       .ref('patients/${id}_$fileId')
                       .putFile(element);
                 });
+                final teamName = await FirebaseDatabase.instance
+                    .ref()
+                    .child('users')
+                    .child(account.id as String)
+                    .child('team')
+                    .get();
                 final ref = database
                     .child('patients')
-                    .child(account.team as String)
                     .child(patientProvider.nationalId as String)
                     .update({
                   'images': imagesUrl,
-                  'team': account.team,
+                  'team': teamName.value,
                   'volanteerId': account.id,
                   'volanteerName': patientProvider.volName,
                   'patientName': patientProvider.name,
@@ -149,9 +153,9 @@ class _AddPatientPageState extends State<AddPatientPage> {
                   'state': patientProvider.state,
                   'date': patientProvider.date,
                 });
-                Navigator.pop(context);
-                patientsProvider.clear();
+                // patientsProvider.clear();
                 account.setCurrent((account.current));
+                Navigator.pop(context);
               }
               // } else
               //   patientProvider.stateNotvalidated();
@@ -228,6 +232,66 @@ class _AddPatientPageState extends State<AddPatientPage> {
                         if (v.length < 4) return 'ادخل اسم صحيح';
                       },
                     ),
+                    FutureBuilder<DataSnapshot>(
+                        future: FirebaseDatabase.instance
+                            .ref()
+                            .child('classification')
+                            .get(),
+                        builder: (context, snap) {
+                          if (snap.connectionState == ConnectionState.waiting)
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          if (snap.data != null) if (snap.data!.value != null) {
+                            final Map classificationsData =
+                                snap.data!.value as Map;
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: BorderSide(
+                                    width: 1,
+                                    color: Colors.greenAccent,
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 6),
+                                  child: DropdownButton(
+                                    onTap: () =>
+                                        FocusScope.of(context).unfocus(),
+                                    underline: Container(),
+                                    isExpanded: true,
+                                    style: TextStyle(
+                                      color: Colors.green,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    hint: Text(
+                                      'تخصص المرض',
+                                    ),
+                                    value: patientProvider.illnessType,
+                                    items: classificationsData.values
+                                        .map(
+                                          (e) => DropdownMenuItem(
+                                            child: Text(e),
+                                            value: e,
+                                          ),
+                                        )
+                                        .toList(),
+                                    onChanged: (v) {
+                                      patientProvider
+                                          .setillnessType(v as String);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                          return Container();
+                        }),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: Row(

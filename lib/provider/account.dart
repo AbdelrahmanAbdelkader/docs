@@ -9,7 +9,7 @@ import 'package:sample/screens/patientscreen/patientScreen.dart';
 import 'package:sample/screens/postscreen/getPostsScreen.dart';
 import 'package:sample/screens/postscreen/posts_screen.dart';
 import 'package:sample/screens/volscreen/volscreen.dart';
-import 'package:sample/screens/volscreen/widgets/volprofile/volprofilescreen.dart';
+import 'package:sample/screens/volscreen/volprofilescreen.dart';
 
 class Account extends ChangeNotifier {
   String? _id;
@@ -20,6 +20,7 @@ class Account extends ChangeNotifier {
   String? email;
   String? phoneNumber;
   String? state;
+  String? classification;
   int current = 0;
   List<Patient>? patients;
   List<Map> bottomNavBarItems = [{}];
@@ -46,61 +47,52 @@ class Account extends ChangeNotifier {
   void setCurrent(int ne) {
     current = ne;
     if (ne == 0) {
-      if (_role == 'متطوع غني' || _role == 'مسؤول دكاترة')
+      if (_role == 'مسؤول الملف' || _role == 'مسؤول دكاترة')
         bottomNavBarItems[current]['screen'] = GetDoctorsData();
       else
         bottomNavBarItems[current]['screen'] = PatientScreen();
     } else if (ne == 1) {
-      if (_role == 'متطوع غني' || _role == 'مسؤول دكاترة')
+      if (_role == 'مسؤول الملف' || _role == 'مسؤول دكاترة')
         bottomNavBarItems[current]['screen'] = PatientScreen();
       else
         bottomNavBarItems[current]['screen'] = GetPostsScreen();
     } else if (ne == 2) {
-      if (_role == 'مسؤول دكاترة' || _role == 'متطوع غني')
+      if (_role == 'مسؤول الملف' || _role == 'متطوع غني')
         bottomNavBarItems[current]['screen'] = GetPostsScreen();
       else
-        bottomNavBarItems[current]['screen'] = VolanteerProfileScreen(
-          Volanteer()
-            ..accepted = _accepted
-            ..email = email
-            ..id = id
-            ..name = name
-            ..patients = []
-            ..phone = phoneNumber
-            ..role = role
-            ..state = state
-            ..team = team,
-        );
-    } else if (ne == 3) {
-      if (_role == 'مسؤول دكاترة')
-        bottomNavBarItems[current]['screen'] = VolanteerProfileScreen(
-          Volanteer()
-            ..accepted = _accepted
-            ..email = email
-            ..id = id
-            ..name = name
-            ..patients = []
-            ..phone = phoneNumber
-            ..role = role
-            ..state = state
-            ..team = team,
-        );
-      else {
         bottomNavBarItems[current]['screen'] = VolScreen();
+    } else if (ne == 3) {
+      if (_role == 'مسؤول دكاترة' || _role == 'مسؤول الملف')
+        bottomNavBarItems[current]['screen'] = VolScreen();
+      else {
+        bottomNavBarItems[current]['screen'] = VolanteerProfileScreen(
+            Volanteer()
+              ..classification = classification
+              ..accepted = _accepted
+              ..email = email
+              ..id = id
+              ..name = name
+              ..patients = []
+              ..phone = phoneNumber
+              ..role = role
+              ..state = state
+              ..team = team,
+            false);
       }
     } else
       bottomNavBarItems[current]['screen'] = VolanteerProfileScreen(
-        Volanteer()
-          ..accepted = _accepted
-          ..email = email
-          ..id = id
-          ..name = name
-          ..patients = []
-          ..phone = phoneNumber
-          ..role = role
-          ..state = state
-          ..team = team,
-      );
+          Volanteer()
+            ..classification = classification
+            ..accepted = _accepted
+            ..email = email
+            ..id = id
+            ..name = name
+            ..patients = []
+            ..phone = phoneNumber
+            ..role = role
+            ..state = state
+            ..team = team,
+          false);
     notifyListeners();
   }
 
@@ -114,6 +106,10 @@ class Account extends ChangeNotifier {
 
   void setAccepted(bool accepted) {
     _accepted = accepted;
+  }
+
+  void setClassification(String classi) {
+    classification = classi;
   }
 
   setEmail(String val) {
@@ -131,7 +127,7 @@ class Account extends ChangeNotifier {
   void setRole(String r) {
     _role = r;
     bottomNavBarItems = [];
-    if (r == 'متطوع غني' || r == 'مسؤول دكاترة')
+    if (r == 'مسؤول الملف' || r == 'مسؤول دكاترة')
       bottomNavBarItems.add({
         'icon': DocIcons.doctor,
         'label': 'الدكاترة',
@@ -151,29 +147,29 @@ class Account extends ChangeNotifier {
         'screen': GetPostsScreen(),
       },
     );
-    if (r == 'متطوع غني')
-      bottomNavBarItems.add(
-        {
-          'icon': Icons.person,
-          'label': 'المتطوعين',
-          'screen': VolScreen(),
-        },
-      );
+    bottomNavBarItems.add(
+      {
+        'icon': Icons.person,
+        'label': 'المتطوعين',
+        'screen': VolScreen(),
+      },
+    );
     bottomNavBarItems.add({
       'icon': Icons.person,
       'label': 'الأكونت',
       'screen': VolanteerProfileScreen(
-        Volanteer()
-          ..accepted = _accepted
-          ..email = email
-          ..id = id
-          ..name = name
-          ..patients = []
-          ..phone = phoneNumber
-          ..role = role
-          ..state = state
-          ..team = team,
-      ),
+          Volanteer()
+            ..classification = classification
+            ..accepted = _accepted
+            ..email = email
+            ..id = id
+            ..name = name
+            ..patients = []
+            ..phone = phoneNumber
+            ..role = role
+            ..state = state
+            ..team = team,
+          false),
     });
   }
 }

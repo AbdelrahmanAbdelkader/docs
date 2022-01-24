@@ -23,6 +23,7 @@ class _DocSampleState extends State<DocSample> {
   late final String? hint;
   late final List<Map>? patients;
   late final Doc prove;
+  late final String classification;
   bool _once = true;
   @override
   void didChangeDependencies() {
@@ -37,6 +38,7 @@ class _DocSampleState extends State<DocSample> {
       hint = prove.hint;
       patients = prove.patients;
       _once = false;
+      classification = prove.classification;
     }
   }
 
@@ -46,13 +48,11 @@ class _DocSampleState extends State<DocSample> {
       borderRadius: BorderRadius.circular(15),
       child: Stack(
         children: [
-          
           AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.bounceOut,
             margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
             padding: const EdgeInsets.symmetric(horizontal: 10),
-
             decoration: BoxDecoration(
                 color: Colors.blue.shade100.withOpacity(.3),
                 borderRadius: BorderRadius.circular(15),
@@ -83,12 +83,19 @@ class _DocSampleState extends State<DocSample> {
                                 height: 1),
                           ),
                           Text(
-                            (docEmail != '') ? '$docEmail' : '$docNum',
+                            '$docNum',
                             style: const TextStyle(
                               fontSize: 18,
                               color: Colors.green,
                             ),
                           ),
+                          Text(
+                            'التخصص :$classification',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.green,
+                            ),
+                          )
                         ],
                       ),
                       IconButton(

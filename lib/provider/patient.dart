@@ -26,6 +26,18 @@ class Patient extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setVolName(String volId, String team, String volName) {
+    this.volId = volId;
+    this.team = team;
+    this.volName = volName;
+    notifyListeners();
+  }
+
+  void setName(String value) {
+    name = value;
+    notifyListeners();
+  }
+
   void setLatest(String latest) {
     latestToPush = latest;
     latests.add({
@@ -37,6 +49,21 @@ class Patient extends ChangeNotifier {
 
   void setIllness(String val) {
     illness = val;
+    notifyListeners();
+  }
+
+  void setAddress(String val) {
+    address = val;
+    notifyListeners();
+  }
+
+  void setPhone(String val) {
+    phone = val;
+    notifyListeners();
+  }
+
+  void setSource(String val) {
+    source = val;
     notifyListeners();
   }
 

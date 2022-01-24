@@ -44,19 +44,20 @@ class PostsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.green[50],
       appBar: AppBar(
-        title: Text('نتائج الغلطة :('),
+        title: Text('البوستات'),
         actions: [
-          AppBarButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (ctx) => ChangeNotifierProvider.value(
-                      value: account, child: PostsAddScreen()),
-                ),
-              );
-            },
-          ),
+          if (account.role != 'متطوع')
+            AppBarButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (ctx) => ChangeNotifierProvider.value(
+                        value: account, child: PostsAddScreen()),
+                  ),
+                );
+              },
+            ),
         ],
       ),
       body: Stack(

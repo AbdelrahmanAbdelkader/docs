@@ -7,6 +7,7 @@ class Doc extends ChangeNotifier {
   String hint = "";
   String name = "";
   String email = "";
+  String classification = '';
   bool agreed = false;
   List<Map> patients = [];
   bool value = true;
@@ -18,12 +19,18 @@ class Doc extends ChangeNotifier {
     notifyListeners();
   }
 
+  setTruedToValidate(bool val) {
+    triedToValidate = val;
+    notifyListeners();
+  }
+
   void initData(Map data) {
     if (data['phone'] != null) phone = data['phone'];
     if (data['hint'] != null) hint = data['hint'];
     if (data['name'] != null) name = data['name'];
     if (data['agreed'] != null) agreed = data['agreed'];
     if (data['email'] != null) email = data['email'];
+    if (data['classification'] != null) classification = data['classification'];
     if (data['petients'] != null)
       patients = (data['petients'] as Map).values.toList() as List<Map>;
     //  database.ref().child('doctors').child(id).get().then((v) {
@@ -47,6 +54,11 @@ class Doc extends ChangeNotifier {
 
   void toggle() {
     agreed = !agreed;
+    notifyListeners();
+  }
+
+  setUserClassificationDropDownBottonValue(String val) {
+    classification = val;
     notifyListeners();
   }
 }

@@ -9,20 +9,20 @@ class PatientProfieListTile extends StatelessWidget {
     required this.title,
     required this.trailing,
     required this.editFunction,
+    required this.access,
   }) : super(key: key);
   final String? title;
   final String? trailing;
+  final bool access;
   final Function? editFunction;
   @override
   Widget build(BuildContext context) {
     final account = Provider.of<Account>(context);
     final patient = Provider.of<Patient>(context);
     return ListTile(
-      leading: (patient.volId == account.id ||
-              account.role == 'متطوع غني' ||
-              account.role == 'مسؤول أبحاث')
+      leading: access
           ? IconButton(
-              onPressed: () => editFunction!(),
+              onPressed: (editFunction == null) ? null : () => editFunction!(),
               icon: Icon(
                 Icons.edit,
                 color: Colors.white,

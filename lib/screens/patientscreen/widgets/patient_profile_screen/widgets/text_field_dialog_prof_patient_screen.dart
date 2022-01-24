@@ -12,6 +12,7 @@ class TextFieldDialog extends Dialog {
     required String currentValue,
     required TextEditingController controller,
     required String keyOfDataBase,
+    Function(String)? setValue,
   }) : super(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -88,14 +89,12 @@ class TextFieldDialog extends Dialog {
                               await FirebaseDatabase.instance
                                   .ref()
                                   .child('patients')
-                                  .child(account.team as String)
                                   .child(patient.nationalId as String)
                                   .update({keyOfDataBase: controller.text});
                             else {
                               await FirebaseDatabase.instance
                                   .ref()
                                   .child('patients')
-                                  .child(patient.team as String)
                                   .child(controller.text)
                                   .update(
                                 {
@@ -141,12 +140,13 @@ class TextFieldDialog extends Dialog {
                               await FirebaseDatabase.instance
                                   .ref()
                                   .child('patients')
-                                  .child(patient.team as String)
                                   .child(patient.nationalId as String)
                                   .set(null);
+                              Navigator.of(context).pop();
                             }
                             Navigator.of(context).pop();
-                            Navigator.of(context).pop();
+                            if (setValue != null) setValue(controller.text);
+                            controller.clear();
                             account.setCurrent(account.current);
                           },
                           child: Text('save')),

@@ -2,10 +2,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sample/helpers/data_lists.dart';
 import 'package:sample/provider/account.dart';
 import 'package:sample/provider/patients.dart';
 import 'package:sample/provider/volanteer.dart';
-import 'package:sample/screens/volscreen/widgets/volprofile/volprofilescreen.dart';
+import 'package:sample/screens/volscreen/volprofilescreen.dart';
 
 // ignore: must_be_immutable
 class VolListTile extends StatelessWidget {
@@ -30,34 +31,36 @@ class VolListTile extends StatelessWidget {
                   ChangeNotifierProvider.value(value: patients),
                   ChangeNotifierProvider.value(value: account)
                 ],
-                child: VolanteerProfileScreen(
-                  volanteer,
-                ),
+                child: VolanteerProfileScreen(volanteer, true),
               ),
             ),
           );
         },
-        tileColor:
-            (volanteer.accepted as bool) ? Colors.blue[300] : Colors.red[300],
-        leading: IconButton(
-          onPressed: () async {
-            await FirebaseDatabase.instance
-                .ref()
-                .child("activation")
-                .child(volanteer.id as String)
-                .update({"accepted": !(volanteer.accepted as bool)});
-            account.setCurrent(account.current);
-          },
-          icon: (volanteer.accepted as bool)
-              ? Icon(
-                  Icons.check_box,
-                  color: Colors.green,
-                )
-              : Icon(
-                  Icons.check_box_outline_blank,
-                  color: Colors.white,
-                ),
-        ),
+        tileColor: (volanteer.accepted as bool)
+            ? ColorsKeys[teamByColor[volanteer.team]]
+            : Colors.red[300],
+        leading:
+            (account.role == 'مسؤول الملف' && volanteer.role != 'مسؤول الملف')
+                ? IconButton(
+                    onPressed: () async {
+                      await FirebaseDatabase.instance
+                          .ref()
+                          .child("activation")
+                          .child(volanteer.id as String)
+                          .update({"accepted": !(volanteer.accepted as bool)});
+                      account.setCurrent(account.current);
+                    },
+                    icon: (volanteer.accepted as bool)
+                        ? Icon(
+                            Icons.check_box,
+                            color: Colors.green,
+                          )
+                        : Icon(
+                            Icons.check_box_outline_blank,
+                            color: Colors.white,
+                          ),
+                  )
+                : null,
         title: Column(
           children: [
             Text(

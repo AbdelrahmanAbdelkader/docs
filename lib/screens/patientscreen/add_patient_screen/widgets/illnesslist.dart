@@ -1,6 +1,6 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/helpers/data_lists.dart';
 import 'package:sample/provider/patient.dart';
 
 import 'illnesstextfield.dart';
@@ -17,46 +17,6 @@ class IllnessList extends StatelessWidget {
   Widget build(BuildContext context) {
     final patientProvider = Provider.of<Patient>(context);
     return Column(children: [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: BorderSide(
-              width: 1,
-              color: Colors.greenAccent,
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
-            child: DropdownButton(
-              onTap: () => FocusScope.of(context).unfocus(),
-              underline: Container(),
-              isExpanded: true,
-              style: TextStyle(
-                color: Colors.green,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-              hint: Text(
-                'تخصص المرض',
-              ),
-              value: patientProvider.illnessType,
-              items: speciality
-                  .map(
-                    (e) => DropdownMenuItem(
-                      child: Text(e),
-                      value: e,
-                    ),
-                  )
-                  .toList(),
-              onChanged: (v) {
-                patientProvider.setillnessType(v as String);
-              },
-            ),
-          ),
-        ),
-      ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: Row(

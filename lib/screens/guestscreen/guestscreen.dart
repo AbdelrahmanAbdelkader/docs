@@ -29,46 +29,46 @@ class _GuestScreenState extends State<GuestScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Future future() async {
-      final docsPatients = await FirebaseDatabase.instance
-          .ref()
-          .child('patients')
-          .child('طب')
-          .get();
-      final othersPatients = await FirebaseDatabase.instance
-          .ref()
-          .child('patients')
-          .child('صيدلة')
-          .get();
-      if (docsPatients.value != null) {
-        print(docsPatients.value);
-        (docsPatients.value as Map).values.forEach(
-          (element) {
-            if (element['availableForGuests']) {
-              setState(
-                () {
-                  guestsPatients.add(element);
-                },
-              );
-            }
-          },
-        );
-      }
-      if (othersPatients.value != null) {
-        (othersPatients.value as Map).values.forEach(
-          (element) {
-            if (element['availableForGuests']) {
-              setState(
-                () {
-                  guestsPatients.add(element);
-                },
-              );
-            }
-          },
-        );
-      }
-      print(guestsPatients);
-    }
+    // Future future() async {
+    //   // final docsPatients = await FirebaseDatabase.instance
+    //   //     .ref()
+    //   //     .child('patients')
+    //   //     .child('طب')
+    //   //     .get();
+    //   // final othersPatients = await FirebaseDatabase.instance
+    //   //     .ref()
+    //   //     .child('patients')
+    //   //     .child('صيدلة')
+    //   //     .get();
+    //   if (docsPatients.value != null) {
+    //     print(docsPatients.value);
+    //     (docsPatients.value as Map).values.forEach(
+    //       (element) {
+    //         if (element['availableForGuests']) {
+    //           setState(
+    //             () {
+    //               guestsPatients.add(element);
+    //             },
+    //           );
+    //         }
+    //       },
+    //     );
+    //   }
+    //   if (othersPatients.value != null) {
+    //     (othersPatients.value as Map).values.forEach(
+    //       (element) {
+    //         if (element['availableForGuests']) {
+    //           setState(
+    //             () {
+    //               guestsPatients.add(element);
+    //             },
+    //           );
+    //         }
+    //       },
+    //     );
+    //   }
+    //   print(guestsPatients);
+    // }
 
     return Scaffold(
         key: _scaffoldKey,
@@ -81,7 +81,7 @@ class _GuestScreenState extends State<GuestScreen> {
           ],
         ),
         body: FutureBuilder(
-          future: future(),
+          //future: future(),
           builder: (context, snapshot) => ListView.builder(
             itemCount: guestsPatients.length,
             itemBuilder: (ctx, i) => Container(),

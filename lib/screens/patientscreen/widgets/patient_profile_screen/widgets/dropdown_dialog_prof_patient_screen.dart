@@ -52,7 +52,6 @@ class DropDownDialog extends Dialog {
                           await FirebaseDatabase.instance
                               .ref()
                               .child('patients')
-                              .child(account.team as String)
                               .child(patient.nationalId as String)
                               .update(
                                 (changes != 'docName')

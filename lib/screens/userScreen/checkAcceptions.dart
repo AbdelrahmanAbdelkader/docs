@@ -39,6 +39,11 @@ class CheckAcception extends StatelessWidget {
                     ((snaps.data as DataSnapshot).value as Map)['email']);
                 account.setState(
                     ((snaps.data as DataSnapshot).value as Map)['state']);
+                account.setClassification(((snaps.data as DataSnapshot).value
+                    as Map)['classification']);
+
+                account.setTeam(
+                    ((snaps.data as DataSnapshot).value as Map)['team']);
                 return StreamBuilder(
                   stream: FirebaseDatabase.instance
                       .ref()
@@ -53,17 +58,51 @@ class CheckAcception extends StatelessWidget {
                         Map data =
                             (snap.data as DatabaseEvent).snapshot.value as Map;
 
-                        (data['role'] != null)
-                            ? account.setRole(data['role'])
-                            : auth.signOut();
-                        (data['team'] != null)
-                            ? account.setTeam(data['team'])
-                            : auth.signOut();
                         (data['accepted'] != null)
                             ? account.setAccepted(data['accepted'])
                             : auth.signOut();
                         if (account.accepted as bool) {
-                          return UserScreen();
+                          return StreamBuilder<DatabaseEvent>(
+                              stream: FirebaseDatabase.instance
+                                  .ref()
+                                  .child('users')
+                                  .child(account.id as String)
+                                  .child('role')
+                                  .onValue,
+                              builder: (context, snapshotRole) {
+                                if (snapshotRole.connectionState ==
+                                    ConnectionState.waiting)
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                if (snapshotRole.data != null) if (snapshotRole
+                                        .data!.snapshot.value !=
+                                    null) {
+                                  account.setRole(snapshotRole
+                                      .data!.snapshot.value as String);
+                                  return UserScreen();
+                                }
+                                return Scaffold(
+                                  body: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'حدث خطأ تواصل مع مسؤول الملف',
+                                          style: TextStyle(
+                                              color: Colors.red, fontSize: 20),
+                                        ),
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              FirebaseAuth.instance.signOut();
+                                            },
+                                            child: Text('تسجيل خروج'))
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              });
                         } else {
                           return GuestScreen(true);
                         }

@@ -28,7 +28,10 @@ class MainStream extends StatelessWidget {
 
         if (snapshot.hasData) {
           if (snapshot.data!.isAnonymous) {
-            return const GuestScreen(false);
+            // return const GuestScreen(false);
+            return Container(
+              color: Colors.white,
+            );
           }
           return MultiProvider(providers: [
             ChangeNotifierProvider<Account>(
