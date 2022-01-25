@@ -39,7 +39,8 @@ class PatientProfileScreen extends StatelessWidget {
     final patients = Provider.of<PatientsProv>(context);
     bool canAccess = (patient.volId == account.id ||
         (account.role == 'مسؤول تيم' && account.team == patient.team) ||
-        account.role == 'مسؤول الملف');
+        account.role == 'مسؤول الملف' ||
+        account.role == 'مسؤول المتطوعين');
     return Scaffold(
       backgroundColor: Colors.green,
       appBar: AppBar(
@@ -139,7 +140,8 @@ class PatientProfileScreen extends StatelessWidget {
             title: 'اسم المتابع',
             trailing: patient.volName,
             access: account.role == 'مسؤول الملف' ||
-                (account.role == 'مسؤول تيم' && account.team == patient.team),
+                (account.role == 'مسؤول تيم' && account.team == patient.team) ||
+                account.role == 'مسؤول المتطوعين',
             editFunction: () {
               showDialog(
                   context: context,
@@ -535,8 +537,9 @@ class PatientProfileScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               if (patient.volId == account.id ||
-                  account.role == 'متطوع غني' ||
-                  account.role == 'مسؤول أبحاث')
+                  account.role == 'مسؤول الملف' ||
+                  account.role == 'مسؤول المتطوعين' ||
+                  (account.role == 'مسؤول تيم' && account.team == patient.team))
                 IconButton(
                     color: Colors.white,
                     onPressed: () {
@@ -707,8 +710,9 @@ class PatientProfileScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               if (patient.volId == account.id ||
-                  account.role == 'متطوع غني' ||
-                  account.role == 'مسؤول أبحاث')
+                  account.role == 'مسؤول الملف' ||
+                  account.role == 'مسؤول المتطوعين' ||
+                  (account.role == 'مسؤول تيم' && account.team == patient.team))
                 IconButton(
                     color: Colors.white,
                     onPressed: () {

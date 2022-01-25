@@ -30,9 +30,9 @@ class VolanteerProfileScreen extends StatelessWidget {
     List<String> roles = [
       ...role,
       'مسؤول تيم',
-      'مسؤول أبحاث',
       'مسؤول دكاترة',
-      'مسؤول الملف'
+      'مسؤول الملف',
+      'مسؤول المتطوعين'
     ];
     final patients = Provider.of<PatientsProv>(context);
     return Scaffold(
@@ -88,11 +88,13 @@ class VolanteerProfileScreen extends StatelessWidget {
                           InformationTile(
                               information: volanteer.phone as String,
                               label: 'رقم المحمول:'),
-                          if (!(account.role == 'مسؤول الملف'))
+                          if (!(account.role == 'مسؤول الملف' ||
+                              account.role == 'مسؤول المتطوعين'))
                             InformationTile(
                                 information: volanteer.team as String,
                                 label: 'التيم:'),
-                          if (account.role == 'مسؤول الملف')
+                          if (account.role == 'مسؤول الملف' ||
+                              account.role == 'مسؤول المتطوعين')
                             FutureBuilder<DataSnapshot>(
                                 future: FirebaseDatabase.instance
                                     .ref()

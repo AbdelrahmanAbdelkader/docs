@@ -57,7 +57,7 @@ class Account extends ChangeNotifier {
       else
         bottomNavBarItems[current]['screen'] = GetPostsScreen();
     } else if (ne == 2) {
-      if (_role == 'مسؤول الملف' || _role == 'متطوع غني')
+      if (_role == 'مسؤول الملف' || _role == 'مسؤول دكاترة')
         bottomNavBarItems[current]['screen'] = GetPostsScreen();
       else
         bottomNavBarItems[current]['screen'] = VolScreen();
