@@ -9,7 +9,7 @@ class Auth extends ChangeNotifier {
   final auth = FirebaseAuth.instance;
   final database = FirebaseDatabase.instance;
 
-  String? userClassificationDropDownBottonValue;
+  String? userClassificationDropDownBottonValue = 'غير محدد';
   setUserClassificationDropDownBottonValue(String v) {
     userClassificationDropDownBottonValue = v;
     notifyListeners();
