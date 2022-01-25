@@ -31,6 +31,7 @@ class CheckAcception extends StatelessWidget {
               return indicator;
             if (snaps.data != null) {
               if ((snaps.data as DataSnapshot).value != null) {
+                print((snaps.data as DataSnapshot).value);
                 account.setPhone(
                     ((snaps.data as DataSnapshot).value as Map)['phone']);
                 account.setName(
