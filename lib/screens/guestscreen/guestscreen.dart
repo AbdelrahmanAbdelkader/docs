@@ -18,7 +18,7 @@ class _GuestScreenState extends State<GuestScreen> {
   void initState() {
     super.initState();
     if (widget.authanticated)
-      WidgetsBinding.instance!.addPostFrameCallback(
+      WidgetsBinding.instance.addPostFrameCallback(
         (_) => _scaffoldKey.currentState!.showSnackBar(
           SnackBar(
             content: Text('Welcome User'),
