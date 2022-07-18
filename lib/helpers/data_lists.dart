@@ -29,5 +29,3 @@ List<String> role = [
   'مسؤول الشراكات',
   'متطوع'
 ];
-
-Map teamByColor = {};

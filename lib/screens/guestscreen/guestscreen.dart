@@ -17,14 +17,15 @@ class _GuestScreenState extends State<GuestScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.authanticated)
+    if (widget.authanticated) {
       WidgetsBinding.instance.addPostFrameCallback(
-        (_) => _scaffoldKey.currentState!.showSnackBar(
+        (_) => ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Welcome User'),
           ),
         ),
       );
+    }
   }
 
   @override

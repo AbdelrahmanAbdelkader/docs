@@ -316,18 +316,10 @@ class _SettingScreenState extends State<SettingScreen> {
                         suffixIcon: IconButton(
                           onPressed: () async {
                             if (fkey.currentState!.validate()) {
-                              await FirebaseDatabase.instance
-                                  .ref()
-                                  .child('teams')
-                                  .child(addTeamController.text)
-                                  .set((snapshot.data!.snapshot.value != null)
-                                      ? ColorsKeys.keys
-                                          .where((element) => !(snapshot
-                                                  .data!.snapshot.value as Map)
-                                              .values
-                                              .contains(element))
-                                          .toList()[0]
-                                      : ColorsKeys.keys.first);
+                              await FirebaseDatabase.instance.ref().update({
+                                'teams': [addTeamController.text]
+                              });
+
                               addTeamController.clear();
                               FocusScope.of(context).unfocus();
                               account.setCurrent(account.current);
@@ -472,7 +464,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                   },
                                   icon: Icon(
                                     Icons.delete,
-                                    color: ColorsKeys[data.values.elementAt(i)],
+                                    color: Colors.red,
                                   )),
                         ),
                       ),
