@@ -5,6 +5,7 @@ import 'package:sample/provider/account.dart';
 import 'package:sample/provider/auth.dart';
 import 'package:sample/provider/docs.dart';
 import 'package:sample/provider/patients.dart';
+import 'package:sample/provider/user.dart';
 import 'package:sample/provider/volanteers.dart';
 import 'package:sample/screens/authscreen/authscreen.dart';
 import 'package:sample/screens/authscreen/checkFirstEmailBeforeAuth.dart';
@@ -45,6 +46,8 @@ class MainStream extends StatelessWidget {
             ChangeNotifierProvider<Volanteers>(
               create: (context) => Volanteers(),
             ),
+            ChangeNotifierProvider<UserController>(
+                create: (context) => UserController())
           ], child: CheckAcception());
         }
         return ChangeNotifierProvider<Auth>(
