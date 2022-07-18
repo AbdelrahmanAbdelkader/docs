@@ -333,27 +333,82 @@ class _AddPatientPageState extends State<AddPatientPage> {
                               showDialog(
                                   context: context,
                                   builder: (context) => Dialog(
-                                        child: Column(
-                                          children: [
-                                            Card(
-                                              child: IconButton(
-                                                onPressed: () async {
-                                                  await pickImage(true);
-                                                  Navigator.of(context).pop();
-                                                },
-                                                icon: Icon(Icons.image),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 20.0),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Card(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: SizedBox(
+                                                    width: 35.w,
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Expanded(
+                                                          child: IconButton(
+                                                            onPressed: () async {
+                                                              await pickImage(
+                                                                  true);
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                            icon:
+                                                                Icon(Icons.image),
+                                                          ),
+                                                        ),
+                                                        Expanded(child: Text("pick an image"))
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                            Card(
-                                              child: IconButton(
-                                                onPressed: () async {
-                                                  await pickImage(false);
-                                                  Navigator.of(context).pop();
-                                                },
-                                                icon: Icon(Icons.camera),
+                                              Card(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: SizedBox(
+                                                    width: 35.w,
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Expanded(
+                                                          child: IconButton(
+                                                            onPressed: () async {
+                                                              await pickImage(
+                                                                  false);
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                            icon: Icon(
+                                                                Icons.camera),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                            child: Text(
+                                                                "Take a photo")),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ));
                             },
@@ -384,43 +439,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                               ),
                             ),
                           ),
-                    (_images.length > 0)
-                        ? IconButton(
-                            icon: Icon(
-                              Icons.add_a_photo,
-                              color: Colors.green,
-                            ),
-                            onPressed: () {
-                              FocusScope.of(context).unfocus();
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => Dialog(
-                                        child: Column(
-                                          children: [
-                                            Card(
-                                              child: IconButton(
-                                                onPressed: () async {
-                                                  await pickImage(true);
-                                                  Navigator.of(context).pop();
-                                                },
-                                                icon: Icon(Icons.image),
-                                              ),
-                                            ),
-                                            Card(
-                                              child: IconButton(
-                                                onPressed: () async {
-                                                  await pickImage(false);
-                                                  Navigator.of(context).pop();
-                                                },
-                                                icon: Icon(Icons.camera),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ));
-                            },
-                          )
-                        : Container(),
+
                     ElevatedButton(
                         onPressed: () => save(account.id as String),
                         child: const Text('save')),

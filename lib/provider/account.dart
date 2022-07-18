@@ -11,7 +11,8 @@ import 'package:sample/screens/postscreen/posts_screen.dart';
 import 'package:sample/screens/volscreen/volscreen.dart';
 import 'package:sample/screens/volscreen/volprofilescreen.dart';
 
-class Account extends ChangeNotifier {
+class 
+Account extends ChangeNotifier {
   String? _id;
   String _role = '';
   bool? _accepted;
