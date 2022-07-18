@@ -313,55 +313,31 @@ class _SettingScreenState extends State<SettingScreen> {
                       },
                       decoration: InputDecoration(
                         hintText: 'أدخل تيم جديد',
-                        suffixIcon: StreamBuilder<DatabaseEvent>(
-                            stream: FirebaseDatabase.instance
-                                .ref()
-                                .child('teams')
-                                .onValue,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) return Container();
-                              if (snapshot.data != null) if (snapshot
-                                      .data!.snapshot.value !=
-                                  null) if ((snapshot.data!.snapshot.value
-                                          as Map)
-                                      .length ==
-                                  ColorsKeys.length)
-                                return Text(
-                                  'لا يمكن اضافة تيم أخر',
-                                  style: TextStyle(
-                                      color: Colors.red, fontSize: 18),
-                                );
-
-                              return IconButton(
-                                onPressed: () async {
-                                  if (fkey.currentState!.validate()) {
-                                    await FirebaseDatabase.instance
-                                        .ref()
-                                        .child('teams')
-                                        .child(addTeamController.text)
-                                        .set((snapshot.data!.snapshot.value !=
-                                                null)
-                                            ? ColorsKeys.keys
-                                                .where((element) => !(snapshot
-                                                        .data!
-                                                        .snapshot
-                                                        .value as Map)
-                                                    .values
-                                                    .contains(element))
-                                                .toList()[0]
-                                            : ColorsKeys.keys.first);
-                                    addTeamController.clear();
-                                    FocusScope.of(context).unfocus();
-                                    account.setCurrent(account.current);
-                                  }
-                                },
-                                icon: Icon(
-                                  Icons.add,
-                                  color: Colors.green,
-                                ),
-                              );
-                            }),
+                        suffixIcon: IconButton(
+                          onPressed: () async {
+                            if (fkey.currentState!.validate()) {
+                              await FirebaseDatabase.instance
+                                  .ref()
+                                  .child('teams')
+                                  .child(addTeamController.text)
+                                  .set((snapshot.data!.snapshot.value != null)
+                                      ? ColorsKeys.keys
+                                          .where((element) => !(snapshot
+                                                  .data!.snapshot.value as Map)
+                                              .values
+                                              .contains(element))
+                                          .toList()[0]
+                                      : ColorsKeys.keys.first);
+                              addTeamController.clear();
+                              FocusScope.of(context).unfocus();
+                              account.setCurrent(account.current);
+                            }
+                          },
+                          icon: Icon(
+                            Icons.add,
+                            color: Colors.green,
+                          ),
+                        ),
                         hintStyle: TextStyle(color: Colors.green[200]),
                         // label: Text(label),
                         border: InputBorder.none,
