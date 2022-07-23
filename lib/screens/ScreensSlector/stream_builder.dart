@@ -5,6 +5,7 @@ import 'package:sample/provider/account.dart';
 import 'package:sample/provider/auth.dart';
 import 'package:sample/provider/docs.dart';
 import 'package:sample/provider/patients.dart';
+import 'package:sample/provider/user.dart';
 import 'package:sample/provider/volanteers.dart';
 import 'package:sample/screens/authscreen/authscreen.dart';
 import 'package:sample/screens/authscreen/checkFirstEmailBeforeAuth.dart';
@@ -28,7 +29,10 @@ class MainStream extends StatelessWidget {
 
         if (snapshot.hasData) {
           if (snapshot.data!.isAnonymous) {
-            return const GuestScreen(false);
+            // return const GuestScreen(false);
+            return Container(
+              color: Colors.white,
+            );
           }
           return MultiProvider(providers: [
             ChangeNotifierProvider<Account>(
@@ -42,6 +46,8 @@ class MainStream extends StatelessWidget {
             ChangeNotifierProvider<Volanteers>(
               create: (context) => Volanteers(),
             ),
+            ChangeNotifierProvider<UserController>(
+                create: (context) => UserController())
           ], child: CheckAcception());
         }
         return ChangeNotifierProvider<Auth>(

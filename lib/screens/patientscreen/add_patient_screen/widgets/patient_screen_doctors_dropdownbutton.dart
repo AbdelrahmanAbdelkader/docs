@@ -38,6 +38,10 @@ class PatientDropDown extends StatelessWidget {
           onChanged: (v) => patientProvider.setDoctor(
               v as String, patientsProvider.currentDoctors),
           items: patientsProvider.currentDoctors
+              .where((doctor) => (patientProvider.illnessType == 'غير محدد' ||
+                      patientProvider.illnessType == null)
+                  ? true
+                  : doctor['classification'] == patientProvider.illnessType)
               .map(
                 (e) => DropdownMenuItem(
                   child: Text(e['name']),

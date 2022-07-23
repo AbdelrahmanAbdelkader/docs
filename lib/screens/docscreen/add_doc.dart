@@ -51,41 +51,42 @@ class AddDoctor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void save(Doc prove) {
-      prove.triedToValidate = true;
-
+      prove.setTruedToValidate(true);
       bool validate = keys.currentState!.validate();
       if (validate) {
         // prove.type = prove.val as String;
-        keys.currentState!.save();
-        DatabaseReference ref;
+        if (prove.classification != '') {
+          keys.currentState!.save();
+          DatabaseReference ref;
 
-        if (prove.Id == null) {
-          ref = database.ref().child('doctors').push();
-        } else
-          ref = database.ref().child('doctors').child(prove.Id as String);
-        try {
-          database.ref(ref.path).set({
-            "phone": prove.phone,
-            "agreed": prove.agreed,
-            "email": prove.email,
-            "hint": prove.hint,
-            "name": prove.name,
-            "petients": prove.patients.asMap(),
-          });
-          Navigator.of(context).pop();
-        } catch (error) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                error.toString(),
+          if (prove.Id == null) {
+            ref = database.ref().child('doctors').push();
+          } else
+            ref = database.ref().child('doctors').child(prove.Id as String);
+          try {
+            database.ref(ref.path).set({
+              "phone": prove.phone,
+              "agreed": prove.agreed,
+              "hint": prove.hint,
+              "name": prove.name,
+              "classification": prove.classification,
+              "petients": prove.patients.asMap(),
+            });
+            Navigator.of(context).pop();
+          } catch (error) {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  error.toString(),
+                ),
               ),
-            ),
-          );
+            );
+          }
+          // database.ref()
+          // .set(toAdd);
+          //prove.ref();
         }
-        // database.ref()
-        // .set(toAdd);
-        //prove.ref();
       }
     }
 
@@ -164,6 +165,90 @@ class AddDoctor extends StatelessWidget {
                       save: (v) => doc.hint = v as String,
                       validate: (v) {},
                       multiline: true),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: FutureBuilder<DataSnapshot>(
+                        future: FirebaseDatabase.instance
+                            .ref()
+                            .child('classification')
+                            .get(),
+                        builder: (context, snap) {
+                          if (snap.connectionState == ConnectionState.waiting)
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          if (snap.data != null) if (snap.data!.value != null) {
+                            final classifications = snap.data!.value as Map;
+                            return Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Column(
+                                        children: [
+                                          Card(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              side: const BorderSide(
+                                                  width: 1,
+                                                  color: Colors.greenAccent),
+                                            ),
+                                            elevation: 0,
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: DropdownButton(
+                                                onTap: () =>
+                                                    FocusScope.of(context)
+                                                        .unfocus(),
+                                                isExpanded: true,
+                                                elevation: 50,
+                                                // focusColor: Colors.white,
+                                                underline: Container(),
+                                                value:
+                                                    (doc.classification == '')
+                                                        ? null
+                                                        : doc.classification,
+                                                hint: const Text('اختر التخصص'),
+                                                onChanged: (v) => doc
+                                                    .setUserClassificationDropDownBottonValue(
+                                                        v as String),
+                                                items: List.generate(
+                                                  classifications.length,
+                                                  (index) => DropdownMenuItem(
+                                                    child: Text(
+                                                      classifications.values
+                                                          .elementAt(index),
+                                                    ),
+                                                    value: classifications
+                                                        .values
+                                                        .elementAt(index),
+                                                  ),
+                                                ).toList(),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                if (doc.triedToValidate &&
+                                    doc.classification == '')
+                                  Center(
+                                    child: Text(
+                                      'أدخل التخصص من فضلك',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          }
+                          return Container();
+                        }),
+                  ),
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(vertical: 20, horizontal: 7),

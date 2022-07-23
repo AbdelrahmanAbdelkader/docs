@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,8 @@ import 'package:sample/helpers/data_lists.dart';
 import 'package:sample/provider/account.dart';
 import 'package:sample/provider/patient.dart';
 import 'package:sample/provider/patients.dart';
+import 'package:sample/provider/volanteer.dart';
+import 'package:sample/provider/volanteers.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/patient_screen_doctors_dropdownbutton.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/state_dropdownbutton.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/dropdown_dialog_prof_patient_screen.dart';
@@ -34,6 +37,10 @@ class PatientProfileScreen extends StatelessWidget {
     final patient = Provider.of<Patient>(context);
     final account = Provider.of<Account>(context);
     final patients = Provider.of<PatientsProv>(context);
+    bool canAccess = (patient.volId == account.id ||
+        (account.role == 'مسؤول تيم' && account.team == patient.team) ||
+        account.role == 'مسؤول الملف' ||
+        account.role == 'مسؤول المتطوعين');
     return Scaffold(
       backgroundColor: Colors.green,
       appBar: AppBar(
@@ -45,47 +52,49 @@ class PatientProfileScreen extends StatelessWidget {
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
-        leading: PopupMenuButton(
-            icon: Icon(
-              Icons.more_vert,
-              color: Colors.green,
-            ),
-            itemBuilder: (context) => [
-                  PopupMenuItem(
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          ),
+        leading: (!canAccess)
+            ? null
+            : PopupMenuButton(
+                icon: Icon(
+                  Icons.more_vert,
+                  color: Colors.green,
+                ),
+                itemBuilder: (context) => [
+                      PopupMenuItem(
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              ),
+                            ),
+                            Text(
+                              'ازل الحالة بالكامل ؟',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ],
                         ),
-                        Text(
-                          'ازل الحالة بالكامل ؟',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ],
-                    ),
-                    onTap: () {
-                      FirebaseDatabase.instance
-                          .ref()
-                          .child('patients')
-                          .child(patient.team as String)
-                          .child(patient.nationalId as String)
-                          .set(null);
-                      patient.images.forEach((element) {
-                        FirebaseStorage.instance
-                            .ref()
-                            .child('patients')
-                            .child(element)
-                            .delete();
-                      });
-                      Navigator.pop(context);
-                      account.setCurrent(account.current);
-                    },
-                  ),
-                ]),
+                        onTap: () {
+                          FirebaseDatabase.instance
+                              .ref()
+                              .child('patients')
+                              .child(patient.nationalId as String)
+                              .set(null);
+                          patient.images.forEach((element) {
+                            FirebaseStorage.instance
+                                .ref()
+                                .child('patients')
+                                .child(element)
+                                .delete();
+                          });
+                          Navigator.pop(context);
+                          account.setCurrent(account.current);
+                        },
+                      ),
+                    ]),
         actions: [
           IconButton(
             icon: Icon(
@@ -101,32 +110,183 @@ class PatientProfileScreen extends StatelessWidget {
       body: ListView(
         children: [
           PatientProfieListTile(
+            access: canAccess,
             title: 'الاسم :',
             trailing: patient.name,
-            editFunction: () {
-              showDialog(
-                context: context,
-                builder: (ctx) => MultiProvider(
-                  providers: [
-                    ChangeNotifierProvider.value(value: patient),
-                    ChangeNotifierProvider.value(value: account),
-                  ],
-                  child: TextFieldDialog(
-                    typeChanges: 'تغيير الاسم',
-                    currentValue: patient.name as String,
-                    controller: dialogNameController,
-                    keyOfDataBase: 'patientName',
-                  ),
-                ),
-              );
-            },
+            editFunction: (!canAccess)
+                ? null
+                : () {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => MultiProvider(
+                        providers: [
+                          ChangeNotifierProvider.value(value: patient),
+                          ChangeNotifierProvider.value(value: account),
+                        ],
+                        child: TextFieldDialog(
+                          typeChanges: 'تغيير الاسم',
+                          currentValue: patient.name as String,
+                          controller: dialogNameController,
+                          keyOfDataBase: 'patientName',
+                          setValue: (value) {
+                            patient.setName(value);
+                          },
+                        ),
+                      ),
+                    );
+                  },
           ),
           PatientProfieListTile(
             title: 'اسم المتابع',
             trailing: patient.volName,
-            editFunction: null,
+            access: account.role == 'مسؤول الملف' ||
+                (account.role == 'مسؤول تيم' && account.team == patient.team) ||
+                account.role == 'مسؤول المتطوعين',
+            editFunction: () {
+              showDialog(
+                  context: context,
+                  builder: (ctx) => MultiProvider(
+                        providers: [
+                          ChangeNotifierProvider.value(
+                            value: patient,
+                          ),
+                          ChangeNotifierProvider.value(value: account),
+                        ],
+                        child: Dialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Text(
+                                    'تغيير اسم المتطوع',
+                                    style: TextStyle(
+                                        color: Colors.green,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: FutureBuilder<DataSnapshot>(
+                                      future: FirebaseDatabase.instance
+                                          .ref()
+                                          .child('users')
+                                          .get(),
+                                      builder: (context, snapUsers) {
+                                        if (snapUsers.connectionState ==
+                                            ConnectionState.waiting)
+                                          return Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        Map allUsers = {};
+                                        if (snapUsers.data !=
+                                            null) if (snapUsers
+                                                .data!.value !=
+                                            null)
+                                          allUsers =
+                                              snapUsers.data!.value as Map;
+                                        final patient =
+                                            Provider.of<Patient>(context);
+                                        if (allUsers.length == 0)
+                                          return Text('لا يوجد متطوعين');
+
+                                        return Card(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            side: BorderSide(
+                                              width: 1,
+                                              color: Colors.greenAccent,
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: DropdownButton(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              underline: Container(),
+                                              isExpanded: true,
+                                              style: TextStyle(
+                                                color: Colors.green,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              hint: Text(
+                                                'تخصص المرض',
+                                              ),
+                                              value: patient.volId,
+                                              items: allUsers.values
+                                                  .map((e) => DropdownMenuItem(
+                                                      child:
+                                                          Text(e['userName']),
+                                                      value: allUsers.keys
+                                                          .firstWhere((el) =>
+                                                              allUsers[el] ==
+                                                              e)))
+                                                  .toList(),
+                                              onChanged: (v) {
+                                                patient.setVolName(
+                                                    v as String,
+                                                    allUsers[v]['team'],
+                                                    allUsers[v]['userName']);
+                                              },
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Divider(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Builder(
+                                    builder: (context) {
+                                      final account = Provider.of<Account>(
+                                          context,
+                                          listen: false);
+                                      final patient = Provider.of<Patient>(
+                                          context,
+                                          listen: false);
+                                      return TextButton(
+                                        onPressed: () async {
+                                          await FirebaseDatabase.instance
+                                              .ref()
+                                              .child('patients')
+                                              .child(
+                                                  patient.nationalId as String)
+                                              .update({
+                                            'volanteerName': patient.volName,
+                                            'volanteerId': patient.volId,
+                                            'team': patient.team,
+                                          });
+                                          Navigator.of(context).pop();
+                                          account.setCurrent(account.current);
+                                        },
+                                        child: Text('save'),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ));
+            },
           ),
           PatientProfieListTile(
+            access: canAccess,
             title: 'الرقم القومي :',
             trailing: patient.nationalId,
             editFunction: () {
@@ -148,6 +308,7 @@ class PatientProfileScreen extends StatelessWidget {
             },
           ),
           PatientProfieListTile(
+            access: canAccess,
             title: 'المركز :',
             trailing: patient.state,
             editFunction: () {
@@ -172,6 +333,7 @@ class PatientProfileScreen extends StatelessWidget {
             },
           ),
           PatientProfieListTile(
+            access: canAccess,
             title: 'العنوان :',
             trailing: patient.address,
             editFunction: () {
@@ -187,12 +349,14 @@ class PatientProfileScreen extends StatelessWidget {
                     currentValue: patient.address as String,
                     controller: dialogAdressController,
                     keyOfDataBase: 'adress',
+                    setValue: (p0) => patient.setAddress(p0),
                   ),
                 ),
               );
             },
           ),
           PatientProfieListTile(
+            access: canAccess,
             title: 'رقم المحمول :',
             trailing: patient.phone,
             editFunction: () {
@@ -208,12 +372,14 @@ class PatientProfileScreen extends StatelessWidget {
                     currentValue: patient.phone as String,
                     controller: dialogPhoneController,
                     keyOfDataBase: 'phone',
+                    setValue: (p0) => patient.setPhone(p0),
                   ),
                 ),
               );
             },
           ),
           PatientProfieListTile(
+            access: canAccess,
             title: 'السورس :',
             trailing: patient.source,
             editFunction: () {
@@ -229,12 +395,89 @@ class PatientProfileScreen extends StatelessWidget {
                     currentValue: patient.source as String,
                     controller: dialogSourceController,
                     keyOfDataBase: 'source',
+                    setValue: (p0) => patient.setSource(p0),
                   ),
                 ),
               );
             },
           ),
           PatientProfieListTile(
+            access: canAccess,
+            title: 'نوع المرض :',
+            trailing: patient.illnessType,
+            editFunction: () {
+              showDialog(
+                  context: context,
+                  builder: (ctx) => MultiProvider(
+                        providers: [
+                          ChangeNotifierProvider.value(value: patient),
+                          ChangeNotifierProvider.value(value: account),
+                        ],
+                        child: FutureBuilder<DataSnapshot>(
+                            future: FirebaseDatabase.instance
+                                .ref()
+                                .child('classification')
+                                .get(),
+                            builder: (context, snap) {
+                              if (snap.connectionState ==
+                                  ConnectionState.waiting)
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              if (snap.data != null) if (snap.data!.value !=
+                                  null) {
+                                final Map classificationData =
+                                    snap.data!.value as Map;
+                                return DropDownDialog(
+                                  typeChanges: 'تغيير نوع المرض',
+                                  dropDownButton: Builder(builder: (context) {
+                                    final patient =
+                                        Provider.of<Patient>(context);
+                                    return Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                        side: BorderSide(
+                                          width: 1,
+                                          color: Colors.greenAccent,
+                                        ),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: DropdownButton(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          underline: Container(),
+                                          isExpanded: true,
+                                          style: TextStyle(
+                                            color: Colors.green,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          hint: Text(
+                                            'تخصص المرض',
+                                          ),
+                                          value: patient.illnessType,
+                                          items: classificationData.values
+                                              .map((e) => DropdownMenuItem(
+                                                  child: Text(e), value: e))
+                                              .toList(),
+                                          onChanged: (v) {
+                                            patient.setillnessType(v as String);
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                                  changes: 'illnessType',
+                                );
+                              }
+                              return Text('حدث خطأ أخبر مسؤول الملف');
+                            }),
+                      ));
+            },
+          ),
+          PatientProfieListTile(
+            access: canAccess,
             title: 'اسم الطبيب المتابع :',
             trailing: patient.doctor,
             editFunction: () {
@@ -259,6 +502,7 @@ class PatientProfileScreen extends StatelessWidget {
             },
           ),
           PatientProfieListTile(
+            access: canAccess,
             title: 'المرض :',
             trailing: patient.illness,
             editFunction: () {
@@ -274,63 +518,10 @@ class PatientProfileScreen extends StatelessWidget {
                     currentValue: patient.illness as String,
                     controller: dialogIllnessController,
                     keyOfDataBase: 'illness',
+                    setValue: (p0) => patient.setIllness(p0),
                   ),
                 ),
               );
-            },
-          ),
-          PatientProfieListTile(
-            title: 'نوع المرض :',
-            trailing: patient.illnessType,
-            editFunction: () {
-              showDialog(
-                  context: context,
-                  builder: (ctx) => MultiProvider(
-                        providers: [
-                          ChangeNotifierProvider.value(value: patient),
-                          ChangeNotifierProvider.value(value: account),
-                        ],
-                        child: DropDownDialog(
-                          typeChanges: 'تغيير نوع المرض',
-                          dropDownButton: Builder(builder: (context) {
-                            final patient = Provider.of<Patient>(context);
-                            return Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                side: BorderSide(
-                                  width: 1,
-                                  color: Colors.greenAccent,
-                                ),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: DropdownButton(
-                                  borderRadius: BorderRadius.circular(15),
-                                  underline: Container(),
-                                  isExpanded: true,
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  hint: Text(
-                                    'تخصص المرض',
-                                  ),
-                                  value: patient.illnessType,
-                                  items: speciality
-                                      .map((e) => DropdownMenuItem(
-                                          child: Text(e), value: e))
-                                      .toList(),
-                                  onChanged: (v) {
-                                    patient.setillnessType(v as String);
-                                  },
-                                ),
-                              ),
-                            );
-                          }),
-                          changes: 'illnessType',
-                        ),
-                      ));
             },
           ),
           Row(
@@ -346,8 +537,9 @@ class PatientProfileScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               if (patient.volId == account.id ||
-                  account.role == 'متطوع غني' ||
-                  account.role == 'مسؤول أبحاث')
+                  account.role == 'مسؤول الملف' ||
+                  account.role == 'مسؤول المتطوعين' ||
+                  (account.role == 'مسؤول تيم' && account.team == patient.team))
                 IconButton(
                     color: Colors.white,
                     onPressed: () {
@@ -439,7 +631,6 @@ class PatientProfileScreen extends StatelessWidget {
                                             await FirebaseDatabase.instance
                                                 .ref()
                                                 .child('patients')
-                                                .child(account.team as String)
                                                 .child(patient.nationalId
                                                     as String)
                                                 .child('costs')
@@ -454,6 +645,17 @@ class PatientProfileScreen extends StatelessWidget {
                                             });
                                             Navigator.of(ctx).pop();
                                             account.setCurrent(account.current);
+                                            patient.addCost(
+                                              {
+                                                'التكليف':
+                                                    dialogCostController.text,
+                                                'القيمة':
+                                                    dialogCostValueController
+                                                        .text
+                                              },
+                                            );
+                                            dialogCostController.clear();
+                                            dialogCostValueController.clear();
                                             // dialogCostController.clear();
                                           },
                                           child: Text('save')),
@@ -508,8 +710,9 @@ class PatientProfileScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               if (patient.volId == account.id ||
-                  account.role == 'متطوع غني' ||
-                  account.role == 'مسؤول أبحاث')
+                  account.role == 'مسؤول الملف' ||
+                  account.role == 'مسؤول المتطوعين' ||
+                  (account.role == 'مسؤول تيم' && account.team == patient.team))
                 IconButton(
                     color: Colors.white,
                     onPressed: () {
@@ -564,7 +767,6 @@ class PatientProfileScreen extends StatelessWidget {
                                           await FirebaseDatabase.instance
                                               .ref()
                                               .child('patients')
-                                              .child(account.team as String)
                                               .child(
                                                   patient.nationalId as String)
                                               .child('latests')

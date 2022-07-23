@@ -1,10 +1,13 @@
+import 'package:flutter/material.dart';
+
 enum contactType { email, phone }
-List<String> speciality = [
-  'مخ و اعصاب',
-  'باطنه',
-  'اسنان',
-  'عيون',
-];
+
+// List<String> speciality = [
+//   'مخ و اعصاب',
+//   'باطنه',
+//   'اسنان',
+//   'عيون',
+// ];
 List<String> states = [
   'بنها',
   'طوخ',
@@ -12,12 +15,17 @@ List<String> states = [
   'شبين',
   'الخانكة',
 ];
-List<String> team = [
-  'صيدلة',
-  'طب',
-];
+// List<String> team = [
+//   'صيدلة',
+//   'طب',
+// ];
 List<String> searchBy = [
   'الاسم',
   'التخصص',
 ];
-List<String> role = ['متطوع غني', 'مسؤول دكاترة', 'مسؤول أبحاث', 'متطوع فقير'];
+List<String> role = [
+  'مسؤول الاستقبال',
+  'مسؤول الميديا',
+  'مسؤول الشراكات',
+  'متطوع'
+];

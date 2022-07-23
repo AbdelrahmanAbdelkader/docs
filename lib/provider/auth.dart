@@ -9,9 +9,9 @@ class Auth extends ChangeNotifier {
   final auth = FirebaseAuth.instance;
   final database = FirebaseDatabase.instance;
 
-  String? userTeamDropDownBottonValue;
-  setUserTeamDropDownBottonValue(String v) {
-    userTeamDropDownBottonValue = v;
+  String? userClassificationDropDownBottonValue = 'غير محدد';
+  setUserClassificationDropDownBottonValue(String v) {
+    userClassificationDropDownBottonValue = v;
     notifyListeners();
   }
 
@@ -56,7 +56,8 @@ class Auth extends ChangeNotifier {
       required String email,
       required String password,
       required bool thereAreUsers,
-      required BuildContext context}) async {
+      required BuildContext context,
+      required bool master}) async {
     try {
       await auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -66,6 +67,9 @@ class Auth extends ChangeNotifier {
         'phone': userPhone,
         'email': email,
         'state': stateDropDownBottonValue,
+        'classification': userClassificationDropDownBottonValue,
+        'role': (master) ? 'مسؤول الملف' : roleDropDownBottonValue,
+        'team': 'مطلق'
       });
       await database
           .ref()
@@ -73,8 +77,6 @@ class Auth extends ChangeNotifier {
           .child(auth.currentUser!.uid)
           .set({
         'accepted': !thereAreUsers,
-        'role': roleDropDownBottonValue,
-        'team': userTeamDropDownBottonValue,
       });
     } catch (error) {
       ScaffoldMessenger.of(context).clearSnackBars();
