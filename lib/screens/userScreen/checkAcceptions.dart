@@ -102,9 +102,10 @@ class CheckAcception extends StatelessWidget {
                                     ),
                                   );
                                 });
-                          } else {
-                            return GuestScreen(true);
-                          }
+                          } 
+                          // else {
+                          //   return GuestScreen(true);
+                          // }
                         }
                       }
                       return Container(

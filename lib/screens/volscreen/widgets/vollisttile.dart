@@ -18,67 +18,68 @@ class VolListTile extends StatelessWidget {
     final patients = Provider.of<PatientsProv>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: ListTile(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: (volanteer.accepted as bool)
+              ? ColorsKeys[teamByColor[volanteer.team]]
+              : Colors.red[300],
         ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MultiProvider(
-                providers: [
-                  ChangeNotifierProvider.value(value: patients),
-                  ChangeNotifierProvider.value(value: account)
-                ],
-                child: VolanteerProfileScreen(volanteer, true),
+        child: ListTile(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MultiProvider(
+                  providers: [
+                    ChangeNotifierProvider.value(value: patients),
+                    ChangeNotifierProvider.value(value: account)
+                  ],
+                  child: VolanteerProfileScreen(volanteer, true),
+                ),
               ),
-            ),
-          );
-        },
-        tileColor: (volanteer.accepted as bool)
-            ? ColorsKeys[teamByColor[volanteer.team]]
-            : Colors.red[300],
-        leading:
-            (account.role == 'مسؤول الملف' && volanteer.role != 'مسؤول الملف')
-                ? IconButton(
-                    onPressed: () async {
-                      await FirebaseDatabase.instance
-                          .ref()
-                          .child("activation")
-                          .child(volanteer.id as String)
-                          .update({"accepted": !(volanteer.accepted as bool)});
-                      account.setCurrent(account.current);
-                    },
-                    icon: (volanteer.accepted as bool)
-                        ? Icon(
-                            Icons.check_box,
-                            color: Colors.green,
-                          )
-                        : Icon(
-                            Icons.check_box_outline_blank,
-                            color: Colors.white,
-                          ),
-                  )
-                : null,
-        title: Column(
-          children: [
-            Text(
-              volanteer.name as String,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-        trailing: FittedBox(
-          child: Text(
-            volanteer.phone as String,
+            );
+          },
+          leading: (account.role == 'مسؤول الملف' &&
+                  volanteer.role != 'مسؤول الملف')
+              ? IconButton(
+                  onPressed: () async {
+                    await FirebaseDatabase.instance
+                        .ref()
+                        .child("activation")
+                        .child(volanteer.id as String)
+                        .update({"accepted": !(volanteer.accepted as bool)});
+                    account.setCurrent(account.current);
+                  },
+                  icon: (volanteer.accepted as bool)
+                      ? Icon(
+                          Icons.check_box,
+                          color: Colors.green,
+                        )
+                      : Icon(
+                          Icons.check_box_outline_blank,
+                          color: Colors.white,
+                        ),
+                )
+              : null,
+          title: Text(
+            volanteer.name as String,
             style: const TextStyle(
-              color: Colors.white,
               fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          trailing: FittedBox(
+            child: Text(
+              volanteer.phone as String,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+              ),
             ),
           ),
         ),

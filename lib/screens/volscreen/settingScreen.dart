@@ -16,7 +16,7 @@ class _SettingScreenState extends State<SettingScreen> {
   final TextEditingController addClassiController = TextEditingController();
   final TextEditingController addTeamController = TextEditingController();
   final fkey = GlobalKey<FormState>();
-  bool teaming = false;
+  bool teaming = true;
   @override
   Widget build(BuildContext context) {
     final account = Provider.of<Account>(context, listen: false);
@@ -28,9 +28,14 @@ class _SettingScreenState extends State<SettingScreen> {
             children: [
               Expanded(
                   child: ElevatedButton(
+                style: ButtonStyle(
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0))),
+                    backgroundColor: MaterialStateProperty.all(
+                        teaming ? Colors.green : Colors.grey)),
                 child: Text(
                   'تعديل التيمات',
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
                 onPressed: (teaming)
                     ? null
@@ -42,9 +47,14 @@ class _SettingScreenState extends State<SettingScreen> {
               )),
               Expanded(
                   child: ElevatedButton(
+                style: ButtonStyle(
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0))),
+                    backgroundColor: MaterialStateProperty.all(
+                        !teaming ? Colors.green : Colors.grey)),
                 child: Text(
                   'تعديل الاختصاص',
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
                 onPressed: (!teaming)
                     ? null
