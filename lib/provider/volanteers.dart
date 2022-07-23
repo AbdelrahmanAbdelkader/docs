@@ -44,10 +44,7 @@ class Volanteers extends ChangeNotifier {
       }
       final dataTeamColorRefresh =
           await FirebaseDatabase.instance.ref().child('teams').get();
-      if (dataTeamColorRefresh.value != null)
-        teamByColor = dataTeamColorRefresh.value as Map;
-      else
-        teamByColor = {'مطلق': 'grey'};
+
       if (users!.value != null) {
         final List<Map> data;
         DataSnapshot? patients;
@@ -68,6 +65,7 @@ class Volanteers extends ChangeNotifier {
         data = List.generate((users.value as Map).length, (index) {
           Map userDetail = (users!.value as Map).values.elementAt(index);
           String userId = (users.value as Map).keys.elementAt(index);
+
           String team = (users.value as Map).values.elementAt(index)['team'];
           String role = (users.value as Map).values.elementAt(index)['role'];
           bool accepted = (activations!.value
@@ -88,8 +86,8 @@ class Volanteers extends ChangeNotifier {
               return {};
             });
           }
-          pts.removeWhere((element) => element == {});
 
+          pts.removeWhere((element) => element == {});
           return {
             'name': userDetail['userName'],
             'phone': userDetail['phone'],
@@ -103,6 +101,7 @@ class Volanteers extends ChangeNotifier {
             'patients': pts,
           };
         });
+
         data.forEach((element) {
           _vols.add(Volanteer()
             ..name = element['name']

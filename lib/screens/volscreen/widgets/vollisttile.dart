@@ -22,8 +22,8 @@ class VolListTile extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           color: (volanteer.accepted as bool)
-              ? ColorsKeys[teamByColor[volanteer.team]]
-              : Colors.red[300],
+            ? Colors.blue.shade300
+            : Colors.red[300],
         ),
         child: ListTile(
           shape: RoundedRectangleBorder(
@@ -41,47 +41,54 @@ class VolListTile extends StatelessWidget {
                   child: VolanteerProfileScreen(volanteer, true),
                 ),
               ),
-            );
-          },
-          leading: (account.role == 'مسؤول الملف' &&
-                  volanteer.role != 'مسؤول الملف')
-              ? IconButton(
-                  onPressed: () async {
-                    await FirebaseDatabase.instance
-                        .ref()
-                        .child("activation")
-                        .child(volanteer.id as String)
-                        .update({"accepted": !(volanteer.accepted as bool)});
-                    account.setCurrent(account.current);
-                  },
-                  icon: (volanteer.accepted as bool)
-                      ? Icon(
-                          Icons.check_box,
-                          color: Colors.green,
-                        )
-                      : Icon(
-                          Icons.check_box_outline_blank,
-                          color: Colors.white,
-                        ),
-                )
-              : null,
-          title: Text(
-            volanteer.name as String,
+            
+          );
+        },
+        leading:
+            (account.role == 'مسؤول الملف' && volanteer.role != 'مسؤول الملف')
+                ? IconButton(
+                    onPressed: () async {
+                      await FirebaseDatabase.instance
+                          .ref()
+                          .child("activation")
+                          .child(volanteer.id as String)
+                          .update({"accepted": !(volanteer.accepted as bool)});
+                      account.setCurrent(account.current);
+                    },
+                    icon: (volanteer.accepted as bool)
+                        ? Icon(
+                            Icons.check_box,
+                            color: Colors.green,
+                          )
+                        : Icon(
+                            Icons.check_box_outline_blank,
+                            color: Colors.white,
+                          ),
+                  )
+                : null,
+        title: Column(
+          children: [
+            Text(
+              volanteer.name as String,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        trailing: FittedBox(
+          child: Text(
+            volanteer.phone as String,
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
           ),
-          trailing: FittedBox(
-            child: Text(
-              volanteer.phone as String,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-              ),
-            ),
-          ),
+         
+        ),
         ),
       ),
     );

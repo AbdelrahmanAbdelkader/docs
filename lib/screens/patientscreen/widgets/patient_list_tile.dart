@@ -31,7 +31,7 @@ class PatientListTile extends StatelessWidget {
                     )
                     .inDays <
                 30)
-            ? ColorsKeys[teamByColor[patient.team]]
+            ? Colors.blue.shade300
             : Colors.deepOrange.withOpacity(.3),
         child: GestureDetector(
           child: Padding(

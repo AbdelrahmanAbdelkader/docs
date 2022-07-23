@@ -62,11 +62,6 @@ class PatientsProv extends ChangeNotifier {
       final dataTeamColorRefresh =
           await FirebaseDatabase.instance.ref().child('teams').get();
 
-      if (dataTeamColorRefresh.value != null)
-        teamByColor = dataTeamColorRefresh.value as Map;
-      else
-        teamByColor = {'مطلق': 'grey'};
-
       final database = FirebaseDatabase.instance;
       var ref;
       try {

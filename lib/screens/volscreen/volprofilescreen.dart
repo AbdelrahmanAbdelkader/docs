@@ -106,7 +106,8 @@ class VolanteerProfileScreen extends StatelessWidget {
                                     return CircularProgressIndicator();
                                   if (teamSnap.data !=
                                       null) if (teamSnap.data!.value != null) {
-                                    Map teamData = teamSnap.data!.value as Map;
+                                    List teamData =
+                                        teamSnap.data!.value as List;
 
                                     return Padding(
                                       padding: const EdgeInsets.symmetric(
@@ -166,15 +167,10 @@ class VolanteerProfileScreen extends StatelessWidget {
                                                 teamData.length, (index) {
                                               return DropdownMenuItem(
                                                 child: Text(
-                                                  teamData.keys
-                                                      .elementAt(index),
-                                                  style: TextStyle(
-                                                      color: ColorsKeys[teamData
-                                                          .values
-                                                          .elementAt(index)]),
+                                                  teamData.elementAt(index),
                                                 ),
-                                                value: teamData.keys
-                                                    .elementAt(index),
+                                                value:
+                                                    teamData.elementAt(index),
                                               );
                                             }).toList(),
                                           ),
@@ -255,12 +251,6 @@ class VolanteerProfileScreen extends StatelessWidget {
                                                 child: Text(
                                                   classificationData.values
                                                       .elementAt(index),
-                                                  style: TextStyle(
-                                                      color: ColorsKeys[
-                                                          classificationData
-                                                              .values
-                                                              .elementAt(
-                                                                  index)]),
                                                 ),
                                                 value: classificationData.values
                                                     .elementAt(index),
@@ -320,9 +310,6 @@ class VolanteerProfileScreen extends StatelessWidget {
                                       return DropdownMenuItem(
                                         child: Text(
                                           roles.elementAt(index),
-                                          style: TextStyle(
-                                              color: ColorsKeys[
-                                                  roles.elementAt(index)]),
                                         ),
                                         value: roles.elementAt(index),
                                       );
