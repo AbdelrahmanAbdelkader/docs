@@ -364,13 +364,13 @@ class _SettingScreenState extends State<SettingScreen> {
                     );
                   if (snapshot.data !=
                       null) if (snapshot.data!.snapshot.value != null) {
-                    final data = (snapshot.data!.snapshot.value as Map);
+                    final data = (snapshot.data!.snapshot.value as List);
                     return Expanded(
                       child: ListView.builder(
                         itemCount: data.length,
                         itemBuilder: (context, i) => ListTile(
-                          title: Text(data.keys.elementAt(i)),
-                          trailing: (data.keys.elementAt(i) == 'مطلق')
+                          title: Text(data[i]),
+                          trailing: (data[i] == 'مطلق')
                               ? null
                               : IconButton(
                                   onPressed: () {
@@ -379,7 +379,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                         context: context,
                                         builder: (ctx) => AlertDialog(
                                               title: Text(
-                                                  'Are you sure for delete ${data.keys.elementAt(i)}'),
+                                                  'Are you sure for delete ${data[i]}'),
                                               actions: [
                                                 TextButton(
                                                     onPressed: () {
@@ -403,9 +403,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                                             in (usersData)
                                                                 .values) {
                                                           if (element['team'] !=
-                                                              data.keys
-                                                                  .elementAt(i))
-                                                            continue;
+                                                              data[i]) continue;
                                                           Volanteer volanteer =
                                                               Volanteer()
                                                                 ..id = usersData
@@ -457,12 +455,10 @@ class _SettingScreenState extends State<SettingScreen> {
                                                           .instance
                                                           .ref()
                                                           .child('teams')
-                                                          .child(data.keys
-                                                              .elementAt(i))
+                                                          .child(data[i])
                                                           .set(null);
                                                       if (account.team ==
-                                                          data.keys
-                                                              .elementAt(i))
+                                                          data[i])
                                                         account.setTeam('مطلق');
                                                       account.setCurrent(
                                                           account.current);
