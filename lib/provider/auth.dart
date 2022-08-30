@@ -76,7 +76,8 @@ class Auth extends ChangeNotifier {
           .child('activation')
           .child(auth.currentUser!.uid)
           .set({
-        'accepted': !thereAreUsers,
+        //////edit to if not first user false
+        'accepted': true,
       });
     } catch (error) {
       ScaffoldMessenger.of(context).clearSnackBars();

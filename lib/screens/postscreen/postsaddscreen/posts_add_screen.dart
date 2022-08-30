@@ -196,11 +196,11 @@ class _PostsAddScreenState extends State<PostsAddScreen> {
                         },
                         child: (files.isEmpty)
                             ? Container(
+                                width: 100.w,
                                 decoration: BoxDecoration(
                                     color: Colors.grey[300],
                                     borderRadius: BorderRadius.circular(15)),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 50.w, vertical: 10.h),
+                                padding: EdgeInsets.symmetric(vertical: 10.h),
                                 child: Icon(
                                   Icons.camera_alt,
                                   size: 36,
