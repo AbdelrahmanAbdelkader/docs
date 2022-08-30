@@ -1,8 +1,10 @@
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sample/model/doc.dart';
 import 'package:sample/helpers/data_lists.dart';
+import 'package:sample/provider/patients/patients.dart';
 
 class Docs extends ChangeNotifier {
   Map<String, dynamic> _data = {};
@@ -43,6 +45,8 @@ class Docs extends ChangeNotifier {
               ..initData(_data.values.elementAt(i)));
       }
     }
+    context.read<PatientsProv>().setCurrentDoctors(
+        doctors.map((e) => {'name': e.name, 'idDoc': e.Id}).toList());
   }
 
   // void search(String searchFor, String? byname) {

@@ -39,7 +39,10 @@ class VolListTile extends StatelessWidget {
                   providers: [
                     ChangeNotifierProvider.value(value: patients),
                   ],
-                  child: VolanteerProfileScreen(volanteer, true),
+                  child: Consumer<BottomNavigationController>(
+                    builder: (context, value, child) =>
+                        VolanteerProfileScreen(volanteer, true),
+                  ),
                 ),
               ),
             );

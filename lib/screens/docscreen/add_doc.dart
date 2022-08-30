@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
 import 'package:sample/model/doc.dart';
+import 'package:sample/provider/bottom_navigationController.dart';
 import 'package:sample/provider/docs/checkBoxAddDocController.dart';
 import 'package:sample/provider/docs/switchAddDocController.dart';
 import 'package:sample/provider/docs/validateAddDocController.dart';
@@ -55,6 +56,9 @@ class AddDoctor extends StatelessWidget {
               : null,
         });
         Navigator.of(context).pop();
+        context
+            .read<BottomNavigationController>()
+            .setIndex(context.read<BottomNavigationController>().index);
       } catch (error) {
         print(error);
         ScaffoldMessenger.of(context).clearSnackBars();
