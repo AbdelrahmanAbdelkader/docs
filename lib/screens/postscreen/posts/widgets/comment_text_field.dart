@@ -1,7 +1,8 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/account.dart';
+import 'package:sample/model/user.dart';
+
 import 'package:sample/provider/normalPost.dart';
 
 class CommentTextField extends StatelessWidget {
@@ -10,7 +11,6 @@ class CommentTextField extends StatelessWidget {
   final postId;
   @override
   Widget build(BuildContext context) {
-    final account = Provider.of<Account>(context);
     return Row(
       children: [
         Expanded(
@@ -54,7 +54,7 @@ class CommentTextField extends StatelessWidget {
 
               FirebaseDatabase.instance.ref().child(ref.path).set({
                 'date': DateTime.now().toString(),
-                'name': account.name,
+                'name': curentUser.name,
                 'content': commentTextFieldController.text,
               });
               commentTextFieldController.clear();

@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+import 'package:sample/provider/docs/checkBoxAddDocController.dart';
+import 'package:sample/provider/docs/validateAddDocController.dart';
 
-class Doc extends ChangeNotifier {
+class Doc {
   late Function ref;
   String? Id;
   String phone = "";
@@ -11,18 +14,7 @@ class Doc extends ChangeNotifier {
   bool agreed = false;
   List<Map> patients = [];
   bool value = true;
-  bool triedToValidate = false;
   String? val;
-
-  void setCommuicate(bool s) {
-    value = s;
-    notifyListeners();
-  }
-
-  setTruedToValidate(bool val) {
-    triedToValidate = val;
-    notifyListeners();
-  }
 
   void initData(Map data) {
     if (data['phone'] != null) phone = data['phone'];
@@ -45,20 +37,26 @@ class Doc extends ChangeNotifier {
       TextEditingController docNameController,
       TextEditingController docPhoneController,
       TextEditingController docEmailController,
-      TextEditingController hintController) {
+      TextEditingController hintController,
+      BuildContext context) {
     docNameController.text = name;
     docPhoneController.text = phone;
     docEmailController.text = email;
     hintController.text = hint;
+    context.read<CheckBoxAddDocController>().value = agreed;
+    if (classification != '')
+      context.read<ValidateAddDocController>().classification = classification;
+    if (docEmailController.text != '') {
+      context.read<CheckBoxAddDocController>().value = true;
+    }
+    print(context.read<ValidateAddDocController>().classification);
   }
 
   void toggle() {
     agreed = !agreed;
-    notifyListeners();
   }
 
   setUserClassificationDropDownBottonValue(String val) {
     classification = val;
-    notifyListeners();
   }
 }

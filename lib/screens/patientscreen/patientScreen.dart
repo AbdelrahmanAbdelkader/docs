@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/account.dart';
-import 'package:sample/provider/docs.dart';
-import 'package:sample/provider/patient.dart';
-import 'package:sample/provider/patients.dart';
+import 'package:sample/provider/docs/docs.dart';
+import 'package:sample/model/patient.dart';
+import 'package:sample/provider/patients/patients.dart';
+import 'package:sample/provider/patients/searchPatientsControler.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_list.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_list_tile.dart';
 import '../widgets/app_bar_button.dart';
@@ -23,8 +23,6 @@ class _PatientScreenState extends State<PatientScreen> {
   @override
   @override
   Widget build(BuildContext context) {
-    final patients = Provider.of<PatientsProv>(context, listen: false).patients;
-    print(patients.length);
     return Scaffold(
       appBar: AppBar(
         title: const Text('الحالات'),
@@ -49,30 +47,10 @@ class _PatientScreenState extends State<PatientScreen> {
             ),
           if (!search)
             AppBarButton(onPressed: () {
-              final account = Provider.of<Account>(context, listen: false);
-              final patientsProvider =
-                  Provider.of<PatientsProv>(context, listen: false);
-              final doctorsProvider = Provider.of<Docs>(context, listen: false);
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => MultiProvider(
-                    providers: [
-                      ChangeNotifierProvider.value(
-                        value: account,
-                      ),
-                      ChangeNotifierProvider.value(
-                        value: patientsProvider,
-                      ),
-                      ChangeNotifierProvider.value(
-                        value: doctorsProvider,
-                      ),
-                    ],
-                    child: ChangeNotifierProvider(
-                        create: (context) => Patient()
-                          ..volId = account.id
-                          ..volName = account.name,
-                        child: AddPatientPage()),
-                  ),
+                  builder: (context) => ChangeNotifierProvider(
+                      create: (context) => Patient(), child: AddPatientPage()),
                 ),
               );
             }),
@@ -116,15 +94,9 @@ class _PatientScreenState extends State<PatientScreen> {
                           horizontal: 8.0, vertical: 10),
                       child: TextFormField(
                         onChanged: (value) {
-                          setState(() {
-                            searchedPatient = patients.where((element) {
-                              return element.name!
-                                      .toLowerCase()
-                                      .contains(value) ||
-                                  element.nationalId!.contains(value) ||
-                                  element.phone!.contains(value);
-                            }).toList();
-                          });
+                          context
+                              .read<SearchPatientsController>()
+                              .searchItems(value, context);
                         },
                         decoration: InputDecoration(
                           hintText: 'كلمة البحث',
@@ -148,7 +120,9 @@ class _PatientScreenState extends State<PatientScreen> {
                 ),
                 ListView(
                   shrinkWrap: true,
-                  children: searchedPatient
+                  children: context
+                      .watch<SearchPatientsController>()
+                      .searchedPatients
                       .map((e) => ChangeNotifierProvider.value(
                             value: e,
                             child: PatientListTile(),

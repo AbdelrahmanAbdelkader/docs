@@ -1,17 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/account.dart';
+
 import 'package:sample/provider/auth.dart';
-import 'package:sample/provider/docs.dart';
-import 'package:sample/provider/patients.dart';
-import 'package:sample/provider/user.dart';
+import 'package:sample/provider/bottom_navigationController.dart';
+import 'package:sample/provider/docs/docs.dart';
+import 'package:sample/provider/patients/patients.dart';
+import 'package:sample/model/role_provider.dart';
+
 import 'package:sample/provider/volanteers.dart';
 import 'package:sample/screens/authscreen/authscreen.dart';
 import 'package:sample/screens/authscreen/checkFirstEmailBeforeAuth.dart';
 import 'package:sample/screens/userScreen/UserScreenAccepted.dart';
 import 'package:sample/screens/userScreen/checkAcceptions.dart';
 import '../guestscreen/guestscreen.dart';
+import '../userScreen/widgets/loadingIndicator.dart';
 
 class MainStream extends StatelessWidget {
   MainStream({Key? key}) : super(key: key);
@@ -24,7 +27,12 @@ class MainStream extends StatelessWidget {
       stream: stream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+          print('loading userChanges');
+          return LoadingIndicator(
+            label: 'البحث عن المستخدم',
+            postion: 1,
+          );
+          ;
         }
 
         if (snapshot.hasData) {
@@ -34,24 +42,9 @@ class MainStream extends StatelessWidget {
               color: Colors.white,
             );
           }
-          return MultiProvider(providers: [
-            ChangeNotifierProvider<Account>(
-              create: (context) => Account(),
-            ),
-            ChangeNotifierProvider<Docs>(
-              create: (context) => Docs(),
-            ),
-            ChangeNotifierProvider<PatientsProv>(
-                create: (context) => PatientsProv()),
-            ChangeNotifierProvider<Volanteers>(
-              create: (context) => Volanteers(),
-            ),
-            ChangeNotifierProvider<UserController>(
-                create: (context) => UserController())
-          ], child: CheckAcception());
+          return CheckAcception();
         }
-        return ChangeNotifierProvider<Auth>(
-            create: (context) => Auth(), child: CheckFirstEmailBeforeAuth());
+        return CheckFirstEmailBeforeAuth();
       },
     );
   }

@@ -2,15 +2,18 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
-import 'package:sample/provider/doc.dart';
+import 'package:sample/model/doc.dart';
+import 'package:sample/provider/docs/checkBoxAddDocController.dart';
+import 'package:sample/provider/docs/switchAddDocController.dart';
+import 'package:sample/provider/docs/validateAddDocController.dart';
 import 'package:sample/screens/widgets/custom_text_field.dart';
 import 'package:sizer/sizer.dart';
 
 // ignore: must_be_immutable
 class AddDoctor extends StatelessWidget {
-  AddDoctor(this.prove, {Key? ky}) : super(key: ky);
+  AddDoctor(this.doc, {Key? ky}) : super(key: ky);
   bool once = true;
-  final Doc prove;
+  final Doc doc;
   final GlobalKey<FormState> keys = GlobalKey<FormState>();
   final TextEditingController docNameController = TextEditingController();
   final TextEditingController docPhoneController = TextEditingController();
@@ -20,87 +23,74 @@ class AddDoctor extends StatelessWidget {
   final Key docPhoneKey = const Key('docPhone');
   final Key docEmailKey = const Key('docEmail');
   final Key hintKey = const Key('doctorHint');
-  void fitchLastData(Doc doc) {
+  void fitchLastData(Doc doc, BuildContext context) {
     doc.getTextFields(docNameController, docPhoneController, docEmailController,
-        hintController);
+        hintController, context);
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   if (once) {
-  //     if (widget.id != null) {
-  //       doc.initData(widget.id as String);
-  //       //   final database = FirebaseFirestore.instance;
-  //       //   database.collection('doctors').doc(widget.id).get().then((value) {
-  //       //     agreed = value['agreed'];
-  //       //     docNameController.text = value['name'];
-  //       //     if (value['phone'] != null) {
-  //       //       docPhoneController.text = value['phone'];
-  //       //     } else {
-  //       //       docEmailController.text = value['email'];
-  //       //     }
-  //       //     hintController.text = value['hint'];
-  //       //     val = value['type'];
-  //       //   });
-  //     }
-  //   }
-  //   super.didChangeDependencies();
-  // }
   final database = FirebaseDatabase.instance;
+  void save(Doc doc, BuildContext context) {
+    bool validate = keys.currentState!.validate();
+
+    if (validate && context.read<ValidateAddDocController>().tryToValidate()) {
+      // prove.type = prove.val as String;
+
+      keys.currentState!.save();
+      DatabaseReference ref;
+
+      if (doc.Id == null) {
+        ref = database.ref().child('doctors').push();
+      } else
+        ref = database.ref().child('doctors').child(doc.Id as String);
+      try {
+        database.ref(ref.path).set({
+          "phone": doc.phone,
+          "agreed": context.read<CheckBoxAddDocController>().value,
+          "hint": doc.hint,
+          "name": doc.name,
+          "classification":
+              context.read<ValidateAddDocController>().classification,
+          "email": (context.read<CheckBoxAddDocController>().value)
+              ? doc.email
+              : null,
+        });
+        Navigator.of(context).pop();
+      } catch (error) {
+        print(error);
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              error.toString(),
+            ),
+          ),
+        );
+      }
+      // database.ref()
+      // .set(toAdd);
+      //prove.ref();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    void save(Doc prove) {
-      prove.setTruedToValidate(true);
-      bool validate = keys.currentState!.validate();
-      if (validate) {
-        // prove.type = prove.val as String;
-        if (prove.classification != '') {
-          keys.currentState!.save();
-          DatabaseReference ref;
-
-          if (prove.Id == null) {
-            ref = database.ref().child('doctors').push();
-          } else
-            ref = database.ref().child('doctors').child(prove.Id as String);
-          try {
-            database.ref(ref.path).set({
-              "phone": prove.phone,
-              "agreed": prove.agreed,
-              "hint": prove.hint,
-              "name": prove.name,
-              "classification": prove.classification,
-              "petients": prove.patients.asMap(),
-            });
-            Navigator.of(context).pop();
-          } catch (error) {
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  error.toString(),
-                ),
-              ),
-            );
-          }
-          // database.ref()
-          // .set(toAdd);
-          //prove.ref();
-        }
-      }
-    }
+    print('build add doctor');
 
     //final staticProve = Provider.of<Doc>(context, listen: false);
-    if (once) {
-      fitchLastData(prove);
-      once = false;
-    }
+
     // staticProve.getTextFields(docNameController, docPhoneController,
     //     docEmailController, hintController);
-    return ChangeNotifierProvider.value(
-      value: prove,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => SwitchAddDocController()),
+        ChangeNotifierProvider(create: (context) => CheckBoxAddDocController()),
+        ChangeNotifierProvider(create: (context) => ValidateAddDocController()),
+      ],
       child: Builder(builder: (context) {
-        final doc = Provider.of<Doc>(context);
+        if (once) {
+          fitchLastData(doc, context);
+          once = false;
+        }
         return Scaffold(
           appBar: AppBar(),
           body: Form(
@@ -136,14 +126,14 @@ class AddDoctor extends StatelessWidget {
                               },
                               multiline: false)),
                       Switch(
-                        value: doc.value,
+                        value: context.watch<SwitchAddDocController>().value,
                         onChanged: (v) {
-                          doc.setCommuicate(v);
+                          context.read<SwitchAddDocController>().togleValue();
                         },
                       ),
                     ],
                   ),
-                  (doc.value)
+                  (!context.watch<SwitchAddDocController>().value)
                       ? Container()
                       : AddPatientTextField(
                           label: 'طريقة التواصل',
@@ -179,6 +169,7 @@ class AddDoctor extends StatelessWidget {
                             );
                           if (snap.data != null) if (snap.data!.value != null) {
                             final classifications = snap.data!.value as Map;
+
                             return Column(
                               children: [
                                 Row(
@@ -207,13 +198,15 @@ class AddDoctor extends StatelessWidget {
                                                 elevation: 50,
                                                 // focusColor: Colors.white,
                                                 underline: Container(),
-                                                value:
-                                                    (doc.classification == '')
-                                                        ? null
-                                                        : doc.classification,
+                                                value: context
+                                                    .read<
+                                                        ValidateAddDocController>()
+                                                    .classification,
                                                 hint: const Text('اختر التخصص'),
-                                                onChanged: (v) => doc
-                                                    .setUserClassificationDropDownBottonValue(
+                                                onChanged: (v) => context
+                                                    .read<
+                                                        ValidateAddDocController>()
+                                                    .setClassification(
                                                         v as String),
                                                 items: List.generate(
                                                   classifications.length,
@@ -235,8 +228,9 @@ class AddDoctor extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                if (doc.triedToValidate &&
-                                    doc.classification == '')
+                                if (context
+                                    .watch<ValidateAddDocController>()
+                                    .validate)
                                   Center(
                                     child: Text(
                                       'أدخل التخصص من فضلك',
@@ -257,7 +251,7 @@ class AddDoctor extends StatelessWidget {
                         children: [
                           const Text('موافق يشتغل معانا؟'),
                           const Spacer(),
-                          (!doc.agreed)
+                          (!context.watch<CheckBoxAddDocController>().value)
                               ? const Icon(
                                   Icons.check_box_outlined,
                                   color: Colors.red,
@@ -269,13 +263,13 @@ class AddDoctor extends StatelessWidget {
                         ],
                       ),
                       onTap: () {
-                        doc.toggle();
+                        context.read<CheckBoxAddDocController>().toggleValue();
                       },
                     ),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      save(doc);
+                      save(doc, context);
                     },
                     child: const Text('save'),
                     style: ButtonStyle(

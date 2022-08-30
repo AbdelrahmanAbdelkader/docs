@@ -1,7 +1,7 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/patient.dart';
+import 'package:sample/model/patient.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/widgets/images_edit_dialog.dart';
 import 'package:sizer/sizer.dart';
 

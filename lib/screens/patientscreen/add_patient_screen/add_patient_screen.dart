@@ -5,10 +5,12 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
-import 'package:sample/provider/account.dart';
-import 'package:sample/provider/docs.dart';
-import 'package:sample/provider/patient.dart';
-import 'package:sample/provider/patients.dart';
+import 'package:sample/model/user.dart';
+import 'package:sample/provider/bottom_navigationController.dart';
+
+import 'package:sample/provider/docs/docs.dart';
+import 'package:sample/model/patient.dart';
+import 'package:sample/provider/patients/patients.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/illnesslist.dart';
 import 'package:sample/screens/patientscreen/add_patient_screen/widgets/state_dropdownbutton.dart';
 import 'package:sample/screens/widgets/custom_text_field.dart';
@@ -77,14 +79,14 @@ class _AddPatientPageState extends State<AddPatientPage> {
 
   @override
   Widget build(BuildContext context) {
-    final account = Provider.of<Account>(context);
     final patientsProvider = Provider.of<PatientsProv>(context, listen: false);
     final doctorsProvider = Provider.of<Docs>(context, listen: false);
     return Scaffold(
       appBar: AppBar(),
       body: FutureBuilder(
-        future: doctorsProvider.refresh(account.setCurrent, context,
-            patientsProvider.setCurrentDoctors, account),
+        future: doctorsProvider.refresh(
+          context,
+        ),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting)
             return Center(
@@ -109,7 +111,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                 final teamName = await FirebaseDatabase.instance
                     .ref()
                     .child('users')
-                    .child(account.id as String)
+                    .child(curentUser.id as String)
                     .child('team')
                     .get();
                 final ref = database
@@ -118,7 +120,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                     .update({
                   'images': imagesUrl,
                   'team': teamName.value,
-                  'volanteerId': account.id,
+                  'volanteerId': curentUser.id,
                   'volanteerName': patientProvider.volName,
                   'patientName': patientProvider.name,
                   'nationaId': patientProvider.nationalId,
@@ -154,7 +156,9 @@ class _AddPatientPageState extends State<AddPatientPage> {
                   'date': patientProvider.date,
                 });
                 // patientsProvider.clear();
-                account.setCurrent((account.current));
+                context
+                    .read<BottomNavigationController>()
+                    .setIndex(context.read<BottomNavigationController>().index);
                 Navigator.pop(context);
               }
               // } else
@@ -356,18 +360,21 @@ class _AddPatientPageState extends State<AddPatientPage> {
                                                       children: [
                                                         Expanded(
                                                           child: IconButton(
-                                                            onPressed: () async {
+                                                            onPressed:
+                                                                () async {
                                                               await pickImage(
                                                                   true);
                                                               Navigator.of(
                                                                       context)
                                                                   .pop();
                                                             },
-                                                            icon:
-                                                                Icon(Icons.image),
+                                                            icon: Icon(
+                                                                Icons.image),
                                                           ),
                                                         ),
-                                                        Expanded(child: Text("pick an image"))
+                                                        Expanded(
+                                                            child: Text(
+                                                                "pick an image"))
                                                       ],
                                                     ),
                                                   ),
@@ -388,7 +395,8 @@ class _AddPatientPageState extends State<AddPatientPage> {
                                                       children: [
                                                         Expanded(
                                                           child: IconButton(
-                                                            onPressed: () async {
+                                                            onPressed:
+                                                                () async {
                                                               await pickImage(
                                                                   false);
                                                               Navigator.of(
@@ -441,7 +449,7 @@ class _AddPatientPageState extends State<AddPatientPage> {
                           ),
 
                     ElevatedButton(
-                        onPressed: () => save(account.id as String),
+                        onPressed: () => save(curentUser.id as String),
                         child: const Text('save')),
                   ],
                 ),

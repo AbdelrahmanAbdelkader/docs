@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sample/screens/ScreensSlector/stream_builder.dart';
+import 'package:provider/provider.dart';
+
+import 'package:sample/screens/ScreensSlector/main_stream.dart';
 import 'package:splash_screen_view/SplashScreenView.dart';
 
 class Splash extends StatelessWidget {

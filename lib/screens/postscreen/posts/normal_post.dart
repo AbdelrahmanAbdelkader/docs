@@ -8,7 +8,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/account.dart';
+import 'package:sample/model/user.dart';
+import 'package:sample/provider/bottom_navigationController.dart';
+
 import 'package:sample/provider/normalPost.dart';
 import 'package:sample/screens/postscreen/posts/widgets/comment_text_field.dart';
 import 'package:sample/screens/postscreen/posts/widgets/getAllcomments.dart';
@@ -42,7 +44,6 @@ class NormalPost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final account = Provider.of<Account>(context);
     return ChangeNotifierProvider(
       create: (context) => NormalPostProvider(),
       child: Card(
@@ -66,7 +67,7 @@ class NormalPost extends StatelessWidget {
                                 fontWeight: FontWeight.bold),
                           ),
                           Spacer(),
-                          if (account.id == accountId)
+                          if (curentUser.id == accountId)
                             IconButton(
                                 onPressed: () {
                                   showDialog(
@@ -106,8 +107,13 @@ class NormalPost extends StatelessWidget {
                                                           .delete();
                                                     });
                                                     Navigator.of(ctx).pop();
-                                                    account.setCurrent(
-                                                        account.current);
+                                                    context
+                                                        .read<
+                                                            BottomNavigationController>()
+                                                        .setIndex(context
+                                                            .watch<
+                                                                BottomNavigationController>()
+                                                            .index);
                                                   },
                                                   child: Text('yes')),
                                               TextButton(
@@ -316,20 +322,16 @@ class NormalPost extends StatelessWidget {
                                 ),
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (ctx) =>
-                                          ChangeNotifierProvider.value(
-                                            value: account,
-                                            child: Scaffold(
-                                              appBar: AppBar(),
-                                              body: NormalPost(
-                                                accountId: accountId,
-                                                comments: CommentsType.detail,
-                                                postId: postId,
-                                                date: date,
-                                                text: text,
-                                                volName: text,
-                                                images: images,
-                                              ),
+                                      builder: (ctx) => Scaffold(
+                                            appBar: AppBar(),
+                                            body: NormalPost(
+                                              accountId: accountId,
+                                              comments: CommentsType.detail,
+                                              postId: postId,
+                                              date: date,
+                                              text: text,
+                                              volName: text,
+                                              images: images,
                                             ),
                                           )));
                                 },
@@ -359,7 +361,7 @@ class NormalPost extends StatelessWidget {
                                     .child('posts')
                                     .child('seen')
                                     .child(postId)
-                                    .child(account.id as String)
+                                    .child(curentUser.id as String)
                                     .get();
                                 if (val.value == null)
                                   val = false;
@@ -370,7 +372,7 @@ class NormalPost extends StatelessWidget {
                                     .child('posts')
                                     .child('seen')
                                     .child(postId)
-                                    .child(account.id as String)
+                                    .child(curentUser.id as String)
                                     .set(!val);
                               },
                               child: Row(
@@ -384,7 +386,7 @@ class NormalPost extends StatelessWidget {
                                           .child('posts')
                                           .child('seen')
                                           .child(postId)
-                                          .child(account.id as String)
+                                          .child(curentUser.id as String)
                                           .onValue,
                                       builder: (context, snapshot) {
                                         if (snapshot.data != null) {

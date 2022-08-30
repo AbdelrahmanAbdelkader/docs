@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/account.dart';
+
 import 'package:sample/provider/volanteers.dart';
 import 'package:sample/screens/volscreen/widgets/vollist.dart';
 import 'package:sizer/sizer.dart';
@@ -12,7 +12,7 @@ class VolScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final prove = Provider.of<Volanteers>(context, listen: false);
-    final account = Provider.of<Account>(context);
+
     print('ss');
     return Scaffold(
       appBar: AppBar(
@@ -33,7 +33,7 @@ class VolScreen extends StatelessWidget {
           Container(
             width: 100.w,
             child: FutureBuilder(
-                future: prove.refresh(context, account),
+                future: prove.refresh(context),
                 builder: (context, snap) {
                   if (snap.connectionState == ConnectionState.waiting)
                     return Center(

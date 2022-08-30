@@ -1,8 +1,8 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/account.dart';
-import 'package:sample/provider/patient.dart';
+import 'package:sample/model/patient.dart';
+import 'package:sample/provider/bottom_navigationController.dart';
 import 'package:sample/screens/widgets/custom_text_field.dart';
 import 'package:sizer/sizer.dart';
 
@@ -81,8 +81,6 @@ class TextFieldDialog extends Dialog {
                       ),
                       TextButton(
                           onPressed: () async {
-                            final account =
-                                Provider.of<Account>(context, listen: false);
                             final patient =
                                 Provider.of<Patient>(context, listen: false);
                             if (keyOfDataBase != 'nationId')
@@ -147,7 +145,10 @@ class TextFieldDialog extends Dialog {
                             Navigator.of(context).pop();
                             if (setValue != null) setValue(controller.text);
                             controller.clear();
-                            account.setCurrent(account.current);
+                            context.read<BottomNavigationController>().setIndex(
+                                context
+                                    .watch<BottomNavigationController>()
+                                    .index);
                           },
                           child: Text('save')),
                     ],

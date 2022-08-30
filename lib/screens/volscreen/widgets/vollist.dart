@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/volanteer.dart';
+import 'package:sample/model/volanteer.dart';
 import 'package:sample/provider/volanteers.dart';
 import 'package:sample/screens/volscreen/widgets/vollisttile.dart';
 

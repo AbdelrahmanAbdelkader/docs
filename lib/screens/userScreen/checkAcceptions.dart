@@ -2,147 +2,167 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/account.dart';
 import 'package:sample/provider/auth.dart';
-import 'package:sample/provider/user.dart';
+import 'package:sample/model/user.dart';
+
 import 'package:sample/screens/guestscreen/guestscreen.dart';
 import 'package:sample/screens/splashscreen/splashscreen.dart';
 import 'package:sample/screens/userScreen/UserScreenAccepted.dart';
+import 'package:sample/screens/userScreen/widgets/loadingIndicator.dart';
+
+import '../../model/role_provider.dart';
 
 class CheckAcception extends StatelessWidget {
   CheckAcception({Key? key}) : super(key: key);
-  final Widget indicator = Center(
-    child: CircularProgressIndicator(),
-  );
+
   @override
   Widget build(BuildContext context) {
-    final auth = FirebaseAuth.instance;
     return Container(
       color: Colors.white,
-      child: Consumer<Account>(builder: (context, account, _) {
-        return FutureBuilder(
-            future: context.read<UserController>().getUserId(context),
-            builder: (context, snaps) {
-              print(snaps.data);
-              if (snaps.connectionState == ConnectionState.waiting)
-                return indicator;
-              if (snaps.data != null) {
-                if ((snaps.data as DataSnapshot).value != null) {
-                  print((snaps.data as DataSnapshot).value);
-                  account.setPhone(
-                      ((snaps.data as DataSnapshot).value as Map)['phone']);
-                  account.setName(
-                      ((snaps.data as DataSnapshot).value as Map)['userName']);
-                  account.setEmail(
-                      ((snaps.data as DataSnapshot).value as Map)['email']);
-                  account.setState(
-                      ((snaps.data as DataSnapshot).value as Map)['state']);
+      child: FutureBuilder<bool>(
+          future: curentUser.getDataFromApi(),
+          builder: (context, snaps) {
+            if (snaps.connectionState == ConnectionState.waiting) {
+              print('loading getUserData');
+              return LoadingIndicator(
+                label: 'تحميل الداتا',
+                postion: 2,
+              );
+            }
+            if (snaps.data == true) {
+              return StreamBuilder(
+                stream: FirebaseDatabase.instance
+                    .ref()
+                    .child('activation')
+                    .child(curentUser.id as String)
+                    .child('accepted')
+                    .onValue,
+                builder: (ct, snap) {
+                  if (snap.connectionState == ConnectionState.waiting) {
+                    print('loading activation');
+                    return LoadingIndicator(
+                      label: 'التفعيل',
+                      postion: 3,
+                    );
+                  }
+                  if (snap.data != null) {
+                    if ((snap.data as DatabaseEvent).snapshot.exists) {
+                      bool accepted =
+                          (snap.data as DatabaseEvent).snapshot.value as bool;
+                      curentUser.accepted = accepted;
+                      if (accepted) {
+                        return StreamBuilder<DatabaseEvent>(
+                            stream: FirebaseDatabase.instance
+                                .ref()
+                                .child('users')
+                                .child(curentUser.id as String)
+                                .child('role')
+                                .onValue,
+                            builder: (context, snapshotRole) {
+                              if (snapshotRole.connectionState ==
+                                  ConnectionState.waiting) {
+                                print('loading role');
+                                return LoadingIndicator(
+                                  label: 'البحث عن الدور',
+                                  postion: 4,
+                                );
+                                ;
+                              }
+                              if (snapshotRole.data != null) if (snapshotRole
+                                      .data!.snapshot.value !=
+                                  null) {
+                                roleProvider.setRole(snapshotRole
+                                    .data!.snapshot.value as String);
 
-                  account.setTeam(
-                      ((snaps.data as DataSnapshot).value as Map)['team']);
-                  print('got to stream builder');
-                  return StreamBuilder(
-                    stream: FirebaseDatabase.instance
-                        .ref()
-                        .child('activation')
-                        .child(account.id as String)
-                        .onValue,
-                    builder: (ct, snap) {
-                      if (snap.connectionState == ConnectionState.waiting)
-                        return indicator;
-                      if (snap.data != null) {
-                        if ((snap.data as DatabaseEvent).snapshot.exists) {
-                          Map data = (snap.data as DatabaseEvent).snapshot.value
-                              as Map;
+                                return UserScreen();
+                              }
 
-                          (data['accepted'] != null)
-                              ? account.setAccepted(data['accepted'])
-                              : auth.signOut();
-                          if (account.accepted as bool) {
-                            return StreamBuilder<DatabaseEvent>(
-                                stream: FirebaseDatabase.instance
-                                    .ref()
-                                    .child('users')
-                                    .child(account.id as String)
-                                    .child('role')
-                                    .onValue,
-                                builder: (context, snapshotRole) {
-                                  if (snapshotRole.connectionState ==
-                                      ConnectionState.waiting)
-                                    return Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  if (snapshotRole.data !=
-                                      null) if (snapshotRole
-                                          .data!.snapshot.value !=
-                                      null) {
-                                    account.setRole(snapshotRole
-                                        .data!.snapshot.value as String);
-                                    return UserScreen();
-                                  }
-                                  return Scaffold(
-                                    body: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'حدث خطأ تواصل مع مسؤول الملف',
-                                            style: TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 20),
-                                          ),
-                                          ElevatedButton(
-                                              onPressed: () {
-                                                FirebaseAuth.instance.signOut();
-                                              },
-                                              child: Text('تسجيل خروج'))
-                                        ],
+                              return Scaffold(
+                                body: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'حدث خطأ تواصل مع مسؤول الملف',
+                                        style: TextStyle(
+                                            color: Colors.red, fontSize: 20),
                                       ),
-                                    ),
-                                  );
-                                });
-                          } 
-                          // else {
-                          //   return GuestScreen(true);
-                          // }
-                        }
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            FirebaseAuth.instance.signOut();
+                                          },
+                                          child: Text('تسجيل خروج'))
+                                    ],
+                                  ),
+                                ),
+                              );
+                            });
                       }
-                      return Container(
-                        child: Center(
-                          child: TextButton(
+
+                      return Scaffold(
+                        body: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                  'هذا الايميل ليست مفعلة الرجاء التوجه لمسؤول الملف'),
+                              TextButton(
+                                onPressed: () {
+                                  FirebaseAuth.instance.signOut();
+                                },
+                                child: Text("خروج"),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                      // else {
+                      //   return GuestScreen(true);
+                      // }
+                    }
+                  }
+
+                  return Scaffold(
+                    body: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('حدث خطأ'),
+                          TextButton(
                             onPressed: () {
                               FirebaseAuth.instance.signOut();
                             },
                             child: Text("خروج"),
                           ),
-                        ),
-                      );
-                    },
+                        ],
+                      ),
+                    ),
                   );
-                }
-              }
+                },
+              );
+            }
 
-              return Center(
+            return Scaffold(
+              body: Center(
                 child: Dialog(
                   child: Container(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Text('network error'),
+                        Text('حدث خطأ اثناء تحميل الداتا الرجاء مراجعة المطور'),
                         ElevatedButton(
                             onPressed: () {
                               FirebaseAuth.instance.signOut();
                             },
-                            child: Text('try again'))
+                            child: Text('حاول مجددا'))
                       ],
                     ),
                   ),
                 ),
-              );
-            });
-      }),
+              ),
+            );
+          }),
     );
   }
 }

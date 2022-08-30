@@ -2,7 +2,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/account.dart';
 import 'package:sample/screens/postscreen/posts/important_post.dart';
 import 'package:sample/screens/postscreen/posts/normal_post.dart';
 import 'package:sample/screens/postscreen/posts/vote_post.dart';
@@ -15,7 +14,6 @@ class PostsScreen extends StatelessWidget {
   final List<Map<String, dynamic>> posts;
   @override
   Widget build(BuildContext context) {
-    final account = Provider.of<Account>(context);
     (posts).forEach((value) {
       print(value);
       if (DateTime.parse(value['deadLine']).isBefore(DateTime.now())) {
@@ -46,18 +44,18 @@ class PostsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('البوستات'),
         actions: [
-          if (account.role != 'متطوع')
-            AppBarButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (ctx) => ChangeNotifierProvider.value(
-                        value: account, child: PostsAddScreen()),
-                  ),
-                );
-              },
-            ),
+          ////edit
+          // if (account.role != 'متطوع')
+          AppBarButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (ctx) => PostsAddScreen(),
+                ),
+              );
+            },
+          ),
         ],
       ),
       body: Stack(

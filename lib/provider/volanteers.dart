@@ -1,14 +1,17 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:sample/helpers/data_lists.dart';
-import 'package:sample/provider/account.dart';
-import 'package:sample/provider/volanteer.dart';
+import 'package:sample/model/role_provider.dart';
+
+import 'package:sample/model/volanteer.dart';
 
 class Volanteers extends ChangeNotifier {
   List<Volanteer> _vols = [];
   List<Volanteer> get vols => _vols;
   bool clicked = true;
-  Future<void> refresh(BuildContext context, Account account) async {
+  Future<void> refresh(
+    BuildContext context,
+  ) async {
     if (clicked) {
       clicked = false;
       _vols = [];
@@ -112,7 +115,7 @@ class Volanteers extends ChangeNotifier {
             ..email = element['email']
             ..team = element['team']
             ..accepted = element['accepted']
-            ..role = element['role']
+            ..role = roleProvider.getRole(element['role'])
             ..patients = element['patients']);
         });
       }

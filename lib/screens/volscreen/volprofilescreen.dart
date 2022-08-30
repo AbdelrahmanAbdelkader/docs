@@ -4,10 +4,13 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
-import 'package:sample/provider/account.dart';
-import 'package:sample/provider/patient.dart';
-import 'package:sample/provider/patients.dart';
-import 'package:sample/provider/volanteer.dart';
+import 'package:sample/model/patient.dart';
+import 'package:sample/model/screens_spiprit_handle.dart';
+import 'package:sample/model/user.dart';
+import 'package:sample/provider/bottom_navigationController.dart';
+import 'package:sample/provider/patients/patients.dart';
+import 'package:sample/model/volanteer.dart';
+import 'package:sample/model/role_provider.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_list_tile.dart';
 import 'package:sample/screens/volscreen/settingScreen.dart';
 import 'package:sample/screens/volscreen/widgets/volprofile/widgets/information_tile.dart';
@@ -20,33 +23,31 @@ class VolanteerProfileScreen extends StatelessWidget {
     Key? key,
     // this.patients,
   }) : super(key: key);
-  Volanteer volanteer;
   bool canExit;
+  Volanteer volanteer;
   @override
   Widget build(BuildContext context) {
-    final account = Provider.of<Account>(context);
-    print(volanteer.role);
+    print(volanteer.name);
     List<Patient> _currentUserPatients = [];
-    List<String> roles = [
-      ...role,
-      'مسؤول تيم',
-      'مسؤول دكاترة',
-      'مسؤول الملف',
-      'مسؤول المتطوعين'
+    List<ScreensTypes> roles = [
+      ScreensTypes.Pos,
+      ScreensTypes.DocsResposible,
+      ScreensTypes.normal,
+      ScreensTypes.searchResponsible
     ];
     final patients = Provider.of<PatientsProv>(context);
     return Scaffold(
       appBar: AppBar(
         actions: [
-          if (account.role == 'مسؤول الملف' && volanteer.id == account.id)
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ChangeNotifierProvider.value(
-                        value: account, child: SettingScreen())));
-              },
-              icon: Icon(Icons.settings),
-            ),
+          //need edit
+          // if (account.role == 'مسؤول الملف' && volanteer.id == account.id)
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => SettingScreen()));
+            },
+            icon: Icon(Icons.settings),
+          ),
           IconButton(
             icon: Icon(Icons.edit),
             onPressed: () {},
@@ -58,8 +59,11 @@ class VolanteerProfileScreen extends StatelessWidget {
         ],
       ),
       body: FutureBuilder(
-          future: patients.refresh(context, account),
+          future: patients.refresh(context),
           builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            }
             patients.patients.forEach((e) {
               if (e.volId == volanteer.id) {
                 _currentUserPatients.add(e);
@@ -69,6 +73,7 @@ class VolanteerProfileScreen extends StatelessWidget {
                 stream: FirebaseDatabase.instance
                     .ref()
                     .child('users')
+                    //need edit
                     .child(volanteer.id as String)
                     .onValue,
                 builder: (context, snapshot) {
@@ -88,13 +93,15 @@ class VolanteerProfileScreen extends StatelessWidget {
                           InformationTile(
                               information: volanteer.phone as String,
                               label: 'رقم المحمول:'),
-                          if (!(account.role == 'مسؤول الملف' ||
-                              account.role == 'مسؤول المتطوعين'))
+                          if (!(roleProvider.role == ScreensTypes.Pos ||
+                              roleProvider.role ==
+                                  ScreensTypes.searchResponsible))
                             InformationTile(
                                 information: volanteer.team as String,
                                 label: 'التيم:'),
-                          if (account.role == 'مسؤول الملف' ||
-                              account.role == 'مسؤول المتطوعين')
+                          if (roleProvider.role == ScreensTypes.Pos ||
+                              roleProvider.role ==
+                                  ScreensTypes.searchResponsible)
                             FutureBuilder<DataSnapshot>(
                                 future: FirebaseDatabase.instance
                                     .ref()
@@ -155,12 +162,16 @@ class VolanteerProfileScreen extends StatelessWidget {
                                                     .child('team')
                                                     .set(v);
                                               }
-                                              if (account.id == volanteer.id)
-                                                account.setTeam(v as String);
+                                              if (curentUser.id == volanteer.id)
+                                                curentUser.team = v as String;
                                               volanteer.team = v as String;
-
-                                              account
-                                                  .setCurrent(account.current);
+                                              context
+                                                  .read<
+                                                      BottomNavigationController>()
+                                                  .setIndex(context
+                                                      .watch<
+                                                          BottomNavigationController>()
+                                                      .index);
                                             },
                                             hint: Text('اختر التيم'),
                                             items: List.generate(
@@ -181,13 +192,13 @@ class VolanteerProfileScreen extends StatelessWidget {
                                   return Text(
                                       'حدث خطأ في عرض ذلك الرجاء التوجه لديفولبر');
                                 }),
-                          if (!(volanteer.id == account.id))
+                          if (!(volanteer.id == curentUser.id))
                             InformationTile(
                                 information: (volanteer.classification == null)
                                     ? 'غير محدد'
                                     : volanteer.classification as String,
                                 label: 'التخصص:'),
-                          if (account.id == volanteer.id)
+                          if (curentUser.id == volanteer.id)
                             FutureBuilder<DataSnapshot>(
                                 future: FirebaseDatabase.instance
                                     .ref()
@@ -235,13 +246,18 @@ class VolanteerProfileScreen extends StatelessWidget {
                                                   .child(volanteer.id as String)
                                                   .child('classification')
                                                   .set(v);
-                                              if (account.id == volanteer.id)
-                                                account.setClassification(
-                                                    v as String);
+                                              if (curentUser.id == volanteer.id)
+                                                curentUser.classification =
+                                                    (v as String);
                                               volanteer.classification =
                                                   v as String;
-                                              account
-                                                  .setCurrent(account.current);
+                                              context
+                                                  .read<
+                                                      BottomNavigationController>()
+                                                  .setIndex(context
+                                                      .watch<
+                                                          BottomNavigationController>()
+                                                      .index);
                                             },
                                             hint: Text('اختر التخصص'),
                                             items: List.generate(
@@ -264,11 +280,11 @@ class VolanteerProfileScreen extends StatelessWidget {
                                   return Text(
                                       'حدث خطأ في عرض ذلك الرجاء التوجه لديفولبر');
                                 }),
-                          if (!(account.role == 'مسؤول الملف'))
+                          if (!(roleProvider.role == ScreensTypes.Pos))
                             InformationTile(
                                 information: volanteer.role as String,
                                 label: 'الدور:'),
-                          if (account.role == 'مسؤول الملف')
+                          if (roleProvider.role == ScreensTypes.Pos)
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10.0),
@@ -297,19 +313,28 @@ class VolanteerProfileScreen extends StatelessWidget {
                                           .child(volanteer.id as String)
                                           .child('role')
                                           .set(v);
-                                      if (account.id == volanteer.id) {
-                                        account.current = 0;
-                                        account.setRole(v as String);
-                                      }
-                                      volanteer.role = v as String;
+                                      if (curentUser.id == volanteer.id) {
+                                        roleProvider.setRole(v as String);
 
-                                      account.setCurrent(account.current);
+                                        context
+                                            .read<BottomNavigationController>()
+                                            .setIndex(0);
+                                      }
+                                      volanteer.role =
+                                          roleProvider.getRole(v as String);
+                                      context
+                                          .read<BottomNavigationController>()
+                                          .setIndex(context
+                                              .watch<
+                                                  BottomNavigationController>()
+                                              .index);
                                     },
                                     hint: Text('اختر الدور'),
                                     items: List.generate(roles.length, (index) {
                                       return DropdownMenuItem(
                                         child: Text(
-                                          roles.elementAt(index),
+                                          roleProvider.toStringRole(
+                                              roles.elementAt(index)),
                                         ),
                                         value: roles.elementAt(index),
                                       );

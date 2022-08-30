@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
-import 'package:sample/provider/patient.dart';
+import 'package:sample/model/patient.dart';
 
 class StateDropDownButton extends StatelessWidget {
   const StateDropDownButton({

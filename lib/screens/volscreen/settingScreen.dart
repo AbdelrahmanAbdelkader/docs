@@ -2,8 +2,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
-import 'package:sample/provider/account.dart';
-import 'package:sample/provider/volanteer.dart';
+import 'package:sample/model/user.dart';
+import 'package:sample/model/volanteer.dart';
+import 'package:sample/provider/bottom_navigationController.dart';
 
 class SettingScreen extends StatefulWidget {
   SettingScreen({Key? key}) : super(key: key);
@@ -19,7 +20,6 @@ class _SettingScreenState extends State<SettingScreen> {
   bool teaming = true;
   @override
   Widget build(BuildContext context) {
-    final account = Provider.of<Account>(context, listen: false);
     return Scaffold(
       appBar: AppBar(),
       body: Column(
@@ -101,7 +101,11 @@ class _SettingScreenState extends State<SettingScreen> {
                                   .ref(ref.path)
                                   .set(addClassiController.text);
                               addClassiController.clear();
-                              account.setCurrent(account.current);
+                              context
+                                  .read<BottomNavigationController>()
+                                  .setIndex(context
+                                      .watch<BottomNavigationController>()
+                                      .index);
                             }
                           },
                           icon: Icon(
@@ -275,15 +279,20 @@ class _SettingScreenState extends State<SettingScreen> {
                                                               .elementAt(i))
                                                           .set(null);
                                                       Navigator.of(ctx).pop();
-                                                      if (account
+                                                      if (curentUser
                                                               .classification ==
                                                           data.values
                                                               .elementAt(i))
-                                                        account
-                                                            .setClassification(
-                                                                'غير محدد');
-                                                      account.setCurrent(
-                                                          account.current);
+                                                        curentUser
+                                                                .classification =
+                                                            'غير محدد';
+                                                      context
+                                                          .read<
+                                                              BottomNavigationController>()
+                                                          .setIndex(context
+                                                              .watch<
+                                                                  BottomNavigationController>()
+                                                              .index);
                                                     },
                                                     child: Text('yes')),
                                               ],
@@ -332,7 +341,11 @@ class _SettingScreenState extends State<SettingScreen> {
 
                               addTeamController.clear();
                               FocusScope.of(context).unfocus();
-                              account.setCurrent(account.current);
+                              context
+                                  .read<BottomNavigationController>()
+                                  .setIndex(context
+                                      .watch<BottomNavigationController>()
+                                      .index);
                             }
                           },
                           icon: Icon(
@@ -457,11 +470,17 @@ class _SettingScreenState extends State<SettingScreen> {
                                                           .child('teams')
                                                           .child(data[i])
                                                           .set(null);
-                                                      if (account.team ==
+                                                      if (curentUser.team ==
                                                           data[i])
-                                                        account.setTeam('مطلق');
-                                                      account.setCurrent(
-                                                          account.current);
+                                                        curentUser.team =
+                                                            'مطلق';
+                                                      context
+                                                          .read<
+                                                              BottomNavigationController>()
+                                                          .setIndex(context
+                                                              .watch<
+                                                                  BottomNavigationController>()
+                                                              .index);
                                                       Navigator.of(ctx).pop();
                                                     },
                                                     child: Text('yes')),

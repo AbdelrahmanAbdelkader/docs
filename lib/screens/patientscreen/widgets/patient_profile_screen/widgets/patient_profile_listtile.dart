@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/account.dart';
-import 'package:sample/provider/patient.dart';
+
+import 'package:sample/model/patient.dart';
 
 class PatientProfieListTile extends StatelessWidget {
   const PatientProfieListTile({
@@ -17,7 +17,6 @@ class PatientProfieListTile extends StatelessWidget {
   final Function? editFunction;
   @override
   Widget build(BuildContext context) {
-    final account = Provider.of<Account>(context);
     final patient = Provider.of<Patient>(context);
     return ListTile(
       leading: access

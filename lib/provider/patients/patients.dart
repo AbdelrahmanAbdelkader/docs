@@ -1,8 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:sample/helpers/data_lists.dart';
-import 'package:sample/provider/account.dart';
-import 'package:sample/provider/patient.dart';
+import 'package:sample/model/patient.dart';
 
 class PatientsProv extends ChangeNotifier {
   List<Patient> _patients = [];
@@ -55,12 +54,14 @@ class PatientsProv extends ChangeNotifier {
       ..date = newPatient['date']);
   }
 
-  Future<void> refresh(BuildContext context, Account account) async {
+  Future<void> refresh(
+    BuildContext context,
+  ) async {
     if (clicked) {
       _patients = [];
       clicked = false;
-      final dataTeamColorRefresh =
-          await FirebaseDatabase.instance.ref().child('teams').get();
+      // final dataTeamColorRefresh =
+      //     await FirebaseDatabase.instance.ref().child('teams').get();
 
       final database = FirebaseDatabase.instance;
       var ref;

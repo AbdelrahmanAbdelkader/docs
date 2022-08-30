@@ -4,7 +4,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/account.dart';
+import 'package:sample/model/user.dart';
+import 'package:sample/provider/bottom_navigationController.dart';
+
 import 'package:sizer/sizer.dart';
 
 class VotePost extends StatelessWidget {
@@ -47,7 +49,7 @@ class VotePost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final total = votsNameLists.length;
-    final account = Provider.of<Account>(context);
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -62,7 +64,7 @@ class VotePost extends StatelessWidget {
                     fontWeight: FontWeight.bold),
               ),
               Spacer(),
-              if (account.id == accountId)
+              if (curentUser.id == accountId)
                 IconButton(
                     onPressed: () {
                       showDialog(
@@ -83,7 +85,12 @@ class VotePost extends StatelessWidget {
                                             .child(postId)
                                             .set(null);
                                         Navigator.of(ctx).pop();
-                                        account.setCurrent(account.current);
+                                        context
+                                            .read<BottomNavigationController>()
+                                            .setIndex(context
+                                                .watch<
+                                                    BottomNavigationController>()
+                                                .index);
                                       },
                                       child: Text('yes')),
                                 ],
@@ -166,17 +173,17 @@ class VotePost extends StatelessWidget {
                                 child: IconButton(
                                   splashRadius: 1.0,
                                   iconSize: 16,
-                                  icon:
-                                      (votsNameLists.containsKey(account.id) &&
-                                              votsNameLists[account.id] == e)
-                                          ? Icon(
-                                              Icons.check_box,
-                                              color: Colors.green,
-                                            )
-                                          : Icon(
-                                              Icons.check_box_outline_blank,
-                                              color: Colors.green,
-                                            ),
+                                  icon: (votsNameLists
+                                              .containsKey(curentUser.id) &&
+                                          votsNameLists[curentUser.id] == e)
+                                      ? Icon(
+                                          Icons.check_box,
+                                          color: Colors.green,
+                                        )
+                                      : Icon(
+                                          Icons.check_box_outline_blank,
+                                          color: Colors.green,
+                                        ),
                                   onPressed: () async {
                                     await FirebaseDatabase.instance
                                         .ref()
@@ -184,7 +191,7 @@ class VotePost extends StatelessWidget {
                                         .child(postId)
                                         .child('votes')
                                         .child('selected')
-                                        .update({account.id as String: e});
+                                        .update({curentUser.id as String: e});
                                   },
                                 ),
                               ),

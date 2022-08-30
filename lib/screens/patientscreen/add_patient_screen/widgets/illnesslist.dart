@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/patient.dart';
+import 'package:sample/model/patient.dart';
 
 import 'illnesstextfield.dart';
 

@@ -1,8 +1,9 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/account.dart';
-import 'package:sample/provider/patient.dart';
+
+import 'package:sample/model/patient.dart';
+import 'package:sample/provider/bottom_navigationController.dart';
 
 class DropDownDialog extends Dialog {
   DropDownDialog(
@@ -43,8 +44,6 @@ class DropDownDialog extends Dialog {
                   padding: const EdgeInsets.all(6.0),
                   child: Builder(
                     builder: (context) {
-                      final account =
-                          Provider.of<Account>(context, listen: false);
                       final patient =
                           Provider.of<Patient>(context, listen: false);
                       return TextButton(
@@ -66,7 +65,10 @@ class DropDownDialog extends Dialog {
                                       },
                               );
                           Navigator.of(context).pop();
-                          account.setCurrent(account.current);
+                          context.read<BottomNavigationController>().setIndex(
+                              context
+                                  .watch<BottomNavigationController>()
+                                  .index);
                         },
                         child: Text('save'),
                       );

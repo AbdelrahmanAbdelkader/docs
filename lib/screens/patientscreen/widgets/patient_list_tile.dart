@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample/helpers/data_lists.dart';
-import 'package:sample/provider/account.dart';
-import 'package:sample/provider/patient.dart';
-import 'package:sample/provider/patients.dart';
+
+import 'package:sample/model/patient.dart';
+import 'package:sample/provider/patients/patients.dart';
 import 'package:sample/screens/patientscreen/widgets/patient_profile_screen/patient_profile_screen.dart';
 
 class PatientListTile extends StatelessWidget {
@@ -15,7 +15,6 @@ class PatientListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final patient = Provider.of<Patient>(context);
-    final account = Provider.of<Account>(context);
     final patients = Provider.of<PatientsProv>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
@@ -77,7 +76,6 @@ class PatientListTile extends StatelessWidget {
                 builder: (context) => MultiProvider(
                   providers: [
                     ChangeNotifierProvider.value(value: patient),
-                    ChangeNotifierProvider.value(value: account),
                     ChangeNotifierProvider.value(value: patients),
                   ],
                   child: PatientProfileScreen(),

@@ -1,59 +1,59 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/doc.dart';
-import 'package:sample/provider/docs.dart';
+import 'package:sample/model/doc.dart';
+import 'package:sample/provider/docs/docs.dart';
+import 'package:sample/provider/docs/expand_docSample.dart';
+import 'package:sample/provider/docs/searchDocController.dart';
+import 'package:sample/screens/docscreen/add_doc.dart';
 import 'package:sample/screens/widgets/app_bar_button.dart';
 import 'package:sizer/sizer.dart';
-import 'package:sample/screens/docscreen/getAddDocProvited.dart';
+import '../../provider/docs/itemsSearchedInDocs.dart';
 import 'widgets/doc_sample.dart';
 
-class DocList extends StatefulWidget {
-  const DocList(this.refresh, {Key? key}) : super(key: key);
-  final Function refresh;
-  @override
-  State<DocList> createState() => _DocListState();
-}
+class DocList extends StatelessWidget {
+  const DocList({Key? key}) : super(key: key);
 
-class _DocListState extends State<DocList> {
-  List<Doc> searchedDoctors = [];
-  bool search = false;
+  //List<Doc> searchedDoctors = [];
 
   @override
   Widget build(BuildContext context) {
-    final prove = Provider.of<Docs>(context, listen: false);
-    final proveTrue = Provider.of<Docs>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text((search) ? 'البحث' : 'الدكاترة'),
-        actions: (search)
-            ? [
-                IconButton(
+        title: Consumer<SearchDocController>(
+            builder: ((context, value, child) =>
+                Text((value.search) ? 'البحث' : 'الدكاترة'))),
+        actions: [
+          Consumer<SearchDocController>(
+            builder: ((context, value, child) {
+              if (value.search)
+                return IconButton(
                     onPressed: () {
-                      setState(() {
-                        search = false;
-                      });
+                      print('setState refresh docs false');
+                      value.setSearch(false);
                     },
-                    icon: Icon(Icons.arrow_back))
-              ]
-            : [
-                IconButton(
+                    icon: Icon(Icons.arrow_back));
+              else
+                return IconButton(
                     onPressed: () {
-                      setState(() {
-                        search = true;
-                      });
-                      // showSearch(
-                      //     context: context, delegate: DocSearchDelegate(context));
+                      print('setState refresh docs true');
+                      value.setSearch(true);
                     },
-                    icon: Icon(Icons.search)),
-                AppBarButton(
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => GetAddDocProve(widget.refresh),
+                    icon: Icon(Icons.search));
+            }),
+          ),
+          Consumer<SearchDocController>(
+            builder: (context, value, child) => (value.search)
+                ? Container()
+                : AppBarButton(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => AddDoctor(Doc()),
+                      ),
                     ),
                   ),
-                ),
-              ],
+          ),
+        ],
       ),
       body: Container(
         height: 100.h,
@@ -68,88 +68,99 @@ class _DocListState extends State<DocList> {
               ),
             ),
             LayoutBuilder(builder: (context, cons) {
-              return (proveTrue.doctors.isNotEmpty)
+              print('docsPage docProviders refreshed');
+              return (context.watch<Docs>().doctors.isNotEmpty)
                   ? SingleChildScrollView(
-                      child: Column(children: [
-                        if (search)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 30.0, vertical: 15),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.green.shade50.withOpacity(.2),
-                                  borderRadius: BorderRadius.circular(15),
-                                  border: Border.all(
-                                      width: 1, color: Colors.green.shade400)),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0, vertical: 10),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: TextFormField(
-                                            onChanged: (value) {
-                                              setState(() {
-                                                searchedDoctors = prove.doctors
-                                                    .where((element) {
-                                                  return element.name
-                                                      .toLowerCase()
-                                                      .contains(value);
-                                                }).toList();
-                                              });
-                                            },
-                                            decoration: InputDecoration(
-                                              hintText: 'اسم الدكتور',
-                                              suffixIcon: Icon(
-                                                Icons.search,
-                                                color: Colors.green[200],
-                                              ),
-                                              hintStyle: TextStyle(
-                                                  color: Colors.green[200]),
-                                              // label: Text(label),
+                      child: Consumer<SearchDocController>(
+                        builder: (context, value, child) {
+                          return Column(children: [
+                            if (value.search)
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 30.0, vertical: 15),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color:
+                                          Colors.green.shade50.withOpacity(.2),
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                          width: 1,
+                                          color: Colors.green.shade400)),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0, vertical: 10),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: TextFormField(
+                                                onChanged: (value) {
+                                                  context
+                                                      .read<
+                                                          ItemsSearchedInDocs>()
+                                                      .searchItems(
+                                                          value, context);
+                                                },
+                                                decoration: InputDecoration(
+                                                  hintText: 'اسم الدكتور',
+                                                  suffixIcon: Icon(
+                                                    Icons.search,
+                                                    color: Colors.green[200],
+                                                  ),
+                                                  hintStyle: TextStyle(
+                                                      color: Colors.green[200]),
+                                                  // label: Text(label),
 
-                                              border: InputBorder.none,
-                                              errorBorder: InputBorder.none,
-                                              enabledBorder: InputBorder.none,
-                                              focusedBorder: InputBorder.none,
-                                              disabledBorder: InputBorder.none,
-                                              focusedErrorBorder:
-                                                  InputBorder.none,
+                                                  border: InputBorder.none,
+                                                  errorBorder: InputBorder.none,
+                                                  enabledBorder:
+                                                      InputBorder.none,
+                                                  focusedBorder:
+                                                      InputBorder.none,
+                                                  disabledBorder:
+                                                      InputBorder.none,
+                                                  focusedErrorBorder:
+                                                      InputBorder.none,
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                          ],
                                         ),
-                                      ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            if (!value.search)
+                              ...List.generate(
+                                context.watch<Docs>().doctors.length,
+                                (index) {
+                                  return ChangeNotifierProvider(
+                                    create: (context) => ExpandDocSample(),
+                                    builder: (context, snapshot) {
+                                      return DocSample(
+                                          context.watch<Docs>().doctors[index]);
+                                    },
+                                  );
+                                },
+                              ).toList(),
+                            if (value.search)
+                              ...context
+                                  .watch<ItemsSearchedInDocs>()
+                                  .searchedDoctors
+                                  .map(
+                                    (e) => ChangeNotifierProvider(
+                                      create: (context) => ExpandDocSample(),
+                                      key: Key(e.Id as String),
+                                      builder: (context, snapshot) {
+                                        return DocSample(e);
+                                      },
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        if (!search)
-                          ...List.generate(
-                            proveTrue.doctors.length,
-                            (index) {
-                              return ChangeNotifierProvider.value(
-                                value: proveTrue.doctors[index],
-                                builder: (context, snapshot) {
-                                  return DocSample();
-                                },
-                              );
-                            },
-                          ).toList(),
-                        if (search)
-                          ...searchedDoctors.map(
-                            (e) => ChangeNotifierProvider.value(
-                              key: Key(e.Id as String),
-                              value: e,
-                              builder: (context, snapshot) {
-                                return DocSample();
-                              },
-                            ),
-                          ),
-                      ]),
+                          ]);
+                        },
+                      ),
                     )
                   : Container(
                       height: cons.maxHeight,

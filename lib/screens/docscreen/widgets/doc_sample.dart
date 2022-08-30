@@ -2,45 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sample/provider/doc.dart';
+import 'package:sample/model/doc.dart';
+import 'package:sample/provider/docs/expand_docSample.dart';
 import 'package:sample/screens/docscreen/add_doc.dart';
 
-class DocSample extends StatefulWidget {
-  DocSample({Key? key});
+class DocSample extends StatelessWidget {
+  DocSample(this.doc, {Key? key});
 
-  @override
-  State<DocSample> createState() => _DocSampleState();
-}
-
-class _DocSampleState extends State<DocSample> {
-  bool toggled = false;
-  bool showText = false;
-  late final String docName;
-  late final String id;
-  late final String? docNum;
-  late final String? docEmail;
-  late final bool agreed;
-  late final String? hint;
-  late final List<Map>? patients;
-  late final Doc prove;
-  late final String classification;
-  bool _once = true;
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_once) {
-      prove = Provider.of<Doc>(context);
-      docName = prove.name;
-      id = prove.Id as String;
-      docNum = prove.phone;
-      docEmail = prove.email;
-      agreed = prove.agreed;
-      hint = prove.hint;
-      patients = prove.patients;
-      _once = false;
-      classification = prove.classification;
-    }
-  }
+  final Doc doc;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +25,7 @@ class _DocSampleState extends State<DocSample> {
             borderRadius: BorderRadius.circular(15),
             border: Border.all(
               width: 2,
-              color: (agreed) ? Colors.green.shade600 : Colors.red.shade300,
+              color: (doc.agreed) ? Colors.green.shade600 : Colors.red.shade300,
             )),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -75,7 +44,7 @@ class _DocSampleState extends State<DocSample> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          docName,
+                          doc.name,
                           style: const TextStyle(
                               fontSize: 18,
                               color: Colors.green,
@@ -83,14 +52,22 @@ class _DocSampleState extends State<DocSample> {
                               height: 1),
                         ),
                         Text(
-                          '$docNum',
+                          '${doc.phone}',
                           style: const TextStyle(
                             fontSize: 18,
                             color: Colors.green,
                           ),
                         ),
+                        if (doc.email != '')
+                          Text(
+                            'الايميل :${doc.email}',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.green,
+                            ),
+                          ),
                         Text(
-                          'التخصص :$classification',
+                          'التخصص :${doc.classification}',
                           style: const TextStyle(
                             fontSize: 18,
                             color: Colors.green,
@@ -105,7 +82,7 @@ class _DocSampleState extends State<DocSample> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (ctx) => AddDoctor(prove),
+                            builder: (ctx) => AddDoctor(doc),
                           ),
                         );
                       },
@@ -119,51 +96,51 @@ class _DocSampleState extends State<DocSample> {
                 ],
               ),
             ),
-            if (hint != '' && toggled)
+            if (context.watch<ExpandDocSample>().expand)
               Text(
-                hint as String,
+                doc.hint,
                 style: const TextStyle(
                   fontSize: 18,
                   color: Colors.green,
                 ),
               ),
-            if (patients != null && toggled)
+            if (context.watch<ExpandDocSample>().expand)
               Column(
-                children: patients!
-                    .map((e) => Container(
-                          color: Colors.green[800],
-                          child: Row(
-                            children: [
-                              Text(
-                                e['name'] as String,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.green,
+                children: [
+                  ...doc.patients
+                      .map((e) => Container(
+                            color: Colors.green[800],
+                            child: Row(
+                              children: [
+                                Text(
+                                  e['name'] as String,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.green,
+                                  ),
                                 ),
-                              ),
-                              const Spacer(),
-                              Text(
-                                e['illness'],
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.green,
+                                const Spacer(),
+                                Text(
+                                  e['illness'],
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.green,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ))
-                    .toList(),
+                              ],
+                            ),
+                          ))
+                      .toList()
+                ],
               ),
-            if (hint != '' || patients!.isEmpty)
+            if (doc.hint != '' || doc.patients.isEmpty)
               IconButton(
                 onPressed: () {
-                  setState(() {
-                    toggled = !toggled;
-                  });
+                  context.read<ExpandDocSample>().setExpand();
                 },
                 splashRadius: 0.1,
                 padding: EdgeInsets.zero,
-                icon: (!toggled)
+                icon: (!context.watch<ExpandDocSample>().expand)
                     ? const Icon(
                         Icons.arrow_drop_down,
                         color: Colors.green,
