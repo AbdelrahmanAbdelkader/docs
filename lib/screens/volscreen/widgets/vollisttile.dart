@@ -45,7 +45,7 @@ class VolListTile extends StatelessWidget {
             );
           },
           leading: (roleProvider.role == ScreensTypes.Pos &&
-                  volanteer.role != 'مسؤول الملف')
+                  volanteer.role != ScreensTypes.Pos)
               ? IconButton(
                   onPressed: () async {
                     await FirebaseDatabase.instance

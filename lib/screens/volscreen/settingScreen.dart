@@ -335,8 +335,19 @@ class _SettingScreenState extends State<SettingScreen> {
                         suffixIcon: IconButton(
                           onPressed: () async {
                             if (fkey.currentState!.validate()) {
+                              final data = await FirebaseDatabase.instance
+                                  .ref()
+                                  .child('teams')
+                                  .get();
+                              List teamsData = [];
+                              if (data.value != null)
+                                teamsData = data.value as List;
                               await FirebaseDatabase.instance.ref().update({
-                                'teams': [addTeamController.text]
+                                'teams': List.generate(
+                                    1 + teamsData.length,
+                                    (index) => (index == 0)
+                                        ? addTeamController.text
+                                        : (teamsData)[index - 1]),
                               });
 
                               addTeamController.clear();
@@ -344,7 +355,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               context
                                   .read<BottomNavigationController>()
                                   .setIndex(context
-                                      .watch<BottomNavigationController>()
+                                      .read<BottomNavigationController>()
                                       .index);
                             }
                           },
@@ -407,15 +418,18 @@ class _SettingScreenState extends State<SettingScreen> {
                                                               .ref()
                                                               .child('users')
                                                               .get();
+
                                                       if (allUsers.value !=
                                                           null) {
                                                         final usersData =
                                                             allUsers.value
                                                                 as Map;
+
                                                         for (Map element
                                                             in (usersData)
-                                                                .values) {
-                                                          if (element['team'] !=
+                                                                .values
+                                                                .toList()) {
+                                                          if (element['team'] ==
                                                               data[i]) continue;
                                                           Volanteer volanteer =
                                                               Volanteer()
@@ -425,6 +439,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                                                         usersData[
                                                                             e] ==
                                                                         element);
+
                                                           await FirebaseDatabase
                                                               .instance
                                                               .ref()
@@ -433,43 +448,18 @@ class _SettingScreenState extends State<SettingScreen> {
                                                                   .id as String)
                                                               .child('team')
                                                               .set('مطلق');
-                                                          final allpati =
-                                                              await FirebaseDatabase
-                                                                  .instance
-                                                                  .ref()
-                                                                  .child(
-                                                                      'patients')
-                                                                  .get();
-                                                          if (allpati.value !=
-                                                              null)
-                                                            for (Map patient
-                                                                in (allpati.value
-                                                                        as Map)
-                                                                    .values) {
-                                                              if (patient[
-                                                                      'volanteerId'] ==
-                                                                  volanteer
-                                                                      .id) {
-                                                                await FirebaseDatabase
-                                                                    .instance
-                                                                    .ref()
-                                                                    .child(
-                                                                        'patients')
-                                                                    .child(patient[
-                                                                        'nationaId'])
-                                                                    .update({
-                                                                  'team': 'مطلق'
-                                                                });
-                                                              }
-                                                            }
                                                         }
                                                       }
                                                       await FirebaseDatabase
                                                           .instance
                                                           .ref()
                                                           .child('teams')
-                                                          .child(data[i])
-                                                          .set(null);
+                                                          .set(data
+                                                              .where(
+                                                                  (element) =>
+                                                                      element !=
+                                                                      data[i])
+                                                              .toList());
                                                       if (curentUser.team ==
                                                           data[i])
                                                         curentUser.team =
@@ -478,7 +468,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                                           .read<
                                                               BottomNavigationController>()
                                                           .setIndex(context
-                                                              .watch<
+                                                              .read<
                                                                   BottomNavigationController>()
                                                               .index);
                                                       Navigator.of(ctx).pop();

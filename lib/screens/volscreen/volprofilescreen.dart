@@ -36,6 +36,7 @@ class VolanteerProfileScreen extends StatelessWidget {
       ScreensTypes.searchResponsible
     ];
     final patients = Provider.of<PatientsProv>(context);
+    print(volanteer.team);
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -169,7 +170,7 @@ class VolanteerProfileScreen extends StatelessWidget {
                                                   .read<
                                                       BottomNavigationController>()
                                                   .setIndex(context
-                                                      .watch<
+                                                      .read<
                                                           BottomNavigationController>()
                                                       .index);
                                             },
